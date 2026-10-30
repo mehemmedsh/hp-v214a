@@ -128,3 +128,23 @@ Lenovo reposundaki görev numaralarından bu repodakilere:
 | 5.9 | Üst-alt farkının sebebi bakış açısı | T401 / T402 planlandığı gibi; oturma ölçüsü T401'e kaldı |
 
 Kontrol: görev sayısı (66) ve sınıflar değişmedi. T203'e DDC bağımlılığı eklemek Faz 2'yi Faz 3'e bağlayacağı için yapılmadı; bağlantı ters yönde T301'e verildi, böylece "hiçbir görev kendinden sonra gelen bir göreve bağımlı değil" kuralı korunuyor.
+
+---
+
+## 6. Tur: Kullanım (usage) incelemesi (2026-10-30)
+
+Amaç: uygulamanın kalitesini ve geliştirme akışını bozmadan Claude kullanımını azaltmak. En büyük kalem, her oturumun başta okuduğu dokümanlardı: 7 dosya, yaklaşık 72 KB. Bu, 66 görevin yazma ve inceleme oturumlarında (yaklaşık 130 oturum) tekrar ediyor ve oturumdaki her adımda yeniden işleniyordu.
+
+| # | Bulgu | Değişiklik |
+|---|---|---|
+| 6.1 | Her yazma oturumu README, 00, 02, 03, 04, 08 ve LESSONS'ın tamamını okuyordu; görevlerin çoğu bunların küçük bir kısmını kullanıyor | `CLAUDE.md` (otomatik okunur): kurallar özeti ve görev bazlı okuma haritası. Örnek görevlerde (T001, T206, T306, T402, T404) baştaki okuma 72 KB'tan 26–31 KB'a indi (yaklaşık %55–65). 02 ve 03 her kod görevinde tam okunmaya devam ediyor |
+| 6.2 | Görev ayrıntısının bir kısmı sadece `01-OZELLIKLER.md`'deydi ve eski okuma listesinde yoktu | Harita, görev numarasının geçtiği 01 ve 08 bölümlerini de okutuyor (küçük maliyet, kalite artışı) |
+| 6.3 | Yazanın "inceleyiciye 3 nokta" notu inceleme oturumuna aktarılmıyordu | Notlar commit mesajında; inceleme oradan başlıyor. Şablonlar kısaldı (`05-HANDOFF.md`) |
+| 6.4 | İnceleme DÜZELT derse ne olacağı tanımlı değildi | Düzeltme şablonu: yazan model, sadece DÜZELT maddeleri; yeniden inceleme sadece düzeltme commit'leri |
+| 6.5 | Bulut oturumunda .NET SDK yok ve Microsoft'un indirme sunucusu engelli; kod derlenmeden ve test edilmeden CI'a gidecekti | Ubuntu paketi `dotnet-sdk-10.0` kuruluyor (denendi); ortam kurulum betiğine eklenmesi önerildi (`05-HANDOFF.md`, bölüm 0). Saf mantık platformdan bağımsız projelerde; WPF `EnableWindowsTargeting` ile Linux'ta derleniyor (denendi) |
+| 6.6 | .NET 8'in desteği 10 Kasım 2026'da bitiyor | Öneri .NET 10 (LTS, Kasım 2028'e kadar); T001'de onaylanır |
+| 6.7 | Derleme, test ve CI çıktısı uzun | Sessiz komutlar ve `tools/dev` betikleri; CI'da sadece hatalı adımın logu |
+| 6.8 | T303 ve T304 küçük ve aynı modülde; T304 artık sadece doğrulama | Toplam ~200 satırı aşmıyorsa tek yazma ve tek inceleme oturumunda |
+| 6.9 | `05-HANDOFF.md` sadece 75 Hz doğrulamasını yazıyordu | 76 Hz eklendi; DDC 14 eşlemesi T004 öncesi kontrol olarak eklendi |
+
+**Değiştirilmeyenler:** Görev sayısı (66), sınıflar, yazan/inceleyen dağılımı ve effort seviyeleri. B incelemeleri Opus high'ta kalıyor; burada tasarruf kaliteyi düşürür. C incelemelerinin effort'unu düşürmek kullanıcının kararına bırakıldı.

@@ -29,4 +29,4 @@ HP P21b G4 ünitesinde test edilen gerçek değerler: ilk gün kontrolü (`docs/
 
 ## Geliştirme dersleri
 
-- (henüz yok)
+- 2026-10-30 · Plan · Bulut oturumunda deneme: .NET SDK yoktu, Microsoft'un indirme sunucusu engelli; Ubuntu paketi `dotnet-sdk-10.0` kuruldu. WPF projesi `EnableWindowsTargeting` ile Linux'ta derlendi, `net10.0` testleri çalıştı. Sadece `App` adlı projede `App` sınıfı ad alanıyla çakıştı (CS0426) · Kurulum `CLAUDE.md`'de; projeler `MonitorTuner.*` adını alır

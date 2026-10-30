@@ -6,7 +6,8 @@ Uygulamanın parçaları ve birbirleriyle nasıl konuştukları. Kod içermez; T
 
 | Parça | Önerilen | Neden |
 |---|---|---|
-| Windows uygulaması | **C# / .NET 8, WPF** | Kayıt defteri, DDC, NVIDIA arayüzleri, tepsi simgesi ve katman pencereleri için en kolay yol |
+| Windows uygulaması | **C# / .NET 10 (LTS), WPF** | Kayıt defteri, DDC, NVIDIA arayüzleri, tepsi simgesi ve katman pencereleri için en kolay yol. .NET 8'in desteği 10 Kasım 2026'da bitiyor; .NET 10 Kasım 2028'e kadar destekli |
+| Proje ayrımı | `MonitorTuner.*` projeleri. Core, Color, Safety, Services ve donanım arayüzleri `net10.0` (platformdan bağımsız); App, Overlay, Hardware, Elevated, Patterns `net10.0-windows` + `EnableWindowsTargeting` | Bulut oturumu (Linux) çözümün tamamını derler ve platformdan bağımsız testleri kendisi çalıştırır; Windows'a özel testler CI'da. Denendi: WPF projesi Linux'ta derleniyor. Proje adı sadece `App` olursa WPF'nin `App` sınıfıyla çakışıyor |
 | Yönetici yardımcısı | Aynı çözümde ayrı küçük bir .NET süreci | Sadece yetki isteyen birkaç komutu çalıştırır |
 | Test desenleri | DirectX tabanlı tam ekran pencere (vsync'e kilitli) | Kare atlama testi için her yenilemede tam bir kare değişmeli |
 | Katmanlar | Katmanlı, tıklama geçirgen, en üstte duran pencereler; ekran yakalamadan hariç tutulur | Dikey denge ve ekran bilgisi |
@@ -17,6 +18,8 @@ Uygulamanın parçaları ve birbirleriyle nasıl konuştukları. Kod içermez; T
 | FPS ölçümü | Harici: PresentMon | Windows'ta güvenilir FPS ölçümünün standart yolu |
 | Kolorimetre (v3, isteğe bağlı) | Harici: ArgyllCMS | Kolorimetreyle ölçüm |
 | Ayarlar | `%AppData%` altında JSON; yedekler ayrı klasörde; monitör profili ayrı bir veri dosyası | Okunabilir, dışa aktarması kolay |
+| Derleme ve test çıktısı | `tools/dev/` içinde sessiz derleme ve test betikleri (bash + PowerShell): sadece hata ve özet | Oturumların okuduğu çıktı kısalır, bilgi kaybı yok |
+| 🔧 testleri için çalıştırma | **Önerilen:** CI her push'ta kendi içinde (self-contained) Windows paketi üretir, kısa saklama süresiyle; kullanıcı indirip çalıştırır. **Alternatif:** PC'de .NET 10 SDK ile derleme | PC'ye geliştirme aracı kurmak gerekmez |
 
 ## Süreçler
 
@@ -137,7 +140,7 @@ Panik kısayolu tüm katmanları ve efektleri (mavi ışık, ek karartma, canlı
 
 ## CI korumaları (T001)
 
-- Her push'ta derleme ve birim testleri (GitHub Actions, Windows çalıştırıcısı).
+- Her push'ta derleme ve birim testleri (GitHub Actions, Windows çalıştırıcısı). Platformdan bağımsız testler oturumda (Linux) push'tan önce de çalıştırılır.
 - Saf mantık katmanı donanım katmanını kullanamaz.
 - Arayüz donanım katmanını doğrudan kullanamaz; her yazma Güvenlik katmanından geçer.
 - GPU renk tablosuna sadece renk boru hattı yazabilir.

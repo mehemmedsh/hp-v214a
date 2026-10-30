@@ -2,7 +2,7 @@
 
 HP P21b G4 monitörü için bir Windows uygulaması ve ona bağlı bir Pixel yardımcı uygulamasının planı. Sistem: monitör **RTX 3080**'in HDMI'ında, **RTX 3090** ağır işler için boş.
 
-> **Durum:** Plan aşaması, uygulama kodu yok. [İlk gün kontrolü](docs/09-ILK-GUN.md) yapıldı; sıradaki görev `docs/04-FAZLAR.md` içindeki **T001**.
+> **Durum:** Plan aşaması, uygulama kodu yok. [İlk gün kontrolü](docs/09-ILK-GUN.md) yapıldı; sıradaki görev `docs/04-FAZLAR.md` içindeki **T001**. Başlamadan önce: [`docs/05-HANDOFF.md`](docs/05-HANDOFF.md), bölüm 0 (ortam kurulumu).
 >
 > **Not:** Plan HP V214a için yazılmıştı; ilk gün kontrolünde monitörün **HP P21b G4** olduğu anlaşıldı. Sinyal sınırları aynı olduğu için plan uyarlandı, repo adı `hp-v214a` olarak kaldı. Ünitenin ham verileri `donanim/hp-p21b-g4/` içinde.
 
@@ -30,6 +30,7 @@ Uygulama fikri monitörden bağımsız tasarlandı: [fikir/UYGULAMA-FIKRI.md](fi
 
 | Dosya | İçerik |
 |---|---|
+| [CLAUDE.md](CLAUDE.md) | Claude Code oturumlarının otomatik okuduğu özet: kurallar, okuma haritası, derleme ve token tasarrufu |
 | [fikir/UYGULAMA-FIKRI.md](fikir/UYGULAMA-FIKRI.md) | Monitörden bağımsız fikir: kurallar, modüller, karar kuralları, uyarlama şablonu |
 | [docs/00-DONANIM.md](docs/00-DONANIM.md) | HP P21b G4 bilgileri ve ünite ölçümleri (DDC, EDID, OSD), Hz tavanı ve test sonuçları, beklentiler, bilgisayar (3090 + 3080), kablolama, kurtarma, oturma |
 | [docs/01-OZELLIKLER.md](docs/01-OZELLIKLER.md) | Tüm özellikler, modüllere ve sürümlere göre |

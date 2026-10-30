@@ -221,7 +221,7 @@ Her yeni monitör için aşağıdakiler araştırılır. Sonuçlar hem uyarlama 
 - **Süreçler:** Ana uygulama (normal kullanıcı) · yönetici yardımcısı (sadece izinli komutlar) · telefon uygulaması (yerel ağ) · harici araçlar.
 - **Katmanlar:** Arayüz → Uygulama servisleri → **Güvenlik** → Donanım (EDID, DDC, NVIDIA, GPU tablosu, Windows ekran, sürücü) → Saf mantık (EDID, timing, Kelvin, karartma planı, kalibrasyon çözücü, LUT/ICC, fotoğraf analizi).
 - **Renk boru hattı:** İçerik → masaüstü (katmanlar) → GPU tablosu [kalibrasyon → mavi ışık → ek karartma] → dithering → kablo (Full RGB) → monitör RGB kazancı → arka ışık → panel. GPU tablosuna sadece boru hattı yazar.
-- **Teknoloji:** C# / .NET 8 + WPF · Kotlin + Camera2 · görüntü işleme (OpenCV sarmalayıcısı) + DNG çözücü (LibRaw) · PresentMon · mpv + VapourSynth + RIFE · ArgyllCMS.
+- **Teknoloji:** C# / .NET 10 + WPF (saf mantık platformdan bağımsız projelerde) · Kotlin + Camera2 · görüntü işleme (OpenCV sarmalayıcısı) + DNG çözücü (LibRaw) · PresentMon · mpv + VapourSynth + RIFE · ArgyllCMS.
 - **Monitöre özel bilgiler kodda değil, veri dosyasında.** Yeni monitör = yeni profil dosyası + uyarlama dokümanları; uygulama kodu değişmez.
 
 ---
@@ -240,6 +240,7 @@ Her yeni monitör için aşağıdakiler araştırılır. Sonuçlar hem uyarlama 
 - Yazan ve inceleyen her zaman farklı model; inceleme atlanmaz.
 - Görev başına yaklaşık 200 satır; önce test; sözleşmeler kodda; 🔧 görevler gerçek monitör testi olmadan bitmez.
 - `LESSONS.md` her faz sonunda; kullanım limiti yaklaşınca yeni göreve başlanmaz.
+- **Oturum ekonomisi:** Kurallar ve okuma haritası kısa bir `CLAUDE.md`'de (her oturum otomatik okur); oturum sadece haritadaki bölümleri okur. İnceleme notları commit mesajında; düzeltme ve yeniden inceleme sadece fark üzerinden. Derleme ve test çıktısı sessiz; saf mantık bulut oturumunda test edilir.
 
 ---
 

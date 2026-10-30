@@ -22,7 +22,10 @@
 - Her görev yaklaşık **200 satır** değişiklik ve tek oturumda bitecek boyutta.
 - **Önce test:** Görevin testleri önce yazılır, sonra kod.
 - Sözleşmeler (T002) kodda yaşar; bir görev sözleşmeyi değiştirmek zorundaysa önce `02-MIMARI.md` güncellenir.
-- Görev bitince: commit, bu dosyada durum ✅, gerekirse `LESSONS.md`.
+- Görev bitince: commit, bu dosyada durum ✅, gerekirse `LESSONS.md`. Commit mesajı `T___:` ile başlar; gövdesinde ne yapıldı, neler test edildi ve inceleyicinin bakması gereken 3 nokta yazar. İnceleme buradan başlar.
+- **Okuma:** `CLAUDE.md` her oturumda otomatik okunur. Oturum dokümanların tamamını değil, oradaki okuma haritasındaki dosya ve bölümleri okur.
+- **Düzeltme:** İnceleme DÜZELT derse düzeltmeyi yazan model yeni bir oturumda yapar; yeniden inceleme sadece düzeltme commit'lerine ve DÜZELT maddelerine bakar (`05-HANDOFF.md`, bölüm 4).
+- **Birlikte yapılabilen görevler:** T303 + T304 (aynı sınıf ve modeller; T304 sadece doğrulama). Toplam yaklaşık 200 satırı aşmıyorsa tek yazma ve tek inceleme oturumunda yapılır, inceleme her görev için ayrı sonuç verir; aşıyorsa ayrı yapılır.
 - Kullanım limiti yaklaşınca yeni göreve başlanmaz; yarım görev bırakılmaz.
 - 🔧 işaretli görevler kullanıcının gerçek monitörde test etmesini gerektirir. Test edilmeden ✅ olmaz.
 
@@ -34,7 +37,7 @@ Durum: ⬜ bekliyor · 🟨 sürüyor · ✅ bitti
 
 | No | Görev | Sınıf | Yazan → İnceleyen | Bağımlı | Bitti sayılır | Durum |
 |---|---|---|---|---|---|---|
-| T001 | Proje iskeleti: teknoloji kararlarının onayı, klasör yapısı, dil altyapısı (tüm metinler baştan çeviri dosyasından), CI (derleme, test, katman korumaları) | C | Sonnet → Opus | — | Boş çözüm derleniyor, CI yeşil, katman ihlali CI'da yakalanıyor | ⬜ |
+| T001 | Proje iskeleti: teknoloji kararlarının onayı, klasör yapısı (`MonitorTuner.*` projeleri; saf mantık, renk, güvenlik ve servisler platformdan bağımsız), dil altyapısı (tüm metinler baştan çeviri dosyasından), sessiz derleme/test betikleri (`tools/dev`), CI (derleme, test, katman korumaları; seçildiyse 🔧 testleri için çalıştırılabilir Windows paketi) | C | Sonnet → Opus | — | Boş çözüm bulut oturumunda (Linux) ve Windows CI'da derleniyor; platformdan bağımsız testler Linux'ta da çalışıyor; CI yeşil; katman ihlali CI'da yakalanıyor | ⬜ |
 | T002 | Sözleşmeler: `02-MIMARI.md`'deki modül sözleşmelerini arayüzlere ve boş (kırmızı) testlere çevir; renk boru hattı ve katman yöneticisi dahil | A | Opus → Sonnet | T001 | Her modülün arayüzü ve en az bir testi var | ⬜ |
 | T003 | Sahte donanım: sahte monitör (DDC'li ve DDC'siz), sahte kayıt defteri, sahte sürücü, sahte GPU renk tablosu, sahte saat; örnek EDID seti | B | Sonnet → Opus | T002 | Donanımsız tüm testler sahte donanımla çalışıyor | ⬜ |
 | T004 | Monitör profil dosyası: şema + HP P21b G4 profili (EDID sınırları ve ölçülen gerçek sınır, OSD yetenekleri, DDC kod tablosu ve 14 kodunun ön ayar eşlemesi, AE/AC okuma kuralları, ilk gün sonuçları; kaynak `donanim/hp-p21b-g4/`) | B | Sonnet → Opus | T002 | Profil yükleniyor; ilk gün sonuçları işlendi 🔧 | ⬜ |
