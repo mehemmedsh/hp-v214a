@@ -47,7 +47,7 @@ Ham döküm: `donanim/hp-p21b-g4/ddc-vcp-60hz.txt`.
 | 14 | Renk ön ayarı | R/W | 5 | Değerler: 2, 4, 5, 8, 11, 12, 13, 14, 15. Tahmin: 2 Native, 4 Warm, 5 Neutral (doğrulandı), 8 Cool, 11 Custom RGB; 12–15 Night / Low Blue Light / Reading / HP Enhance+ (sıra doğrulanacak) |
 | 16 / 18 / 1A | RGB kazancı | R/W | 255 / 255 / 255 (max 255) | Sadece azaltılabilir |
 | 0C | Renk sıcaklığı isteği | R/W | 40 (max 126), 0B artış = 50 | Çalışıp çalışmadığı T301'de test edilir |
-| 6C / 6E / 70 | Kanal başına siyah seviyesi | R/W | 128 (max 255) | Kalibrasyonda (T702) koyu tonlar için |
+| 6C / 6E / 70 | Kanal başına siyah seviyesi | R/W | 128 (max 255) | Kullanılmıyor (kamerasız ayarda gerek yok) |
 | 2E | Gray Scale Expansion | R/W | 2 (0–3) | Anlamı bilinmiyor; dokunulmaz |
 | 60 | Giriş | R/W | 17 | 17 = HDMI, 1 = VGA |
 | 62 | Ses | R/W | 50 | Hoparlör |
@@ -59,7 +59,7 @@ Ham döküm: `donanim/hp-p21b-g4/ddc-vcp-60hz.txt`.
 | C9 / DF | Firmware / VCP sürümü | R | 256 / 514 | 1.0 / MCCS 2.2 |
 | D6, CA, CC, DA | Güç, OSD, dil, tarama | R/W | — | Uygulama kullanmaz |
 | 04, 05, 08 | Fabrika sıfırlamaları | W | — | **Asla yazılmaz** |
-| E6–FF | Üreticiye özel | — | — | **Dokunulmaz** (sadece T907'de salt okuma) |
+| E6–FF | Üreticiye özel | — | — | **Dokunulmaz** |
 
 ### EDID
 
@@ -122,7 +122,7 @@ Her hücre: **pixel clock (MHz) / yatay frekans (kHz).** EDID sınırları 170 M
 | EVGA SuperNOVA 1000 G3 (+ 650 W ikinci PSU) | Güç | Aşağıya bak |
 | Windows 11 | — | — |
 
-**Güç hesabı:** 3090 (~350 W) + 3080 (~320 W) + i3-10100 (65 W) + diğerleri (~60 W) ≈ **800 W** tam yükte. 1000 W yeterli, ama 3090 + 3070 kurulumuna göre pay azaldı. İki kart uzun süre birlikte tam yükte çalışacaksa güç yönetimiyle limitleri biraz düşürmek payı geri getirir (T807).
+**Güç hesabı:** 3090 (~350 W) + 3080 (~320 W) + i3-10100 (65 W) + diğerleri (~60 W) ≈ **800 W** tam yükte. 1000 W yeterli, ama 3090 + 3070 kurulumuna göre pay azaldı. İki kart uzun süre birlikte tam yükte çalışacaksa limitleri NVIDIA uygulamasından ya da MSI Afterburner'dan biraz düşürmek payı geri getirir (uygulama GPU güç ayarlarına dokunmaz).
 - Her 8-pin girişe **ayrı PCIe kablosu** kullan.
 - İki PSU kullanılıyorsa **bir kartın bütün güç girişleri (ve varsa riser'ı) aynı PSU'dan** beslenmeli.
 - RTX 3070 şu an takılı değil. Üç kart birlikte takılırsa 1000 W yetmez (GPU'lar tek başına ~890 W).
@@ -131,13 +131,13 @@ Her hücre: **pixel clock (MHz) / yatay frekans (kHz).** EDID sınırları 170 M
 
 | Cihaz | Rolü |
 |---|---|
-| Pixel 10 Pro | Ölçüm cihazı (RAW fotoğraf) ve uzaktan kumanda. Monitöre bağlanmaz. |
+| Pixel 10 Pro | Renk referansı (ekranıyla yan yana beyaz eşleme, T312) ve kare atlama fotoğrafı. Monitöre bağlanmaz. |
 
 ## Kablolama
 
 - **HDMI:** Monitör ↔ **RTX 3080'in HDMI çıkışı.** Tek kablo. Sıradan bir High Speed HDMI kablosu yeterli (74–76 Hz'de en fazla ~173 MHz, HDMI 1.4 için sorun değil).
-- **VGA:** Boş. v3'te isteğe bağlı: 3090'ın DP çıkışı → **aktif** DP→VGA adaptörü → monitörün VGA girişi (T903).
-- **NVIDIA ayarı:** Çıkış dinamik aralığı **Full** (ilk gün baştan Full'dü). Uygulama v1'de bunu her Hz'de kontrol eder (T304).
+- **VGA:** Boş. (Kartlar arası VGA geçişi plandan çıktı: `06-CIKARILANLAR.md`.)
+- **NVIDIA ayarı:** Çıkış dinamik aralığı **Full** (ilk gün baştan Full'dü). Ayar sihirbazı bunu desenle kontrol eder (T312).
 
 ### Görüntü gelmezse (kurtarma)
 
@@ -150,7 +150,7 @@ Her hücre: **pixel clock (MHz) / yatay frekans (kHz).** EDID sınırları 170 M
 - Gözler ekranın **üst kenarı hizasında ya da biraz altında.**
 - Mesafe **70–80 cm.**
 - Eğim 0° ile −5° (öne) arası.
-- İlk gün: ölçü alınmadı, kullanıcı şu an sorun görmüyor. T401'de açı deseniyle bakılır.
+- İlk gün: ölçü alınmadı, kullanıcı şu an sorun görmüyor. Rehber (T311) ve açı deseniyle (T312) bakılır.
 - Ayrıntı ve teşhis: `08-GORUNTU-YONTEMLERI.md`, bölüm 1.
 
 ## Kaynaklar

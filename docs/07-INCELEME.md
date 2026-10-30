@@ -148,3 +148,39 @@ Amaç: uygulamanın kalitesini ve geliştirme akışını bozmadan Claude kullan
 | 6.9 | `05-HANDOFF.md` sadece 75 Hz doğrulamasını yazıyordu | 76 Hz eklendi; DDC 14 eşlemesi T004 öncesi kontrol olarak eklendi |
 
 **Değiştirilmeyenler:** Görev sayısı (66), sınıflar, yazan/inceleyen dağılımı ve effort seviyeleri. B incelemeleri Opus high'ta kalıyor; burada tasarruf kaliteyi düşürür. C incelemelerinin effort'unu düşürmek kullanıcının kararına bırakıldı.
+
+## 7. Tur: Kapsam daraltması ve Antigravity düzeni (2026-10-30)
+
+Kullanıcının kararları: en önemli şey görüntü kalitesi ve göz konforu; en yüksek hız 76 Hz; DaVinci'de renk işi bu monitörde yok (sadece zaman çizelgesi, renk referansı Pixel'in ekranı); aşırı ince ayar yok; iş hızlı bitsin ama kalite düşmesin. Kodlama Antigravity'de (Gemini, Opus, Sonnet); Antigravity'nin Claude kotası bitince Claude Code.
+
+| # | Değişiklik |
+|---|---|
+| 7.1 | 66 görev → 21. Çıkanlar ve nedenleri `06-CIKARILANLAR.md`'de |
+| 7.2 | Hz: EDID override motoru yerine NVIDIA özel çözünürlüğü (kullanıcı ekler) + Hz paneli (T209). EDID yazılmadığı için Kural 1'in sürücü güncellemesi istisnası kalktı |
+| 7.3 | Renk: kamerayla kalibrasyon yerine gözle ayar sihirbazı (T312, T313); beyaz referansı Pixel'in ekranı. ICC ve DaVinci LUT çıktı |
+| 7.4 | Görüntü kalitesi için kalanlar: GPU renk boru hattı, dithering, canlılık (Film/Oyun), ek karartma, mavi ışık, renk profilleri |
+| 7.5 | Yönetici yardımcısı süreci yerine tek seferlik yönetici onayı (`GdiIcmGammaRange`, T302) |
+| 7.6 | Projeler: Overlay, Elevated ve Patterns çıktı; Hardware.Abstractions ve Composition eklendi (katman ihlali CI'da derleme referansından yakalanır) |
+| 7.7 | Kurallar `AGENTS.md`'ye taşındı (Antigravity onu okuyor); `CLAUDE.md` onu içe aktarıyor. Ajanın PC'de uygulamayı ve donanıma yazan komutları çalıştırmaması kuralı eklendi |
+| 7.8 | Modeller: A sınıfını Opus yazar, Gemini inceler; B'yi Gemini yazar, Opus inceler; C'yi Gemini (metinde Flash) yazar, Sonnet inceler. Paralel çalışma 4 klasörle (hat), 11 dalga |
+
+**Eski → yeni görev eşlemesi**
+
+| Eski | Yeni |
+|---|---|
+| T001–T004 | Aynı (T003 artık Opus yazıyor) |
+| T101, T105 | Çıktı |
+| T102, T103 | Aynı, sadeleşti |
+| T104 | T104 (EDID kısmı çıktı; GPU tablosu, dithering ve canlılık sıfırlama) |
+| T201–T208, T805 | T209 (Hz paneli) + T311 (rehber: kurulum, kare atlama, stabilite) |
+| T301, T302, T305, T306, T307, T310 | Aynı |
+| T303 + T309 | T303 (dithering + canlılık) |
+| T304 | T312 (RGB Full deseni) |
+| T308 | T308 (renk profilleri) |
+| T311 + T401 | T311 (rehber) + T312 (açı deseni) |
+| T402–T406, T501 | Çıktı |
+| T502, T503 | Aynı |
+| T601–T604 | Çıktı |
+| T701–T707 | T312 + T313 (gözle ayar) |
+| T801–T809 | Çıktı (T805 → T209) |
+| T901–T909 | Çıktı |

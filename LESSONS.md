@@ -30,3 +30,5 @@ HP P21b G4 ünitesinde test edilen gerçek değerler: ilk gün kontrolü (`docs/
 ## Geliştirme dersleri
 
 - 2026-10-30 · Plan · Bulut oturumunda deneme: .NET SDK yoktu, Microsoft'un indirme sunucusu engelli; Ubuntu paketi `dotnet-sdk-10.0` kuruldu. WPF projesi `EnableWindowsTargeting` ile Linux'ta derlendi, `net10.0` testleri çalıştı. Sadece `App` adlı projede `App` sınıfı ad alanıyla çakıştı (CS0426) · Kurulum `CLAUDE.md`'de; projeler `MonitorTuner.*` adını alır
+- 2026-10-30 · Plan · Antigravity `CLAUDE.md`'yi okumuyor, `AGENTS.md`'yi okuyor · Kurallar `AGENTS.md`'de tek kaynak; `CLAUDE.md` onu içe aktarıyor
+- 2026-10-30 · Plan · Kapsam daraltılırken dithering, canlılık ve GPU boru hattı bir an çıkarıldı; kullanıcının birinci önceliği görüntü kalitesi olduğu için geri alındı · Bir özelliği çıkarmadan önce birinci önceliğe (görüntü kalitesi, göz konforu) etkisini yaz

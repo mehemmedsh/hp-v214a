@@ -1,14 +1,14 @@
 # Görüntü Yöntemleri
 
-HP P21b G4'te görüntüyü iyileştirmek için geliştirilen beş yöntem:
+HP P21b G4'te görüntüyü iyileştirmek için kullanılan beş yöntem:
 
 1. Üst-alt ışık farkı
-2. Renk düzeltme
+2. Renk düzeltme (gözle, kamerasız)
 3. Parlaklığı aşağı çekme
 4. Mavi ışık filtresi
 5. Renk boru hattı (hepsinin birlikte nasıl çalıştığı)
 
-Kod yok. Görev numaraları `04-FAZLAR.md` içinde.
+Kod yok. Görev numaraları `04-FAZLAR.md` içinde. 2026-10-30 daraltmasında plan dışı kalan yöntemler `06-CIKARILANLAR.md`'de.
 
 ---
 
@@ -21,7 +21,7 @@ Kod yok. Görev numaraları `04-FAZLAR.md` içinde.
 1. **Bakış açısı (en olası sebep).** TN panelde parlaklık ve gamma dikey açıyla hızlı değişir. Bu yüzden TN paneller bir telafi filmiyle üretilir ve **göz ekranın üst kenarı hizasındayken** düzgün görünecek şekilde ayarlanır. Göz daha aşağıdaysa üst kısım alttan görülür ve kararır. Alt kısım da tasarlanandan daha az eğik bir açıdan görüldüğü için açık ve soluk görünür. Senin tarif ettiğin durum tam olarak bu.
 2. **Arka ışık dağılımı.** Kenardan aydınlatmalı panellerde ışık bir kenardan verilir. O kenara yakın bölge fiziksel olarak biraz daha parlak olabilir.
 
-### 2 dakikalık teşhis (T401)
+### 2 dakikalık teşhis (T311, T312)
 
 - Ekranı düz %50 gri yap.
 - Başını 10–15 cm yavaşça yukarı ve aşağı oynat. Fark belirgin şekilde değişiyorsa sebep **bakış açısı**, hiç değişmiyorsa **arka ışık**.
@@ -38,27 +38,14 @@ Mesafe arttıkça ekranın üstü ile altı arasındaki açı farkı küçülür
 
 ### Çözüm sırası (en etkiliden başlayarak)
 
-**1. Konum. Donanımsız ve en etkili çözüm (T401)**
+**1. Konum. Donanımsız ve en etkili çözüm (T311 rehber, T312 açı deseni)**
 - Gözler ekranın **üst kenarı hizasında ya da biraz altında** olmalı. Monitörün standı yükselmiyor: sandalyeyi yükselt ya da monitörü alçalt. İleride VESA 100 kol veya duvar montajı en temiz çözüm.
 - Mesafeyi 60 cm'den **70–80 cm'e** çıkar. 108 PPI sayesinde yazılar yine net kalır.
 - Eğimi 0° ile −5° (öne) arasında dene. Arkaya yatırmak üst kısmı daha da karartır.
 - Uygulamadaki **açı ayar deseni** ile ince ayar yap: üst, orta ve alt yamalar eşit görünene kadar.
 
-**2. Dikey denge katmanı, elle (v1, T402)**
-- Konumdan sonra kalan farkı, ekranın parlak kalan kısmını görünmez bir katmanla hafifçe karartarak dengeler.
-- Tıklamaları geçirir, ekran görüntüsüne ve kayda girmez. Ölçümlerde ve tam ekran oyunlarda kendini gizler.
-- Güç kaydırıcısı, açı ayar deseni eşit görünene kadar ayarlanır.
-- **Sınırları:** Sadece karartabilir, aydınlatamaz; bu yüzden biraz maksimum parlaklık kaybedilir. Tek bir oturma konumu için ayarlıdır. Bakış açısı kaynaklı farkta en çok orta tonları düzeltir, beyazlar altta biraz sönük kalabilir. Arka ışık kaynaklı farkta ise neredeyse tamamen düzeltir.
-
-**3. Ölçümle otomatik ayar (v2, T803)**
-- Pixel, senin göz konumundan üst, orta ve alt bölgelerdeki gri yamaları çeker. Katmanın eğrisi buna göre hesaplanır.
-
-**4. Satır bazlı ton telafisi (v3, deneysel, T904)**
-- Masaüstü görüntüsü yakalanır ve GPU'da her satır için ayrı ton eğrisiyle yeniden çizilir. Hem karartabilir hem orta tonları açabilir. TN'nin gamma kaymasına en doğru çözüm bu.
-- **Bedeli:** bir kare gecikme ve 3080'de ek yük. Korumalı videolar (Netflix vb.) siyah görünür. Tam ekran özel mod oyunlarda çalışmaz.
-- Varsayılan olarak kapalı, panik kısayoluyla anında kapanır.
-
-> Daha önce çıkarılan iki boyutlu homojenlik katmanının tek eksenli, basit hali. Bu monitörde gerçek bir sorun olduğu için geri geldi.
+**2. Kalan fark için (plan dışı)**
+- Dikey denge katmanı, ölçümle ayar ve satır bazlı ton telafisi plandan çıktı (`06-CIKARILANLAR.md`). Konum ayarından sonra fark rahatsız ederse yeniden değerlendirilir.
 
 ---
 
@@ -67,67 +54,45 @@ Mesafe arttıkça ekranın üstü ile altı arasındaki açı farkı küçülür
 ### Hedef
 
 - **Masaüstü:** sRGB (D65 beyaz, yaklaşık 2.2 gamma), 100–120 nit (karanlık odada 80–100 nit).
-- **DaVinci:** Rec.709 / gamma 2.4, sadece Resolve görüntüleyicisinde (3D LUT ile).
-- **"Doğal beyaz" seçeneği:** Beyaz noktasına dokunmaz, sadece gri dengesini ve gammayı düzeltir. Telefonla en güvenilir mod.
+- **DaVinci:** Bu monitörde renk işi yapılmaz, sadece zaman çizelgesi. Renk referansı Pixel'in ekranı.
+- Ölçüm cihazı yok; ayar gözle ve desenlerle yapılır.
 
 ### Gerçekçi sınır
 
-TN + 6-bit + FRC + 600:1. Kalibrasyon grileri nötr, gammayı doğru, beyazı hedefe yakın yapar. Panelin renk gamını genişletmez, açıya bağlı kaymayı da yok etmez. Kalibrasyon **tek bir göz konumu** için geçerlidir; bu yüzden önce konum ayarlanır (bölüm 1).
+TN + 6-bit + FRC + 600:1. Gözle ayar grileri nötre, gammayı hedefe ve beyazı referansa yaklaştırır. Panelin renk gamını genişletmez, açıya bağlı kaymayı da yok etmez. Ayar **tek bir göz konumu** için geçerlidir; bu yüzden önce konum ayarlanır (bölüm 1).
 
-### Adımlar
+### Adımlar (ayar sihirbazı)
 
 **0. Hazırlık**
 - Monitörü 30 dakika ısıt (arka ışık ilk dakikalarda kayar).
 - Konumu ayarla (bölüm 1).
-- OSD: Dynamic Contrast **kapalı** (varsa), Color → Custom RGB (yoksa Neutral), keskinlik varsayılan (Level 4), Overscan Off.
+- OSD: Color → Custom RGB (yoksa Neutral), keskinlik varsayılan (Level 4), Overscan Off.
 - NVIDIA: RGB **Full**. Uygulama: dithering **açık**.
-- Mavi ışık, ek karartma, canlılık ve katmanlar **kapalı** (uygulama ölçüm sırasında kendisi kapatır).
-- Oda karanlık.
+- Mavi ışık, ek karartma ve canlılık **kapalı** (sihirbaz kendisi kapatır, bitince geri açar).
+- Oda ışığı her zamanki çalışma ışığın gibi olsun.
 
-**1. Kontrast ve siyah (T702)**
-- Açık gri basamakların (230–255) ayırt edilebildiği en yüksek kontrast ve görünür koyu basamaklar (0–25).
+**1. Kontrast ve parlaklık (T312)**
+- Açık gri basamakların (230–255) ayırt edilebildiği en yüksek kontrast; koyu basamakların (0–25) görünür kaldığı parlaklık.
 
-**2. Beyaz noktası, monitörde (T703)**
-- DDC RGB kazançlarıyla D65'e: ölç → öner → uygula → tekrar ölç. Sapma eşiğin altına inince durur.
-- "Doğal beyaz" modunda bu adım atlanır. DDC yoksa GPU'da yapılır.
+**2. Keskinlik ve RGB aralığı (T312)**
+- Yazı kenarında hale (beyaz çizgi) çıkmayan en yüksek keskinlik.
+- Siyaha yakın basamaklar (0–16) ayrı görünüyorsa RGB Full doğru; görünmüyorsa uyarı.
 
-**3. Gri dengesi ve ton eğrisi, GPU'da (T704)**
-- 17 gri basamak ölçülür (koyu tonlarda pozlama basamaklama ile).
-- Her kanal için düzeltme eğrisi çıkarılır: her gri beyazla aynı renkte, parlaklığı hedef gamma eğrisinde olacak şekilde.
-- Eğriler yumuşatılır. Çok koyu tonlarda (telefon gürültüsü yüksek) düzeltme kademeli olarak sıfıra iner.
-- Sonuç renk boru hattının kalibrasyon katmanına yazılır. **Dithering zorunlu**, çünkü NVIDIA tam aralık RGB'de varsayılan olarak dithering yapmıyor.
+**3. Beyaz noktası, monitörde (T312)**
+- Pixel ekranında beyaz bir sayfa, monitörde beyaz desen, yan yana. DDC RGB kazançlarıyla iki beyaz eşlenir. Pixel'in ekranı "Doğal" renk modunda olmalı.
+- DDC yoksa GPU'da yapılır.
 
-**4. Doğrulama**
-- 24 yama ölçülür (griler, ana ve ara renkler, ten tonları) ve yaklaşık ΔE2000 karneye yazılır.
-- Gradyan desende bantlaşma kontrol edilir.
+**4. Gamma ve gri dengesi, GPU'da (T313)**
+- Gamma: dama desenleri (ince çizgili alan ile düz gri) uzaktan bakınca eşit parlaklıkta görünene kadar; hedef 2.2.
+- Gri dengesi: koyu, orta ve açık gri yamalarda renk kayması (pembe, yeşil, mavi ton) kalmayana kadar kanal başına küçük düzeltme.
+- Eğriler yumuşatılır ve renk boru hattının kalibrasyon katmanına yazılır. **Dithering zorunlu**, çünkü NVIDIA tam aralık RGB'de varsayılan olarak dithering yapmıyor.
 
-**5. ICC profili (T705)**
-- Matris + ton eğrisi + VCGT. Renk yönetimli uygulamalar (ör. Photoshop, Chromium tabanlı tarayıcılar) bunu kullanır.
+**5. Doğrulama**
+- Gri basamaklarda renk kayması yok; gradyan desende bantlaşma yok.
 
-**6. DaVinci 3D LUT (T706)**
-- Ölçümlerden Rec.709 / gamma 2.4 hedefli bir `.cube` LUT üretilir.
-- Resolve'da: Project Settings → Color Management → **3D Color Viewer Lookup Table**, interpolasyon **Tetrahedral**.
-- LUT, GPU kalibrasyonu açıkken ölçülen değerlerden üretilir; kalibrasyon iki kez uygulanmaz.
+### Daha iyi renk için
 
-**7. Hz başına kalibrasyon (T707)**
-- Her onaylı Hz için ayrı değerler; RGB aralığı Full'e sabit.
-
-### Telefonla ölçümü daha doğru yapan kurallar (T602, T701)
-
-- RAW (DNG); sabit ISO, enstantane, beyaz dengesi ve odak; pozlama **en az 1/15 s** (FRC ve olası PWM titremesi ortalansın diye).
-- Ham değerler DNG'deki renk matrisleriyle yaklaşık XYZ'ye çevrilir. Telefonun JPEG işlemesi devreye girmez.
-- Her yama 5 kare çekilir, ortanca değer alınır. Sadece yamanın merkez bölgesi kullanılır.
-- Koyu tonlar için ek uzun pozlama yapılır. Ham veri doğrusal olduğu için pozlama oranıyla ölçeklenir.
-- Sensörün siyah seviyesi DNG'den alınıp çıkarılır.
-- Yama ekranın ortasında, kamera **senin göz konumunda** durur.
-- **Tekrarlanabilirlik testi:** Beyaz iki kez ölçülür. Aradaki fark ölçüm gürültüsünü gösterir ve karneye yazılır.
-- Mutlak doğruluk (D65) telefonun renk matrisine bağlı ve yaklaşıktır. Göreceli doğruluk (gri dengesi) yüksektir.
-
-### Daha iyi renk için ek yollar
-
-- **Canlılık (v1, T309):** NVIDIA Digital Vibrance ile doygunluk artırılır ve TN'nin soluk görünümü telafi edilir. Bu doğru renk değil, göze hoş renk. Sadece Film ve Oyun presetlerinde açılır; DaVinci'de ve ölçümde kapalı.
-- **Kolorimetre modu (v3, isteğe bağlı, T905):** Bir kolorimetre alınırsa (ikinci el i1Display Pro, Calibrite veya Spyder gibi) ölçüm kaynağı telefon yerine ArgyllCMS üzerinden kolorimetre olur. Boru hattı aynı kalır, mutlak doğruluk çok artar. Kolorimetre alınırsa bu görev v2'ye çekilir.
-- **NVIDIA renk dönüşümü arka ucu (v3, deneysel, T906):** novideo_srgb'nin kullandığı (belgelenmemiş) NVIDIA arayüzüyle LUT-matris-LUT düzeltmesi ekran çıkışında yapılır. Ana renklerin ton hatalarını da düzeltebilir ve dithering kontrolü sunar. Windows gamma tablosuyla aynı anda kullanılmaz, biri seçilir. Fare imleci dönüşüme girmez.
+- **Canlılık (T303):** NVIDIA Digital Vibrance ile doygunluk artırılır ve TN'nin soluk görünümü telafi edilir. Bu doğru renk değil, göze hoş renk. Sadece Film ve Oyun profillerinde açılır; DaVinci zaman çizelgesi profilinde ve sihirbazda kapalı.
 
 ---
 
@@ -139,8 +104,8 @@ TN + 6-bit + FRC + 600:1. Kalibrasyon grileri nötr, gammayı doğru, beyazı he
 - **Alt kısım: ek karartma (GPU).** Arka ışık tabanına gelince kaydırıcı devam eder ve GPU renk tablosu ölçeklenerek ekran daha da karartılır. Gece karanlık odada 0'ın bile parlak geldiği durum için.
   - **Bedeli:** Beyaz düşer ama siyah aynı kalır, yani kontrast azalır. Seviye kaybını dithering gizler.
   - **Taban:** Beyaz en fazla %15'e iner; ekran hiçbir zaman tamamen kararmaz.
-- Arayüzde "Arka ışık" ve "Ek karartma (dijital)" bölümleri renkle ayrılır. v2'de her konumun yaklaşık nit değeri yazar (T801).
-- Windows derin karartma tablolarını reddettiği için `GdiIcmGammaRange` kayıt değeri 256 yapılır (yönetici yardımcısı; kaldırınca eski değere döner).
+- Arayüzde "Arka ışık" ve "Ek karartma (dijital)" bölümleri renkle ayrılır.
+- Windows derin karartma tablolarını reddettiği için `GdiIcmGammaRange` kayıt değeri 256 yapılır (tek seferlik yönetici onayı, T302; kaldırınca eski değere döner).
 
 ### Titreşimsiz karartma (PWM)
 
@@ -153,7 +118,7 @@ TN + 6-bit + FRC + 600:1. Kalibrasyon grileri nötr, gammayı doğru, beyazı he
 ### Kurallar
 
 - Parlaklık sadece kullanıcı kaydırıcıyı oynatınca değişir.
-- Ölçüm ve kalibrasyon sırasında ek karartma geçici olarak kapanır, bitince geri gelir.
+- Ayar sihirbazı sırasında ek karartma geçici olarak kapanır, bitince geri gelir.
 - Dijital parlaklık koruması değişmez: kontrast veya RGB ile parlaklık **artırma** engellenir. Ek karartma sadece **azaltma** yönünde ve sadece arka ışık tabanının altında çalışır.
 
 ---
@@ -179,9 +144,9 @@ Eski "gece modu"nun yerini alır.
 
 - **Karma uygulama:** İlk kısım monitörün RGB kazancıyla yapılır (DDC; seviye kaybı yok). Monitör kazancının sınırına gelince devamı GPU renk tablosunda. DDC yoksa tamamı GPU'da.
 - **Kalibrasyonu bozmaz:** Kalibre değerlerin üstüne fark olarak uygulanır. Kapatınca kalibre beyaza dönülür.
-- **Hızlı seçim:** Monitörün kendi Low Blue Light ön ayarı da tek tıkla seçilebilir. v2'de gerçek renk sıcaklığı telefonla ölçülüp Kelvin olarak gösterilir.
+- **Hızlı seçim:** Monitörün kendi Low Blue Light ön ayarı da tek tıkla seçilebilir.
 - **Zamanlama (isteğe bağlı, varsayılan kapalı):** Akşam belirlenen saatte 30–60 dakikada yavaş geçiş. Sadece renk değişir, arka ışık değişmez. Renk ısındıkça beyaz doğal olarak kararır (tabloda); bunu telafi etmek için arka ışık **artırılmaz**.
-- **Otomatik kapanma:** Render modu, DaVinci preseti, ölçüm ve kalibrasyon sırasında kapalı.
+- **Otomatik kapanma:** DaVinci zaman çizelgesi profilinde ve ayar sihirbazı sırasında kapalı.
 - **Çakışma:** Windows Gece ışığı veya f.lux açıksa uyarı verir; ikisi aynı anda çalışmaz.
 
 ### Ne bekleyebilirsin
@@ -196,18 +161,18 @@ Akşamları göz rahatlığı için işe yarar. Uyku için tek başına beklenen
 
 ```
 İçerik
-  → Windows masaüstü (katmanlar: dikey denge, ekran bilgisi)
+  → Windows masaüstü
   → GPU renk tablosu: kalibrasyon → mavi ışık (GPU kısmı) → ek karartma → dithering
   → HDMI (Full RGB)
   → Monitör: RGB kazancı (beyaz noktası + mavi ışık, monitör kısmı) → arka ışık (parlaklık) → panel
 ```
 
 **Kurallar**
-- GPU renk tablosunun tek sahibi uygulamadır. Başka bir program (oyun, Windows Gece ışığı, f.lux, NVIDIA masaüstü renk ayarları) tabloyu değiştirirse bu tespit edilir. Kullanıcının seçtiği tablo geri yüklenir (Kural 1, 3. istisna) ve çakışan program için uyarı verilir.
-- Ölçüm ve kalibrasyon sırasında mavi ışık, ek karartma, canlılık, dikey denge ve ekran bilgisi katmanı geçici olarak kapanır.
+- GPU renk tablosunun tek sahibi uygulamadır. Başka bir program (oyun, Windows Gece ışığı, f.lux, NVIDIA masaüstü renk ayarları) tabloyu değiştirirse bu tespit edilir. Kullanıcının seçtiği tablo geri yüklenir (Kural 1, 2. istisna) ve çakışan program için uyarı verilir.
+- Ayar sihirbazı sırasında mavi ışık, ek karartma ve canlılık geçici olarak kapanır.
 - Uygulama normal kapanırken tabloda sadece kalibrasyon kalır, efektler kaldırılır. Çökerse kurtarma dosyası tabloyu sıfırlar; uygulama yeniden açılınca tabloyu kontrol eder.
 - Kaldırmada tablo sıfırlanır ve kayıt değeri eski haline döner.
-- **Arka uç:** v1–v2'de Windows gamma tablosu. v3'te isteğe bağlı NVIDIA renk dönüşümü (matris + daha iyi dithering).
+- **Arka uç:** Windows gamma tablosu.
 
 ---
 
