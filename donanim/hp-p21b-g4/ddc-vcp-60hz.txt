@@ -1,0 +1,432 @@
+==================================================
+VCP Code          : 02
+VCP Code Name     : New Control Value
+Read-Write        : Read+Write
+Current Value     : 2
+Maximum Value     : 2
+Possible Values   : 
+==================================================
+
+==================================================
+VCP Code          : 04
+VCP Code Name     : Restore Factory Defaults
+Read-Write        : Write Only
+Current Value     : 
+Maximum Value     : 1
+Possible Values   : 
+==================================================
+
+==================================================
+VCP Code          : 05
+VCP Code Name     : Restore Factory Luminance/ Contrast
+Read-Write        : Write Only
+Current Value     : 
+Maximum Value     : 1
+Possible Values   : 
+==================================================
+
+==================================================
+VCP Code          : 08
+VCP Code Name     : Restore Factory Color Defaults
+Read-Write        : Write Only
+Current Value     : 
+Maximum Value     : 1
+Possible Values   : 
+==================================================
+
+==================================================
+VCP Code          : 0B
+VCP Code Name     : Color Temperature Increment
+Read-Write        : Read Only
+Current Value     : 50
+Maximum Value     : 
+Possible Values   : 
+==================================================
+
+==================================================
+VCP Code          : 0C
+VCP Code Name     : Color Temperature Request
+Read-Write        : Read+Write
+Current Value     : 40
+Maximum Value     : 126
+Possible Values   : 
+==================================================
+
+==================================================
+VCP Code          : 10
+VCP Code Name     : Brightness
+Read-Write        : Read+Write
+Current Value     : 55
+Maximum Value     : 100
+Possible Values   : 
+==================================================
+
+==================================================
+VCP Code          : 12
+VCP Code Name     : Contrast
+Read-Write        : Read+Write
+Current Value     : 72
+Maximum Value     : 100
+Possible Values   : 
+==================================================
+
+==================================================
+VCP Code          : 14
+VCP Code Name     : Select Color Preset
+Read-Write        : Read+Write
+Current Value     : 5
+Maximum Value     : 15
+Possible Values   : 2, 4, 5, 8, 11, 12, 13, 14, 15
+==================================================
+
+==================================================
+VCP Code          : 16
+VCP Code Name     : Video Gain (Drive): Red
+Read-Write        : Read+Write
+Current Value     : 255
+Maximum Value     : 255
+Possible Values   : 
+==================================================
+
+==================================================
+VCP Code          : 18
+VCP Code Name     : Video Gain (Drive): Green
+Read-Write        : Read+Write
+Current Value     : 255
+Maximum Value     : 255
+Possible Values   : 
+==================================================
+
+==================================================
+VCP Code          : 1A
+VCP Code Name     : Video Gain (Drive): Blue
+Read-Write        : Read+Write
+Current Value     : 255
+Maximum Value     : 255
+Possible Values   : 
+==================================================
+
+==================================================
+VCP Code          : 2E
+VCP Code Name     : Gray Scale Expansion
+Read-Write        : Read+Write
+Current Value     : 2
+Maximum Value     : 3
+Possible Values   : 0, 1, 2, 3
+==================================================
+
+==================================================
+VCP Code          : 52
+VCP Code Name     : Active Control
+Read-Write        : Read Only
+Current Value     : 16
+Maximum Value     : 
+Possible Values   : 
+==================================================
+
+==================================================
+VCP Code          : 60
+VCP Code Name     : Input Select
+Read-Write        : Read+Write
+Current Value     : 17
+Maximum Value     : 3
+Possible Values   : 1, 17
+==================================================
+
+==================================================
+VCP Code          : 62
+VCP Code Name     : Audio: Speaker Volume
+Read-Write        : Read+Write
+Current Value     : 50
+Maximum Value     : 100
+Possible Values   : 
+==================================================
+
+==================================================
+VCP Code          : 6C
+VCP Code Name     : Video Black Level: Red
+Read-Write        : Read+Write
+Current Value     : 128
+Maximum Value     : 255
+Possible Values   : 
+==================================================
+
+==================================================
+VCP Code          : 6E
+VCP Code Name     : Video Black Level: Green
+Read-Write        : Read+Write
+Current Value     : 128
+Maximum Value     : 255
+Possible Values   : 
+==================================================
+
+==================================================
+VCP Code          : 70
+VCP Code Name     : Video Black Level: Blue
+Read-Write        : Read+Write
+Current Value     : 128
+Maximum Value     : 255
+Possible Values   : 
+==================================================
+
+==================================================
+VCP Code          : 86
+VCP Code Name     : Display Scaling
+Read-Write        : Read+Write
+Current Value     : 2
+Maximum Value     : 2
+Possible Values   : 2, 5
+==================================================
+
+==================================================
+VCP Code          : 87
+VCP Code Name     : Sharpness
+Read-Write        : Read+Write
+Current Value     : 4
+Maximum Value     : 7
+Possible Values   : 1, 2, 3, 4, 5, 6, 7
+==================================================
+
+==================================================
+VCP Code          : 8D
+VCP Code Name     : Audio Mute / Screen Blank
+Read-Write        : Read+Write
+Current Value     : 2
+Maximum Value     : 2
+Possible Values   : 1, 2
+==================================================
+
+==================================================
+VCP Code          : AC
+VCP Code Name     : Horizontal Frequency
+Read-Write        : Read Only
+Current Value     : 1964
+Maximum Value     : 
+Possible Values   : 
+==================================================
+
+==================================================
+VCP Code          : AE
+VCP Code Name     : Vertical Frequency
+Read-Write        : Read Only
+Current Value     : 6000
+Maximum Value     : 
+Possible Values   : 
+==================================================
+
+==================================================
+VCP Code          : B2
+VCP Code Name     : Flat Panel Sub-Pixel Layout
+Read-Write        : Read Only
+Current Value     : 1
+Maximum Value     : 
+Possible Values   : 
+==================================================
+
+==================================================
+VCP Code          : B6
+VCP Code Name     : Display Technology Type
+Read-Write        : Read Only
+Current Value     : 3
+Maximum Value     : 
+Possible Values   : 
+==================================================
+
+==================================================
+VCP Code          : C0
+VCP Code Name     : Display Usage Time
+Read-Write        : Read Only
+Current Value     : 2167
+Maximum Value     : 
+Possible Values   : 
+==================================================
+
+==================================================
+VCP Code          : C6
+VCP Code Name     : Application Enable Key
+Read-Write        : Read Only
+Current Value     : 90
+Maximum Value     : 
+Possible Values   : 
+==================================================
+
+==================================================
+VCP Code          : C8
+VCP Code Name     : Display Controller ID
+Read-Write        : Read+Write
+Current Value     : 22021
+Maximum Value     : 0
+Possible Values   : 
+==================================================
+
+==================================================
+VCP Code          : C9
+VCP Code Name     : Display Firmware Level
+Read-Write        : Read Only
+Current Value     : 256
+Maximum Value     : 
+Possible Values   : 
+==================================================
+
+==================================================
+VCP Code          : CA
+VCP Code Name     : OSD
+Read-Write        : Read+Write
+Current Value     : 257
+Maximum Value     : 514
+Possible Values   : 1, 2
+==================================================
+
+==================================================
+VCP Code          : CC
+VCP Code Name     : OSD Language
+Read-Write        : Read+Write
+Current Value     : 2
+Maximum Value     : 20
+Possible Values   : 1, 2, 3, 4, 5, 6, 8, 10, 13, 20
+==================================================
+
+==================================================
+VCP Code          : D6
+VCP Code Name     : Power Mode
+Read-Write        : Read+Write
+Current Value     : 1
+Maximum Value     : 5
+Possible Values   : 1, 2, 3, 4, 5
+==================================================
+
+==================================================
+VCP Code          : D6
+VCP Code Name     : Power Mode
+Read-Write        : Read+Write
+Current Value     : 1
+Maximum Value     : 5
+Possible Values   : 1, 2, 3, 4, 5
+==================================================
+
+==================================================
+VCP Code          : DA
+VCP Code Name     : Scan Mode
+Read-Write        : Read+Write
+Current Value     : 0
+Maximum Value     : 2
+Possible Values   : 0, 2
+==================================================
+
+==================================================
+VCP Code          : DF
+VCP Code Name     : VCP Version
+Read-Write        : Read Only
+Current Value     : 514
+Maximum Value     : 
+Possible Values   : 
+==================================================
+
+==================================================
+VCP Code          : E6
+VCP Code Name     : Manufacturer Specific
+Read-Write        : 
+Current Value     : 1
+Maximum Value     : 1
+Possible Values   : 0, 1
+==================================================
+
+==================================================
+VCP Code          : E9
+VCP Code Name     : Manufacturer Specific
+Read-Write        : 
+Current Value     : 1
+Maximum Value     : 1
+Possible Values   : 0, 1
+==================================================
+
+==================================================
+VCP Code          : EA
+VCP Code Name     : Manufacturer Specific
+Read-Write        : 
+Current Value     : 0
+Maximum Value     : 1
+Possible Values   : 0, 1
+==================================================
+
+==================================================
+VCP Code          : EE
+VCP Code Name     : Manufacturer Specific
+Read-Write        : 
+Current Value     : 2
+Maximum Value     : 3
+Possible Values   : 1, 2, 3
+==================================================
+
+==================================================
+VCP Code          : EF
+VCP Code Name     : Manufacturer Specific
+Read-Write        : 
+Current Value     : 1281
+Maximum Value     : 0
+Possible Values   : 1, 2, 3, 4, 5
+==================================================
+
+==================================================
+VCP Code          : F0
+VCP Code Name     : Manufacturer Specific
+Read-Write        : 
+Current Value     : 38
+Maximum Value     : 1281
+Possible Values   : 
+==================================================
+
+==================================================
+VCP Code          : FA
+VCP Code Name     : Manufacturer Specific
+Read-Write        : 
+Current Value     : 0
+Maximum Value     : 65535
+Possible Values   : 0, 1, 2
+==================================================
+
+==================================================
+VCP Code          : FB
+VCP Code Name     : Manufacturer Specific
+Read-Write        : 
+Current Value     : 5
+Maximum Value     : 60
+Possible Values   : 
+==================================================
+
+==================================================
+VCP Code          : FC
+VCP Code Name     : Manufacturer Specific
+Read-Write        : 
+Current Value     : 255
+Maximum Value     : 65535
+Possible Values   : 
+==================================================
+
+==================================================
+VCP Code          : FD
+VCP Code Name     : Manufacturer Specific
+Read-Write        : 
+Current Value     : 255
+Maximum Value     : 65535
+Possible Values   : 
+==================================================
+
+==================================================
+VCP Code          : FE
+VCP Code Name     : Manufacturer Specific
+Read-Write        : 
+Current Value     : 0
+Maximum Value     : 65535
+Possible Values   : 0, 1, 2, 4
+==================================================
+
+==================================================
+VCP Code          : FF
+VCP Code Name     : Manufacturer Specific
+Read-Write        : 
+Current Value     : 0
+Maximum Value     : 65535
+Possible Values   : 
+==================================================
+

@@ -2,10 +2,10 @@
 
 > Bu dosya uygulamanın **monitöre özel olmayan** fikridir. Kenarda durur, sık değişmez. Her monitör için bu fikirden bir uyarlama yapılır (şablon: bölüm 10).
 >
-> - **HP V214a uyarlaması:** bu repo, `docs/` klasörü (güncel ve aktif)
+> - **HP P21b G4 uyarlaması:** bu repo (`hp-v214a`), `docs/` klasörü (güncel ve aktif). Plan HP V214a için yazıldı, ilk gün kontrolünde monitörün P21b G4 olduğu anlaşıldı ve uyarlandı
 > - **Lenovo T24i-20 uyarlaması:** `Myapplab/Lenovo-monitor` reposu, `docs/` klasörü (arşiv)
 >
-> Bu sürüm, HP V214a çalışmasında eklenen genel yöntemleri de içerir: renk boru hattı, ek karartma, Kelvin tabanlı mavi ışık filtresi, canlılık, tekdüzelik telafisi, DaVinci LUT'u ve kolorimetre yolu.
+> Bu sürüm, HP V214a / P21b G4 çalışmasında eklenen genel yöntemleri de içerir: renk boru hattı, ek karartma, Kelvin tabanlı mavi ışık filtresi, canlılık, tekdüzelik telafisi, DaVinci LUT'u ve kolorimetre yolu.
 
 ---
 

@@ -17,16 +17,35 @@ Kodlamadan önce, monitör masadayken yapılacak kısa kontroller (20–30 dakik
 | 11 | EDID'i kaydet | CRU'yu aç, **sadece Export** ile EDID'i dosyaya kaydet. Hiçbir değişikliği uygulama | T101 |
 | 12 | (İsteğe bağlı) Hızlı tavan denemesi | NVIDIA özel çözünürlük ile 65 → 70 → 72 Hz dene, testufo.com/frameskipping ile kontrol et. Bitince özel çözünürlükleri **sil** (uygulamayla çakışmasın) | Beklentiyi netleştirir |
 
-## Açık sorular (bu kontrol cevaplar)
+## Sonuç (2026-10-30)
 
-- [ ] Üst-alt farkının sebebi: açı mı, arka ışık mı
-- [ ] DDC/CI desteği ve çalışan kodlar
-- [ ] OSD'de overdrive ayarı var mı
-- [ ] Renk ön ayarlarının listesi
-- [ ] PWM var mı; varsa titreşimsiz taban
-- [ ] OSD Information gelen Hz'i gösteriyor mu
-- [ ] EDID'deki orijinal timing standart 2200×1125 mi
-- [ ] NVIDIA bu monitörde varsayılan olarak Limited mi gönderiyor
-- [ ] Gerçek Hz tavanı (T206'da kesinleşir)
+Kontrol yapıldı. Ayrıntılar `LESSONS.md` → "Donanım bulguları", yorumlar `00-DONANIM.md`. En büyük bulgu: monitör **HP P21b G4** çıktı. OSD menü adları buna göre: Image Control → **Image**, Color Control → **Color**.
+
+| # | Sonuç |
+|---|---|
+| 1 | Sebep **bakış açısı** |
+| 2 | Ölçülmedi; kullanıcı şu an sorun görmüyor (T401'de) |
+| 3–4 | DDC/CI açık, 48 kod; AE gerçek Hz, AC 16 bit taşmalı yatay frekans |
+| 5 | Baştan Full |
+| 6 | Overdrive ayarı yok |
+| 7 | Warm, Neutral, Cool, Night, Native, Low Blue Light, Reading, HP Enhance+, Custom RGB |
+| 8 | Alt çubuk ve Information gelen Hz'i gösteriyor |
+| 9 | PWM yok (1/1000 s, parlaklık 100 → 0) |
+| 10 | Çakışma yok, ICC yok |
+| 11 | `donanim/hp-p21b-g4/edid-original.bin` |
+| 12 | 74 Hz çalışıyor (doğrulandı); 75 Hz CVT-RB reddedildi; 75 Hz sıkı dikey NVIDIA testinden geçti, doğrulama bekliyor |
+
+## Açık sorular
+
+- [x] Üst-alt farkının sebebi: **açı**
+- [x] DDC/CI desteği ve çalışan kodlar
+- [x] OSD'de overdrive ayarı var mı: **yok**
+- [x] Renk ön ayarlarının listesi
+- [x] PWM var mı: **yok**
+- [x] OSD gelen Hz'i gösteriyor mu: **evet**
+- [x] EDID'deki orijinal timing standart 2200×1125 mi: **evet**
+- [x] NVIDIA varsayılan olarak Limited mi gönderiyor: **hayır, Full**
+- [ ] Gerçek Hz tavanı: 74 Hz kesin; 75 Hz (2080×1100) doğrulama bekliyor (T206'da kesinleşir)
+- [ ] DDC 14 kodunun 12–15 değerlerinin hangi ön ayara karşılık geldiği
 - [ ] Panel modeli
 - [ ] Servis menüsü (bilinen yol yok)

@@ -74,7 +74,7 @@ Panik kısayolu tüm katmanları ve efektleri (mavi ışık, ek karartma, canlı
 
 | Modül | Sorumluluk | Girdi | Çıktı | Yazar mı? | Nasıl test edilir |
 |---|---|---|---|---|---|
-| **EDID ayrıştırıcı** | EDID ↔ yapı; checksum; CTA-861 uzantısı | EDID baytları | Monitör bilgisi, timing'ler, aralık sınırı, uzantılar | Hayır | Gidiş-dönüş testi (gerçek HP V214a EDID'i dahil) |
+| **EDID ayrıştırıcı** | EDID ↔ yapı; checksum; CTA-861 uzantısı | EDID baytları | Monitör bilgisi, timing'ler, aralık sınırı, uzantılar | Hayır | Gidiş-dönüş testi (gerçek HP P21b G4 EDID'i dahil: `donanim/hp-p21b-g4/edid-original.bin`) |
 | **Timing hesaplayıcı** | Standart, CVT-RB ve sıkı timing; Hz tavanı | Çözünürlük, Hz, yöntem, spec sınırları | Pixel clock, yatay frekans, spec içi/dışı | Hayır | `00-DONANIM.md` tablosuyla birebir |
 | **EDID override yazıcı** | Yeni modu ekleyen EDID; CTA bloğunu korur | Orijinal EDID, timing | Override kaydı | **Evet** (yardımcı) | Sahte kayıt defteriyle |
 | **Sürücü yeniden başlatıcı** | Ekran sürücüsünü yeniden başlatır | Kart | Başarı/başarısızlık | **Evet** | Sahte sistem + kullanıcı onaylı gerçek test |
@@ -128,7 +128,7 @@ Panik kısayolu tüm katmanları ve efektleri (mavi ışık, ek karartma, canlı
 /src/Core         Saf mantık: EDID, timing, analiz
 /src/Elevated     Yönetici yardımcısı
 /src/Patterns     Test desenleri motoru
-/profiles         Monitör profil dosyaları (HP V214a)
+/profiles         Monitör profil dosyaları (HP P21b G4)
 /android          Pixel yardımcı uygulaması
 /tests            Birim testleri, örnek EDID ve fotoğraf setleri
 /tools/recovery   Güvenli mod kurtarma dosyası

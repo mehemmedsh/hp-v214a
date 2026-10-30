@@ -1,6 +1,6 @@
 # Fazlar ve Görevler
 
-**Sıradaki görev: T001.** T004'ten önce ilk gün kontrolü (`09-ILK-GUN.md`) bitmiş olmalı.
+**Sıradaki görev: T001.** İlk gün kontrolü (`09-ILK-GUN.md`) 2026-10-30'da yapıldı; monitör **HP P21b G4** çıktı ve görevler buna göre güncellendi (bkz. `07-INCELEME.md`, 5. tur).
 
 ## Çalışma kuralları
 
@@ -11,7 +11,7 @@
 | **A** | Donanıma veya sistem ayarına yazan, geri dönüşü zor olabilecek veya güvenlikle ilgili iş | **Opus 5.5** (high) | **Sonnet 5.5**, `03-GUVENLIK.md` kontrol listesiyle |
 | **B** | Mantık, algoritma, akış | **Sonnet 5.5** | **Opus 5.5** (high) |
 | **C** | Arayüz, metin, basit ayar ekranı | **Sonnet 5.5** | **Opus 5.5** |
-| **K** | Faz sonu kontrol noktası | **Kullanıcı** (HP V214a başında test) | **Claude app – Opus 5.5 – max** |
+| **K** | Faz sonu kontrol noktası | **Kullanıcı** (HP P21b G4 başında test) | **Claude app – Opus 5.5 – max** |
 
 - Yazan ve inceleyen her zaman farklı model. İnceleme hiçbir görevde atlanmaz.
 - Kodlama yeri: **Claude Code, bu repo.** Faz sonu değerlendirmeleri: **Claude app**.
@@ -37,14 +37,14 @@ Durum: ⬜ bekliyor · 🟨 sürüyor · ✅ bitti
 | T001 | Proje iskeleti: teknoloji kararlarının onayı, klasör yapısı, dil altyapısı (tüm metinler baştan çeviri dosyasından), CI (derleme, test, katman korumaları) | C | Sonnet → Opus | — | Boş çözüm derleniyor, CI yeşil, katman ihlali CI'da yakalanıyor | ⬜ |
 | T002 | Sözleşmeler: `02-MIMARI.md`'deki modül sözleşmelerini arayüzlere ve boş (kırmızı) testlere çevir; renk boru hattı ve katman yöneticisi dahil | A | Opus → Sonnet | T001 | Her modülün arayüzü ve en az bir testi var | ⬜ |
 | T003 | Sahte donanım: sahte monitör (DDC'li ve DDC'siz), sahte kayıt defteri, sahte sürücü, sahte GPU renk tablosu, sahte saat; örnek EDID seti | B | Sonnet → Opus | T002 | Donanımsız tüm testler sahte donanımla çalışıyor | ⬜ |
-| T004 | Monitör profil dosyası: şema + HP V214a profili (spec sınırları, OSD yetenekleri, ilk gün sonuçları) | B | Sonnet → Opus | T002 | Profil yükleniyor; ilk gün sonuçları işlendi 🔧 | ⬜ |
+| T004 | Monitör profil dosyası: şema + HP P21b G4 profili (EDID sınırları ve ölçülen gerçek sınır, OSD yetenekleri, DDC kod tablosu ve 14 kodunun ön ayar eşlemesi, AE/AC okuma kuralları, ilk gün sonuçları; kaynak `donanim/hp-p21b-g4/`) | B | Sonnet → Opus | T002 | Profil yükleniyor; ilk gün sonuçları işlendi 🔧 | ⬜ |
 
 ## Faz 1 — Çekirdek (v1)
 
 | No | Görev | Sınıf | Yazan → İnceleyen | Bağımlı | Bitti sayılır | Durum |
 |---|---|---|---|---|---|---|
-| T101 | EDID ayrıştırıcı ve kodlayıcı, checksum, CTA-861 uzantı bloğu | A | Opus → Sonnet | T003 | Gidiş-dönüş testi tüm örneklerde aynı baytları veriyor; gerçek HP V214a EDID'i test setinde 🔧 | ⬜ |
-| T102 | Monitör tanıma, çoklu monitör, kullanıcı profili sistemi (bağlantı başına anahtar; Hz ve RGB aralığı alanları), profil deposu | B | Sonnet → Opus | T101, T004 | HP V214a 3080'in HDMI'ında doğru tanınıyor 🔧 | ⬜ |
+| T101 | EDID ayrıştırıcı ve kodlayıcı, checksum, CTA-861 uzantı bloğu | A | Opus → Sonnet | T003 | Gidiş-dönüş testi tüm örneklerde aynı baytları veriyor; gerçek HP P21b G4 EDID'i (`donanim/hp-p21b-g4/edid-original.bin`) test setinde | ⬜ |
+| T102 | Monitör tanıma, çoklu monitör, kullanıcı profili sistemi (bağlantı başına anahtar; Hz ve RGB aralığı alanları), profil deposu | B | Sonnet → Opus | T101, T004 | HP P21b G4 3080'in HDMI'ında doğru tanınıyor 🔧 | ⬜ |
 | T103 | Güvenlik katmanı: EDID, DDC ve GPU tablosu yedeği, geri alma noktaları, 15 sn onay zamanlayıcısı, "fabrika ayarına dön" | A | Opus → Sonnet | T102 | Sahte donanımda her yazma geri alınabiliyor; onay gelmezse geri dönülüyor | ⬜ |
 | T104 | Kurtarma dosyası (override'ları siler, GPU tablosunu sıfırlar), güvenli mod talimatı (3090 HDMI veya 3080 DP→HDMI), kaldırma temizliği | A | Opus → Sonnet | T103 | Güvenli modda kurtarma tüm değişiklikleri siliyor 🔧 | ⬜ |
 | T105 | Yönetici yardımcısı: izinli komutlar (EDID override yaz/sil, sürücü yeniden başlat, güç limiti, `GdiIcmGammaRange` yaz/geri al), yerel kanal | A | Opus → Sonnet | T103 | Listede olmayan komut reddediliyor; ana uygulama normal kullanıcıda | ⬜ |
@@ -53,12 +53,12 @@ Durum: ⬜ bekliyor · 🟨 sürüyor · ✅ bitti
 
 | No | Görev | Sınıf | Yazan → İnceleyen | Bağımlı | Bitti sayılır | Durum |
 |---|---|---|---|---|---|---|
-| T201 | Timing hesaplayıcı (standart, CVT-RB, sıkı) ve Hz tavanı; spec içi/dışı işareti | A | Opus → Sonnet | T101, T004 | `00-DONANIM.md`'deki tablo birebir üretiliyor | ⬜ |
+| T201 | Timing hesaplayıcı (standart, CVT-RB, sıkı dikey, sıkı) ve Hz tavanı; spec içi/dışı ve profildeki ölçülen sınıra göre işaret | A | Opus → Sonnet | T101, T004 | `00-DONANIM.md`'deki tablo birebir üretiliyor | ⬜ |
 | T202 | EDID override yazıcı: CTA-861 korunur, orijinal mod yerinde, aralık sınırı güncellenir; NVIDIA özel çözünürlük / CRU çakışma kontrolü; VGA uyarısı | A | Opus → Sonnet | T201, T105 | Override sahte kayıtta doğru; orijinal mod korunuyor | ⬜ |
 | T203 | Sürücü yeniden başlatma ve 15 sn onay akışı (gerçek donanımda ilk overclock) | A | Opus → Sonnet | T202 | 65 Hz eklendi, onaysız geri dönüş çalıştı 🔧 | ⬜ |
 | T204 | Test desenleri motoru: tam ekran, vsync'e kilitli, kare sayacıyla kendini doğrulama; epilepsi uyarısı | B | Sonnet → Opus | T002 | Her yenilemede tam bir kare değişiyor 🔧 | ⬜ |
 | T205 | Kare atlama testi: desen + elle çekilen fotoğrafın analizi + talimat ekranı | B | Sonnet → Opus | T204 | 60 Hz'de "gerçek", bilerek atlatılan örnekte "sahte" 🔧 | ⬜ |
-| T206 | Maksimum Hz bulucu: 61 → 75, her adımda onay ve kare atlama testi, spec dışı adımda ayrı onay, sonuç onaysız kalıcı olmaz | B | Sonnet → Opus | T203, T205 | Gerçek tavan bulundu, `LESSONS.md`'ye yazıldı 🔧 | ⬜ |
+| T206 | Maksimum Hz bulucu: 61 → 75; her Hz'de önce dikey toplamı küçük timing (2080×1100), reddedilirse bir sonraki adıma geçmeden durur; her adımda onay ve kare atlama testi; spec dışı (> 80 kHz veya > 170 MHz) adımda ayrı onay; sonuç onaysız kalıcı olmaz | B | Sonnet → Opus | T203, T205 | Elle bulunan 74 Hz (ve 75 Hz) tekrar bulundu, `LESSONS.md`'ye yazıldı 🔧 | ⬜ |
 | T207 | Stabilite testi (20–30 dk hareketli desen, kullanıcı işaretlemesi) | B | Sonnet → Opus | T206 | Onaylı Hz'de test tamamlandı 🔧 | ⬜ |
 | T208 | Sürücü güncellemesi koruması (silinen override'ı onaylı değerle geri yükleme) | B | Sonnet → Opus | T202, T102 | Override silinmiş senaryoda doğru geri yükleme | ⬜ |
 
@@ -66,12 +66,12 @@ Durum: ⬜ bekliyor · 🟨 sürüyor · ✅ bitti
 
 | No | Görev | Sınıf | Yazan → İnceleyen | Bağımlı | Bitti sayılır | Durum |
 |---|---|---|---|---|---|---|
-| T301 | DDC katmanı: yetenek testi (DDC var mı, hangi kodlar), okuma/yazma, yazma sınırı (bırakınca tek yazma, tekrar engeli) | A | Opus → Sonnet | T003, T103 | Gerçek monitörün DDC yetenekleri profile yazıldı 🔧 | ⬜ |
+| T301 | DDC katmanı: yetenek testi (DDC var mı, hangi kodlar), okuma/yazma, yazma sınırı (bırakınca tek yazma, tekrar engeli), yazma izin listesi (04/05/08 ve E6–FF asla), AE okuma ve AC'nin 16 bit taşma düzeltmesi; AE/AC ile gelen Hz doğrulamasını overclock akışına (T203, T206) bağlama | A | Opus → Sonnet | T003, T103, T206 | Gerçek monitörün DDC yetenekleri profile yazıldı; Hz değişince AE/AC doğru Hz'i gösteriyor 🔧 | ⬜ |
 | T302 | Renk boru hattı: GPU tablosunun tek sahibi; katman sırası (kalibrasyon → mavi ışık → ek karartma); tablo aralığı kaydı; çakışma tespiti (Windows Gece ışığı, f.lux, NVIDIA masaüstü renk ayarları); değişen tabloyu geri yükleme; kapanışta sadece kalibrasyon | A | Opus → Sonnet | T103, T105 | Tablo uygulanıp geri alınıyor; dış değişiklik tespit edilip geri yükleniyor 🔧 | ⬜ |
 | T303 | GPU dithering (bağlantı başına aç/kapat) | A | Opus → Sonnet | T102, T103 | Gradyan deseninde bantlaşma azalıyor 🔧 | ⬜ |
 | T304 | RGB Full/Limited: tespit, Full'e sabitleme, her onaylı Hz'de doğrulama | A | Opus → Sonnet | T303 | 60 Hz ve özel Hz'lerde aynı siyah seviyesi 🔧 | ⬜ |
 | T305 | DDC paneli arayüzü: parlaklık, kontrast, renk ön ayarı, RGB, giriş, hoparlör sesi; DDC yoksa OSD talimatları | C | Sonnet → Opus | T301 | Desteklenen tüm kontroller çalışıyor | ⬜ |
-| T306 | Parlaklık ve ek karartma: tek kaydırıcı (arka ışık → GPU), %15 taban, titreşimsiz mod, dijital parlaklık koruması | B | Sonnet → Opus | T302, T305 | Arka ışık tabanından sonra karartma GPU'da, dithering açık 🔧 | ⬜ |
+| T306 | Parlaklık ve ek karartma: tek kaydırıcı (arka ışık 100 → 0, sonra GPU), %15 taban, dijital parlaklık koruması; titreşimsiz mod sadece profilde PWM varsa (P21b G4'te yok) | B | Sonnet → Opus | T302, T305 | Arka ışık tabanından sonra karartma GPU'da, dithering açık 🔧 | ⬜ |
 | T307 | Mavi ışık filtresi: Kelvin hesabı, monitör + GPU karma uygulama, kalibrasyona fark, Low Blue Light kısayolu, isteğe bağlı yavaş zamanlama (sadece renk) | B | Sonnet → Opus | T302, T305 | 6500K → 1900K arası nötr sıcak beyaz; arka ışık değişmiyor 🔧 | ⬜ |
 | T308 | Presetler: Gece (mavi ışık + düşük parlaklık), Kod, DaVinci, Film, Oyun; sadece elle | B | Sonnet → Opus | T306, T307 | Preset sadece seçilince uygulanıyor | ⬜ |
 | T309 | Canlılık (NVIDIA Digital Vibrance): sadece Film ve Oyun presetlerinde; kapanışta varsayılana dönüş | A | Opus → Sonnet | T308 | DaVinci ve ölçümde kapalı 🔧 | ⬜ |
@@ -122,11 +122,11 @@ Durum: ⬜ bekliyor · 🟨 sürüyor · ✅ bitti
 
 | No | Görev | Sınıf | Yazan → İnceleyen | Bağımlı | Bitti sayılır | Durum |
 |---|---|---|---|---|---|---|
-| T801 | Parlaklık ölçümü (yaklaşık nit; ek karartma kademelerinin nit karşılığı) ve PWM testi (titreşimsiz taban) | B | Sonnet → Opus | T701, T306 | Titreşimsiz taban profile yazıldı 🔧 | ⬜ |
+| T801 | Parlaklık ölçümü (yaklaşık nit; arka ışık ve ek karartma kademelerinin nit karşılığı); PWM testi sadece profilde PWM şüphesi varsa (P21b G4'te ilk gün yok çıktı) | B | Sonnet → Opus | T701, T306 | Nit tablosu profile yazıldı 🔧 | ⬜ |
 | T802 | Panel testleri: ölü piksel, ışık sızması, homojenlik teşhisi (uzaktan, zoomla), ghosting | B | Sonnet → Opus | T701, T204 | Homojenlik haritası üretiliyor 🔧 | ⬜ |
 | T803 | Ölçümle dikey denge (göz konumundan üst/orta/alt) | B | Sonnet → Opus | T802, T402 | Katman eğrisi ölçümden geliyor 🔧 | ⬜ |
-| T804 | Ghosting ve overdrive Hz testi (OSD'de overdrive yoksa sadece ghosting) | B | Sonnet → Opus | T701, T206 | Her onaylı Hz için sonuç var 🔧 | ⬜ |
-| T805 | İçerik Hz'leri: 50 (öncelikli), 72, 48; test edilerek ekleme, elle seçim | A | Opus → Sonnet | T206 | Kabul edilenler listede, edilmeyenler yok 🔧 | ⬜ |
+| T804 | Ghosting Hz testi (P21b G4'ün OSD'sinde overdrive yok; her onaylı Hz'de sadece ghosting) | B | Sonnet → Opus | T701, T206 | Her onaylı Hz için sonuç var 🔧 | ⬜ |
+| T805 | İçerik Hz'leri: 50 (EDID'de zaten var, override gerekmez), 72, 48; test edilerek ekleme, elle seçim | A | Opus → Sonnet | T206 | Kabul edilenler listede, edilmeyenler yok 🔧 | ⬜ |
 | T806 | GPU izleme paneli (iki kart; tepside ve telefonda) | C | Sonnet → Opus | T403, T604 | Değerler canlı görünüyor | ⬜ |
 | T807 | Güç yönetimi: 3090 ve 3080 güç limitini düşürme / varsayılana dönme | A | Opus → Sonnet | T806, T105 | Varsayılanın üstüne çıkılamıyor 🔧 | ⬜ |
 | T808 | Monitör karnesi (önce/sonra karşılaştırmalı rapor) | C | Sonnet → Opus | T707, T801, T802, T803, T804, T805, T806, T807 | Tüm sonuçlar tek raporda | ⬜ |

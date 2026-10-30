@@ -1,6 +1,6 @@
 # Görüntü Yöntemleri
 
-HP V214a'da görüntüyü iyileştirmek için geliştirilen beş yöntem:
+HP P21b G4'te görüntüyü iyileştirmek için geliştirilen beş yöntem:
 
 1. Üst-alt ışık farkı
 2. Renk düzeltme
@@ -39,7 +39,7 @@ Mesafe arttıkça ekranın üstü ile altı arasındaki açı farkı küçülür
 ### Çözüm sırası (en etkiliden başlayarak)
 
 **1. Konum. Donanımsız ve en etkili çözüm (T401)**
-- Gözler ekranın **üst kenarı hizasında ya da biraz altında** olmalı. V214a'nın standı yükselmiyor: sandalyeyi yükselt ya da monitörü alçalt. İleride VESA 100 kol veya duvar montajı en temiz çözüm.
+- Gözler ekranın **üst kenarı hizasında ya da biraz altında** olmalı. Monitörün standı yükselmiyor: sandalyeyi yükselt ya da monitörü alçalt. İleride VESA 100 kol veya duvar montajı en temiz çözüm.
 - Mesafeyi 60 cm'den **70–80 cm'e** çıkar. 108 PPI sayesinde yazılar yine net kalır.
 - Eğimi 0° ile −5° (öne) arasında dene. Arkaya yatırmak üst kısmı daha da karartır.
 - Uygulamadaki **açı ayar deseni** ile ince ayar yap: üst, orta ve alt yamalar eşit görünene kadar.
@@ -79,7 +79,7 @@ TN + 6-bit + FRC + 600:1. Kalibrasyon grileri nötr, gammayı doğru, beyazı he
 **0. Hazırlık**
 - Monitörü 30 dakika ısıt (arka ışık ilk dakikalarda kayar).
 - Konumu ayarla (bölüm 1).
-- OSD: Dynamic Contrast **kapalı**, Color Control → Custom RGB (yoksa Neutral 6500K), keskinlik varsayılan.
+- OSD: Dynamic Contrast **kapalı** (varsa), Color → Custom RGB (yoksa Neutral), keskinlik varsayılan (Level 4), Overscan Off.
 - NVIDIA: RGB **Full**. Uygulama: dithering **açık**.
 - Mavi ışık, ek karartma, canlılık ve katmanlar **kapalı** (uygulama ölçüm sırasında kendisi kapatır).
 - Oda karanlık.
@@ -144,9 +144,8 @@ TN + 6-bit + FRC + 600:1. Kalibrasyon grileri nötr, gammayı doğru, beyazı he
 
 ### Titreşimsiz karartma (PWM)
 
-- V214a'nın flicker-free sertifikası yok. Düşük parlaklıkta arka ışık PWM ile titreşebilir.
-- İlk gün kontrolünde (v2'de telefonla otomatik, T801) PWM'in başladığı parlaklık bulunur: **titreşimsiz taban**.
-- PWM varsa iki mod sunulur:
+- **HP P21b G4'te PWM yok.** HP flicker-free olarak listeliyor; ilk gün testinde 1/1000 s'de parlaklık 100'den 0'a kadar hiçbir fotoğrafta yatay bant çıkmadı. Bu yüzden bu monitörde tek mod var ve arka ışık 0'a kadar serbest.
+- Aşağıdaki iki mod, profilinde PWM olan monitörler için genel fikirde kalıyor. PWM varsa iki mod sunulur:
   - **Titreşimsiz mod:** Arka ışık bu tabanın altına inmez, kalan karartma GPU'da yapılır (kontrast biraz düşer).
   - **En iyi kontrast modu:** Önce arka ışık sonuna kadar iner, sonra GPU devreye girer.
 - PWM yoksa tek mod vardır.
@@ -220,4 +219,4 @@ Akşamları göz rahatlığı için işe yarar. Uyku için tek başına beklenen
 - [UnlockGamma.reg (GitHub)](https://github.com/DogukanErmis/NightLight/blob/master/UnlockGamma.reg): `GdiIcmGammaRange` kayıt değeri
 - [ShaderGlass](https://cdn.jsdelivr.net/gh/mausimus/shaderglass@master/README.md): masaüstünü yakalayıp gölgelendiriciyle yeniden çizme yaklaşımı
 - [EurekAlert: BYU Night Shift çalışması (2021)](https://www.eurekalert.org/news-releases/642949): Night Shift ve uyku
-- [HP V214a veri sayfası (PDF)](https://shop.office.se/pdf/0DE9A23C-CEBF-41E2-87F3-46FAF3B4BDA4.pdf): 6-bit Hi-FRC, sertifikalar (flicker-free yok)
+- [HP P21b G4 veri sayfası (9TY24AA, PDF)](https://pcb.inc.hp.com/dc/api/spec-sheet/ww-en/34514035/pdf/9TY24AA.pdf): 6-bit + 2 FRC, flicker-free, 5 ms GtG overdrive ile

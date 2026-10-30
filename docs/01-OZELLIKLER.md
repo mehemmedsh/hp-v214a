@@ -1,6 +1,6 @@
 # Özellikler
 
-HP V214a + RTX 3080 (ekran) + RTX 3090 (ağır iş) için son özellik listesi. 8 modül. Her özelliğin yanında sürümü ve onu yapan görevler (`04-FAZLAR.md`) yazar.
+HP P21b G4 + RTX 3080 (ekran) + RTX 3090 (ağır iş) için son özellik listesi. 8 modül. Her özelliğin yanında sürümü ve onu yapan görevler (`04-FAZLAR.md`) yazar.
 
 **Değişmez kural:** Hz ve parlaklık sadece kullanıcı değiştirdiğinde değişir. Üç güvenlik istisnası var, üçü de yeni bir değer seçmez, kullanıcının bilinen değerine döner (`03-GUVENLIK.md`).
 
@@ -9,14 +9,14 @@ HP V214a + RTX 3080 (ekran) + RTX 3090 (ağır iş) için son özellik listesi. 
 ## Modül 1 — Çekirdek
 
 ### 1.1 Monitör tanıma · v1 · T101, T102
-- EDID'den marka, model, seri numarası, bağlantı tipi ve bağlı olduğu kartı gösterir; HP V214a olduğunu doğrular.
+- EDID'den marka, model, seri numarası, bağlantı tipi ve bağlı olduğu kartı gösterir; HP P21b G4 olduğunu doğrular.
 - VGA'daysa "HDMI'a geç" uyarısı verir.
 
 ### 1.2 Çoklu monitör altyapısı · v1 · T102
-- Her bağlı monitör kendi profiliyle yönetilir. HP V214a'ya özel testler sadece onda açılır.
+- Her bağlı monitör kendi profiliyle yönetilir. HP P21b G4'e özel testler sadece onda açılır.
 
 ### 1.3 Monitör profil dosyası · v1 · T004
-- Monitöre özel bilgiler kodda değil, veri dosyasında tutulur: spec sınırları (170 MHz, 30–80 kHz, 50–60 Hz), OSD yetenekleri, çalışan DDC kodları, titreşimsiz taban, konum sonucu.
+- Monitöre özel bilgiler kodda değil, veri dosyasında tutulur: spec sınırları (170 MHz, 30–80 kHz, 50–60 Hz), ölçülen gerçek sınır (74 Hz çalışıyor, 83.9 kHz reddediliyor), OSD yetenekleri, çalışan DDC kodları, PWM durumu (yok), konum sonucu.
 
 ### 1.4 Profil sistemi · v1 · T102
 - Anahtar: **monitör + seri numarası + port + kart.**
@@ -56,11 +56,13 @@ HP V214a + RTX 3080 (ekran) + RTX 3090 (ağır iş) için son özellik listesi. 
 
 ### 2.3 Maksimum Hz bulucu · v1 · T206
 - Kullanıcı başlatır. 61 → **75** Hz arası adım adım dener; her adımda görüntü onayı ve kare atlama testi.
+- Her Hz'de önce dikey toplamı küçük timing (2080×1100) denenir: aynı Hz'de yatay frekansı düşürür. Bu monitörde 75 Hz, CVT-RB'de (83.9 kHz) reddedildi, 2080×1100'de (82.5 kHz) NVIDIA testinden geçti.
 - 72 Hz üstü adımlar spec dışı uyarısı ve ayrı onay ister. Sonuç onaysız kalıcı olmaz.
+- DDC katmanı hazır olunca (T301) her adımda gelen Hz, monitörün kendisinden (AE, AC) okunarak doğrulanır.
 
 ### 2.4 Kare atlama testi · v1 · T204, T205
 - Sırayla yanan kutular + uzun pozlamalı fotoğraf. Boşluk varsa "kare atlıyor, sahte Hz".
-- OSD'deki Information ekranı gelen Hz'i gösteriyorsa ek doğrulama olarak kullanılır.
+- OSD'nin alt çubuğu ve Information ekranı gelen Hz'i gösteriyor; DDC'deki AE kodu da aynı değeri okunabilir şekilde veriyor (74 Hz'de 7400).
 
 ### 2.5 Stabilite testi · v1 · T207
 - Onaylı Hz'de 20–30 dakika hareketli desen.
@@ -69,7 +71,7 @@ HP V214a + RTX 3080 (ekran) + RTX 3090 (ağır iş) için son özellik listesi. 
 - NVIDIA güncellemesi override'ı sildiyse kullanıcının onayladığı değerler geri yüklenir.
 
 ### 2.7 İçerik Hz'leri (elle) · v2 · T805
-- **50 Hz** spec içinde, PAL VHS için en güçlü aday. 72 Hz overclock sonucuna bağlı. 48 Hz spec altında, büyük ihtimalle kabul edilmez.
+- **50 Hz** spec içinde ve EDID'de zaten var (1080p50); override gerekmez. PAL VHS için en güçlü aday. 72 Hz spec içi sıkı timing'le eklenebilir. 48 Hz spec altında, büyük ihtimalle kabul edilmez.
 - Test edilerek eklenir; tepsiden veya kısayolla elle seçilir.
 
 ---
@@ -95,9 +97,9 @@ Yöntemlerin ayrıntısı: `08-GORUNTU-YONTEMLERI.md`.
 ### 3.4 RGB Full / Limited · v1 · T304
 - NVIDIA, HDMI'da 1080p60'ı TV formatı sayıp Limited RGB gönderebiliyor; özel Hz'lerde Full gelebiliyor. Full'e sabitlenir ve her onaylı Hz'de doğrulanır.
 
-### 3.5 Parlaklık ve ek karartma · v1 · T306 (v2'de nit ve PWM ölçümü: T801)
+### 3.5 Parlaklık ve ek karartma · v1 · T306 (v2'de nit ölçümü: T801)
 - Tek kaydırıcı: önce arka ışık (DDC), arka ışık tabanından sonra GPU ile ek karartma (taban: beyazın %15'i).
-- **Titreşimsiz mod:** PWM varsa arka ışık titreşimsiz tabanın altına inmez, kalanı GPU yapar.
+- **Titreşimsiz mod:** Sadece profilde PWM varsa açılır. HP P21b G4 flicker-free (ilk gün testi), bu yüzden bu monitörde yok; arka ışık 0'a kadar serbest.
 - **Dijital parlaklık koruması:** Kontrast veya RGB ile parlaklık artırma engellenir; ek karartma sadece azaltma yönünde.
 
 ### 3.6 Mavi ışık filtresi · v1 · T307
@@ -201,17 +203,17 @@ Yöntemlerin ayrıntısı: `08-GORUNTU-YONTEMLERI.md`.
 ### 7.7 Hz başına kalibrasyon · v2 · T707
 - Her onaylı Hz için ayrı değerler, RGB aralığı dahil. Mavi ışık ve karartma fark olarak üstüne eklenir. Parlaklığa dokunmaz.
 
-### 7.8 Parlaklık ve PWM ölçümü · v2 · T801
-- Yaklaşık nit (arka ışık ve ek karartma kademeleri). Telefonla PWM testi; titreşimsiz taban profile yazılır.
+### 7.8 Parlaklık ölçümü · v2 · T801
+- Yaklaşık nit (arka ışık ve ek karartma kademeleri). PWM testi sadece profilde PWM şüphesi olan monitörlerde; P21b G4'te ilk gün yok çıktı.
 
 ### 7.9 Panel testleri · v2 · T802
 - Ölü piksel, ışık sızması, homojenlik teşhisi (uzaktan, zoomla), ghosting.
 
-### 7.10 Ghosting ve overdrive testi · v2 · T804
-- OSD'de overdrive ayarı varsa modlar karşılaştırılır; yoksa her onaylı Hz'de sadece ghosting ölçülür.
+### 7.10 Ghosting testi · v2 · T804
+- P21b G4'ün OSD'sinde overdrive ayarı yok; her onaylı Hz'de sadece ghosting ölçülür.
 
 ### 7.11 Monitör karnesi · v2 · T808
-- Maksimum Hz ve spec durumu, kare atlama, stabilite, RGB aralığı, yaklaşık renk doğruluğu (ΔE), tekrarlanabilirlik, parlaklık, PWM, üst-alt farkı (önce/sonra), overdrive. Önce/sonra karşılaştırmalı.
+- Maksimum Hz ve spec durumu, kare atlama, stabilite, RGB aralığı, yaklaşık renk doğruluğu (ΔE), tekrarlanabilirlik, parlaklık, üst-alt farkı (önce/sonra), ghosting. Önce/sonra karşılaştırmalı.
 
 ---
 

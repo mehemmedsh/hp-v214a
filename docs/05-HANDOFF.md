@@ -4,7 +4,7 @@ Yeni bir sohbete veya Claude Code oturumuna yapıştırılacak hazır metinler.
 
 ## 0. Kodlamadan önce
 
-`docs/09-ILK-GUN.md`'deki kontrolleri monitörde yap ve sonuçları `LESSONS.md` → "Donanım bulguları" bölümüne yaz. T001–T003 bu kontrolden önce de yapılabilir; **T004 ve sonrası bu sonuçlara ihtiyaç duyar.**
+✅ Yapıldı (2026-10-30). `docs/09-ILK-GUN.md`'deki kontroller monitörde yapıldı, sonuçlar `LESSONS.md` → "Donanım bulguları" bölümünde, ham veriler `donanim/hp-p21b-g4/` içinde. Monitör **HP P21b G4** çıktı; dokümanlar buna göre uyarlandı. Eksik kalan tek doğrulama: 75 Hz (2080×1100) için Windows, AE = 7500 ve kare atlama.
 
 ## 1. İlk görev (T001)
 

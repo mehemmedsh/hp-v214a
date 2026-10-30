@@ -1,16 +1,18 @@
-# Monitor Tuner: HP V214a
+# Monitor Tuner: HP P21b G4
 
-HP V214a monitörü için bir Windows uygulaması ve ona bağlı bir Pixel yardımcı uygulamasının planı. Sistem: monitör **RTX 3080**'in HDMI'ında, **RTX 3090** ağır işler için boş.
+HP P21b G4 monitörü için bir Windows uygulaması ve ona bağlı bir Pixel yardımcı uygulamasının planı. Sistem: monitör **RTX 3080**'in HDMI'ında, **RTX 3090** ağır işler için boş.
 
-> **Durum:** Plan aşaması, uygulama kodu yok. Önce [ilk gün kontrolü](docs/09-ILK-GUN.md), sonra `docs/04-FAZLAR.md` içindeki **T001**.
+> **Durum:** Plan aşaması, uygulama kodu yok. [İlk gün kontrolü](docs/09-ILK-GUN.md) yapıldı; sıradaki görev `docs/04-FAZLAR.md` içindeki **T001**.
+>
+> **Not:** Plan HP V214a için yazılmıştı; ilk gün kontrolünde monitörün **HP P21b G4** olduğu anlaşıldı. Sinyal sınırları aynı olduğu için plan uyarlandı, repo adı `hp-v214a` olarak kaldı. Ünitenin ham verileri `donanim/hp-p21b-g4/` içinde.
 
-Uygulama fikri monitörden bağımsız tasarlandı: [fikir/UYGULAMA-FIKRI.md](fikir/UYGULAMA-FIKRI.md). Bu repo o fikrin HP V214a uyarlamasıdır. İlk uyarlama (Lenovo T24i-20) `Myapplab/Lenovo-monitor` reposunda arşiv olarak duruyor.
+Uygulama fikri monitörden bağımsız tasarlandı: [fikir/UYGULAMA-FIKRI.md](fikir/UYGULAMA-FIKRI.md). Bu repo o fikrin HP P21b G4 uyarlamasıdır. İlk uyarlama (Lenovo T24i-20) `Myapplab/Lenovo-monitor` reposunda arşiv olarak duruyor.
 
 ## Ne yapacak?
 
-- **Yenileme hızı:** 60 Hz'in üstünü güvenle dener; monitörün belgeli sınırlarına göre tavanı hesaplar (spec içinde ~72 Hz) ve gerçekten çalışıp çalışmadığını test eder.
+- **Yenileme hızı:** 60 Hz'in üstünü güvenle dener; monitörün belgeli sınırlarına göre tavanı hesaplar (spec içinde 72 Hz) ve gerçekten çalışıp çalışmadığını test eder. İlk gün elle denemede **74 Hz** kare atlamadan çalıştı.
 - **Renk:** Telefonla ölçüp griyi nötr, gammayı doğru yapar; Windows için ICC, DaVinci için 3D LUT üretir. İstenirse göze hoş "canlılık".
-- **Parlaklık:** Tek kaydırıcıyla önce arka ışık, sonra güvenli ek karartma; PWM varsa titreşimsiz mod.
+- **Parlaklık:** Tek kaydırıcıyla önce arka ışık, sonra güvenli ek karartma. Monitör flicker-free (PWM yok).
 - **Mavi ışık filtresi:** Kelvin tabanlı (6500K → 1900K) doğal sıcak beyaz; kalibrasyonu bozmaz.
 - **Üst-alt ışık farkı:** Teşhis, oturma rehberi ve dikey denge katmanı (TN panelin bakış açısı sorunu).
 - **İki GPU:** Hangi uygulamanın hangi kartta çalışacağı; AI, Oyun ve Render modları.
@@ -29,7 +31,7 @@ Uygulama fikri monitörden bağımsız tasarlandı: [fikir/UYGULAMA-FIKRI.md](fi
 | Dosya | İçerik |
 |---|---|
 | [fikir/UYGULAMA-FIKRI.md](fikir/UYGULAMA-FIKRI.md) | Monitörden bağımsız fikir: kurallar, modüller, karar kuralları, uyarlama şablonu |
-| [docs/00-DONANIM.md](docs/00-DONANIM.md) | HP V214a araştırması, Hz tavanı, beklentiler, bilgisayar (3090 + 3080), kablolama, kurtarma, oturma |
+| [docs/00-DONANIM.md](docs/00-DONANIM.md) | HP P21b G4 bilgileri ve ünite ölçümleri (DDC, EDID, OSD), Hz tavanı ve test sonuçları, beklentiler, bilgisayar (3090 + 3080), kablolama, kurtarma, oturma |
 | [docs/01-OZELLIKLER.md](docs/01-OZELLIKLER.md) | Tüm özellikler, modüllere ve sürümlere göre |
 | [docs/02-MIMARI.md](docs/02-MIMARI.md) | Süreçler, katmanlar, renk boru hattı, katman yöneticisi, modül sözleşmeleri |
 | [docs/03-GUVENLIK.md](docs/03-GUVENLIK.md) | Değişmez kurallar, kurtarma yolları |
@@ -40,11 +42,12 @@ Uygulama fikri monitörden bağımsız tasarlandı: [fikir/UYGULAMA-FIKRI.md](fi
 | [docs/08-GORUNTU-YONTEMLERI.md](docs/08-GORUNTU-YONTEMLERI.md) | Üst-alt farkı, renk düzeltme, parlaklığı düşürme, mavi ışık filtresi, renk boru hattı |
 | [docs/09-ILK-GUN.md](docs/09-ILK-GUN.md) | Kodlamadan önce monitörde yapılacak kontroller |
 | [LESSONS.md](LESSONS.md) | Donanım bulguları ve geliştirme dersleri |
+| [donanim/hp-p21b-g4/](donanim/hp-p21b-g4/) | Ünitenin orijinal EDID'i ve DDC dökümü |
 
 ## Sürümler
 
 | Sürüm | Odak | Çıktı |
 |---|---|---|
 | **v1** | Temel | Overclock + güvenlik, DDC, renk boru hattı, ek karartma, mavi ışık filtresi, presetler, üst-alt dengesi, GPU yönetimi |
-| **v2** | Ölçüm | Pixel uygulaması, kalibrasyon, ICC, DaVinci LUT, PWM ve panel testleri, monitör karnesi |
+| **v2** | Ölçüm | Pixel uygulaması, kalibrasyon, ICC, DaVinci LUT, parlaklık ve panel testleri, monitör karnesi |
 | **v3** | Deneysel | 10-bit, RIFE, kartlar arası geçiş, satır bazlı telafi, kolorimetre, NVIDIA renk dönüşümü, Keşif |

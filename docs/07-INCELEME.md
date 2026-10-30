@@ -107,3 +107,23 @@ Lenovo reposundaki görev numaralarından bu repodakilere:
 | T807 | T909 | v3 kontrol noktası |
 
 **Toplam:** 55 eski görevden 1'i çıktı, 1'i ikiye bölündü, 11 yeni görev eklendi → 66.
+
+---
+
+## 5. Tur: İlk gün kontrolü ve monitör düzeltmesi (2026-10-30)
+
+İlk gün kontrolünde EDID, DDC, OSD ve Windows'un dördü de monitörün **HP P21b G4** olduğunu gösterdi; plan HP V214a için yazılmıştı. Sinyal sınırları (50–60 Hz, 30–80 kHz, 170 MHz), panel tipi (TN, 6-bit + FRC), girişler (HDMI 1.4 + VGA) ve boyut aynı olduğu için planın yapısı değişmedi. Değişenler:
+
+| # | Bulgu | Düzeltme |
+|---|---|---|
+| 5.1 | Monitör HP P21b G4 | `00-DONANIM.md` yeniden yazıldı; diğer dokümanlarda model adı düzeltildi; repo adı aynı kaldı. Ham veriler `donanim/hp-p21b-g4/` |
+| 5.2 | Flicker-free; ilk gün testinde PWM yok | Titreşimsiz mod ve PWM testi bu monitörde çıktı (T306, T801); genel fikirde profil koşuluyla kaldı |
+| 5.3 | OSD'de overdrive yok | T804 sadece ghosting |
+| 5.4 | 74 Hz CVT-RB (82.81 kHz, 172.24 MHz) kare atlamadan çalışıyor; 75 Hz CVT-RB (83.9 kHz) reddedildi; 75 Hz 2080×1100 (82.5 kHz) NVIDIA testinden geçti | Hz tablosu gerçek sonuçlarla güncellendi. T206: her Hz'de önce dikey toplamı küçük timing; T201 dört timing yöntemi |
+| 5.5 | DDC AE gerçek Hz'i, AC 16 bit taşmalı yatay frekansı veriyor | T301 AE/AC okumasını ve taşma düzeltmesini yapar, overclock akışına bağlar (T301 artık T206'ya da bağımlı) |
+| 5.6 | DDC'de kanal başına siyah seviyesi (6C/6E/70) var | `00-DONANIM.md` ve T004 profiline yazıldı; T702'de kullanılabilir |
+| 5.7 | EDID'de 1080p50 zaten var | T805'te 50 Hz override gerektirmez |
+| 5.8 | NVIDIA baştan Full RGB gönderiyor; Video Capability QS=1 | T304 değişmedi, sadece doğrulama yapacak |
+| 5.9 | Üst-alt farkının sebebi bakış açısı | T401 / T402 planlandığı gibi; oturma ölçüsü T401'e kaldı |
+
+Kontrol: görev sayısı (66) ve sınıflar değişmedi. T203'e DDC bağımlılığı eklemek Faz 2'yi Faz 3'e bağlayacağı için yapılmadı; bağlantı ters yönde T301'e verildi, böylece "hiçbir görev kendinden sonra gelen bir göreve bağımlı değil" kuralı korunuyor.
