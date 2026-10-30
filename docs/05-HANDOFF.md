@@ -44,7 +44,7 @@ Her klasör projenin ayrı bir kopyasıdır. Ajan işini GitHub'a gönderir (pus
 
 - **Pencere ve klasör:** File → Open Folder → örneğin `C:\dev\hp-opus`. Her hat ayrı pencerede: File → New Window, sonra Open Folder.
 - **Ajan paneli:** Sohbet panelinde yeni görev = yeni konuşma. Bir konuşmada tek görev; bitince yeni konuşma aç (uzayan konuşma kotayı hızlı bitirir).
-- **Model ve düşünme seviyesi:** Sohbet kutusunun altındaki model seçicide. Düşünme seviyesi (Low / Medium / High) de orada. Hangi işte hangisi: `04-FAZLAR.md` → "Araçlar, modeller ve kota sırası" ve görev tablosundaki "Yazan → İnceleyen".
+- **Model ve düşünme seviyesi:** Sohbet kutusunun altındaki model seçicide. Düşünme seviyesi (Low / Medium / High) de orada. Claude modellerinde adında "(Thinking)" olan sürümü seç. Kısa kural: kod işi High, sadece metin işi Medium. Hangi işte hangisi: `04-FAZLAR.md` → "Araçlar, modeller ve kota sırası" ve görev tablosundaki "Yazan → İnceleyen".
 - **Terminal onayı (önemli):** Ayarlarda terminal komutlarının otomatik çalışmasını kapat; her komut senin onayını istesin. `git`, `gh`, `dotnet build/test`, `tools/dev` komutlarını onayla. Uygulamayı çalıştıran (`dotnet run`, `.exe`), kayıt defterine yazan (`reg`, `Set-ItemProperty`) ya da program kuran komutları onaylama; önce bölüm 7'deki metinle sor.
 - **Plan modu:** Konuşma modu seçeneği varsa görevlerde "Planning"i seç. Ajan önce plan çıkarır, sen okuyup onaylarsın, sonra yazar.
 - **Kota:** Sohbet kutusuna `/usage` yaz; Gemini ve Claude havuzları ayrı görünür.

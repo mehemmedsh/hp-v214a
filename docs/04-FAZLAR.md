@@ -8,11 +8,12 @@
 
 | Kısaltma | Nerede | Model | Düşünme seviyesi | Kota |
 |---|---|---|---|---|
-| **Opus** | Antigravity | Claude Opus 5.5 | seçenek varsa en yüksek | Antigravity Claude havuzu |
-| **Sonnet** | Antigravity | Claude Sonnet 5.5 | seçenek varsa en yüksek | Antigravity Claude havuzu |
+| **Opus** | Antigravity | Claude Opus 5.5, adında **(Thinking)** olan | seviye seçeneği varsa **High** | Antigravity Claude havuzu |
+| **Sonnet** | Antigravity | Claude Sonnet 5.5, adında **(Thinking)** olan | seviye seçeneği varsa **High**; sadece metin incelemesinde (T311, T502) **Medium** | Antigravity Claude havuzu |
 | **Gemini** | Antigravity | Gemini 4 Argon (seçicide yoksa Gemini 3.8 Flash) | **High** | Antigravity Gemini havuzu |
 | **Flash** | Antigravity | Gemini 3.8 Flash | **Medium** | Antigravity Gemini havuzu |
 
+- **Kısa kural:** kod işi **High**, sadece metin işi **Medium**; hiçbir işte Low yok.
 - **Önce Antigravity.** Antigravity'nin Claude havuzu biterse Opus ve Sonnet işleri Claude Code'da aynı modelle sürer (effort high). Gemini havuzu biterse Gemini işleri havuz yenilenene kadar bekler (5 saatte bir yenilenir, haftalık tavanı var).
 - Görevin ortasında kota biterse model değiştirilmez: havuz yenilenince aynı konuşmada "devam et" yazılır.
 - Antigravity'de Claude ve GPT aynı havuzu kullanır. Codex yok; tek GPT modeli (GPT-OSS-120B) 2 Kasım 2026'da kalkıyor. O havuzda sadece Opus ve Sonnet kullanılır.
