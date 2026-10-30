@@ -29,6 +29,7 @@ Konuşulup bilerek plana alınmayan özellikler. Tekrar gündeme gelirse önce b
 |---|---|
 | Gizli FreeSync testi | NVIDIA HDMI üzerinden FreeSync desteklemiyor; monitörün HDMI'ı 1.4, dikey aralığı 50–60 Hz. |
 | USB kontrol cihazı kontrolü | Monitörde USB yok. |
-| 80 Hz hedefi | Hem pixel clock'u (170 MHz) hem yatay frekansı (80 kHz) aşıyor; ölçülen gerçek sınır 82.8–83.9 kHz. Bulucunun üst sınırı 75 Hz. |
+| 80 Hz hedefi | Hem pixel clock'u (170 MHz) hem yatay frekansı (80 kHz) aşıyor; ölçülen gerçek sınır 83.0–83.9 kHz (yatay frekans). Bulucunun üst sınırı 76 Hz. |
+| 77 Hz ve üstü | En az boşlukla bile (77 × 1090) 83.9 kHz; ilk gün denemesinde (2000×1092, 84.1 kHz) "Out of Range". |
 | Titreşimsiz karartma modu ve PWM testi | Monitör flicker-free; ilk gün testinde 1/1000 s'de parlaklık 0'da bile PWM bandı yok. Profilde PWM olan monitörler için genel fikirde kalıyor. |
 | Overdrive karşılaştırması | OSD'de overdrive ayarı yok; T804 sadece ghosting ölçer. |

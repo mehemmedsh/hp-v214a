@@ -120,6 +120,7 @@ Lenovo reposundaki görev numaralarından bu repodakilere:
 | 5.2 | Flicker-free; ilk gün testinde PWM yok | Titreşimsiz mod ve PWM testi bu monitörde çıktı (T306, T801); genel fikirde profil koşuluyla kaldı |
 | 5.3 | OSD'de overdrive yok | T804 sadece ghosting |
 | 5.4 | 74 Hz CVT-RB (82.81 kHz, 172.24 MHz) kare atlamadan çalışıyor; 75 Hz CVT-RB (83.9 kHz) reddedildi; 75 Hz 2080×1100 (82.5 kHz) NVIDIA testinden geçti | Hz tablosu gerçek sonuçlarla güncellendi. T206: her Hz'de önce dikey toplamı küçük timing; T201 dört timing yöntemi |
+| 5.4b | Aynı gün: 76 Hz (2080×1092, 83.0 kHz) NVIDIA testinden geçti, Windows 76 Hz; 77 Hz (2000×1092, 84.1 kHz, 168.2 MHz) reddedildi | Sınırın pixel clock değil yatay frekans olduğu anlaşıldı; tavan 76 Hz. T206 aralığı 61 → 76 |
 | 5.5 | DDC AE gerçek Hz'i, AC 16 bit taşmalı yatay frekansı veriyor | T301 AE/AC okumasını ve taşma düzeltmesini yapar, overclock akışına bağlar (T301 artık T206'ya da bağımlı) |
 | 5.6 | DDC'de kanal başına siyah seviyesi (6C/6E/70) var | `00-DONANIM.md` ve T004 profiline yazıldı; T702'de kullanılabilir |
 | 5.7 | EDID'de 1080p50 zaten var | T805'te 50 Hz override gerektirmez |

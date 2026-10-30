@@ -58,7 +58,7 @@ Durum: ⬜ bekliyor · 🟨 sürüyor · ✅ bitti
 | T203 | Sürücü yeniden başlatma ve 15 sn onay akışı (gerçek donanımda ilk overclock) | A | Opus → Sonnet | T202 | 65 Hz eklendi, onaysız geri dönüş çalıştı 🔧 | ⬜ |
 | T204 | Test desenleri motoru: tam ekran, vsync'e kilitli, kare sayacıyla kendini doğrulama; epilepsi uyarısı | B | Sonnet → Opus | T002 | Her yenilemede tam bir kare değişiyor 🔧 | ⬜ |
 | T205 | Kare atlama testi: desen + elle çekilen fotoğrafın analizi + talimat ekranı | B | Sonnet → Opus | T204 | 60 Hz'de "gerçek", bilerek atlatılan örnekte "sahte" 🔧 | ⬜ |
-| T206 | Maksimum Hz bulucu: 61 → 75; her Hz'de önce dikey toplamı küçük timing (2080×1100), reddedilirse bir sonraki adıma geçmeden durur; her adımda onay ve kare atlama testi; spec dışı (> 80 kHz veya > 170 MHz) adımda ayrı onay; sonuç onaysız kalıcı olmaz | B | Sonnet → Opus | T203, T205 | Elle bulunan 74 Hz (ve 75 Hz) tekrar bulundu, `LESSONS.md`'ye yazıldı 🔧 | ⬜ |
+| T206 | Maksimum Hz bulucu: 61 → 76 (profildeki ölçülen yatay frekans sınırı); her Hz'de önce dikey toplamı küçük timing (2080×1100, gerekirse 2080×1092), reddedilirse bir sonraki adıma geçmeden durur; her adımda onay ve kare atlama testi; spec dışı (> 80 kHz veya > 170 MHz) adımda ayrı onay; sonuç onaysız kalıcı olmaz | B | Sonnet → Opus | T203, T205 | Elle bulunan 74–76 Hz tekrar bulundu, `LESSONS.md`'ye yazıldı 🔧 | ⬜ |
 | T207 | Stabilite testi (20–30 dk hareketli desen, kullanıcı işaretlemesi) | B | Sonnet → Opus | T206 | Onaylı Hz'de test tamamlandı 🔧 | ⬜ |
 | T208 | Sürücü güncellemesi koruması (silinen override'ı onaylı değerle geri yükleme) | B | Sonnet → Opus | T202, T102 | Override silinmiş senaryoda doğru geri yükleme | ⬜ |
 

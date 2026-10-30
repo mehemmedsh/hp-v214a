@@ -55,8 +55,8 @@ HP P21b G4 + RTX 3080 (ekran) + RTX 3090 (ağır iş) için son özellik listesi
 - Her adımda pixel clock ve yatay frekans gösterilir; spec içi yeşil, spec dışı sarı.
 
 ### 2.3 Maksimum Hz bulucu · v1 · T206
-- Kullanıcı başlatır. 61 → **75** Hz arası adım adım dener; her adımda görüntü onayı ve kare atlama testi.
-- Her Hz'de önce dikey toplamı küçük timing (2080×1100) denenir: aynı Hz'de yatay frekansı düşürür. Bu monitörde 75 Hz, CVT-RB'de (83.9 kHz) reddedildi, 2080×1100'de (82.5 kHz) NVIDIA testinden geçti.
+- Kullanıcı başlatır. 61 → **76** Hz arası adım adım dener; her adımda görüntü onayı ve kare atlama testi.
+- Her Hz'de önce dikey toplamı küçük timing (2080×1100) denenir: aynı Hz'de yatay frekansı düşürür. Bu monitörde 75 Hz CVT-RB'de (83.9 kHz) reddedildi, 2080×1100'de (82.5 kHz) geçti; 76 Hz 2080×1092'de (83.0 kHz) geçti; 77 Hz (84.1 kHz) reddedildi. Sınır yatay frekansta, 83.0–83.9 kHz arası.
 - 72 Hz üstü adımlar spec dışı uyarısı ve ayrı onay ister. Sonuç onaysız kalıcı olmaz.
 - DDC katmanı hazır olunca (T301) her adımda gelen Hz, monitörün kendisinden (AE, AC) okunarak doğrulanır.
 

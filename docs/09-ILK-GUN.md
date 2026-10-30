@@ -33,7 +33,7 @@ Kontrol yapıldı. Ayrıntılar `LESSONS.md` → "Donanım bulguları", yorumlar
 | 9 | PWM yok (1/1000 s, parlaklık 100 → 0) |
 | 10 | Çakışma yok, ICC yok |
 | 11 | `donanim/hp-p21b-g4/edid-original.bin` |
-| 12 | 74 Hz çalışıyor (doğrulandı); 75 Hz CVT-RB reddedildi; 75 Hz sıkı dikey NVIDIA testinden geçti, doğrulama bekliyor |
+| 12 | 74 Hz çalışıyor (doğrulandı); 75 Hz CVT-RB reddedildi; 75 Hz (2080×1100) ve 76 Hz (2080×1092) NVIDIA testinden geçti, doğrulama bekliyor; 77 Hz reddedildi → tavan 76 Hz |
 
 ## Açık sorular
 
@@ -45,7 +45,7 @@ Kontrol yapıldı. Ayrıntılar `LESSONS.md` → "Donanım bulguları", yorumlar
 - [x] OSD gelen Hz'i gösteriyor mu: **evet**
 - [x] EDID'deki orijinal timing standart 2200×1125 mi: **evet**
 - [x] NVIDIA varsayılan olarak Limited mi gönderiyor: **hayır, Full**
-- [ ] Gerçek Hz tavanı: 74 Hz kesin; 75 Hz (2080×1100) doğrulama bekliyor (T206'da kesinleşir)
+- [x] Gerçek Hz tavanı: **76 Hz** (sınır yatay frekansta, 83.0–83.9 kHz). 74 Hz tam doğrulandı; 75 ve 76 Hz için AE ve kare atlama bekleniyor
 - [ ] DDC 14 kodunun 12–15 değerlerinin hangi ön ayara karşılık geldiği
 - [ ] Panel modeli
 - [ ] Servis menüsü (bilinen yol yok)

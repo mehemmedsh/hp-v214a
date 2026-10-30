@@ -9,7 +9,7 @@
 | Model | HP P21b G4 (EDID: `HPN36A2`), üretim 2021/48 | Profil anahtarı |
 | Panel | 20.7" **TN**, LED arka ışık, mat | Renk ve gamma dikey açıyla değişir (üst-alt farkı) |
 | Piksel yoğunluğu | 108 PPI | Keskin yazı; 70–80 cm'den rahat okunur |
-| Çözünürlük / Hz | 1920×1080 @ 60 Hz (EDID'de 50 Hz de var) | Overclock ile **74 Hz doğrulandı** (aşağıda) |
+| Çözünürlük / Hz | 1920×1080 @ 60 Hz (EDID'de 50 Hz de var) | Overclock ile **74 Hz doğrulandı**, 76 Hz'e kadar çıkıyor (aşağıda) |
 | **Sinyal sınırları (EDID)** | **Yatay 30–80 kHz, dikey 50–60 Hz, max pixel clock 170 MHz** | Scaler gerçekte biraz üstünü kabul ediyor |
 | Tepki süresi | 5 ms GtG (overdrive ile) | OSD'de overdrive ayarı **yok** |
 | Parlaklık | 250 nit | — |
@@ -72,35 +72,40 @@ Dosya: `donanim/hp-p21b-g4/edid-original.bin` (256 bayt, checksum'lar doğru).
 
 ## Hz tavanı
 
-Her hücre: **pixel clock (MHz) / yatay frekans (kHz).** EDID sınırları 170 MHz ve 80 kHz; ölçülen gerçek sınır parantez içinde.
+Her hücre: **pixel clock (MHz) / yatay frekans (kHz).** EDID sınırları 170 MHz ve 80 kHz.
 
-| Hz | Standart (2200×1125) | CVT-RB (2080 × 1111–1120) | Sıkı dikey (2080×1100) | Sıkı (2000×1100) |
-|---|---|---|---|---|
-| 60 | 148.5 / 67.5 ✔ | 138.7 / 66.7 ✔ | 137.3 / 66.0 ✔ | 132.0 / 66.0 ✔ |
-| 65 | 160.9 / 73.1 ✔ | 150.6 / 72.4 ✔ | 148.7 / 71.5 ✔ | 143.0 / 71.5 ✔ |
-| 70 | 173.2 / 78.8 ✖ | 162.5 / 78.1 ✔ | 160.2 / 77.0 ✔ | 154.0 / 77.0 ✔ |
-| 72 | 178.2 / 81.0 ✖ | 167.3 / 80.4 ✖ | 164.7 / 79.2 ✔ | 158.4 / 79.2 ✔ |
-| 74 | 183.2 / 83.2 ✖ | **172.2 / 82.8 ✅ çalıştı** | 169.3 / 81.4 | 162.8 / 81.4 |
-| 75 | 185.6 / 84.4 ✖ | **174.6 / 83.9 ⛔ reddedildi** | **171.6 / 82.5 🟨 NVIDIA testi geçti** | 165.0 / 82.5 |
-| 76 | 188.1 / 85.5 ✖ | 177.0 / 85.1 ✖ | 173.9 / 83.6 | 167.2 / 83.6 |
+| Hz | Standart (2200×1125) | CVT-RB (2080 × 1111–1120) | Sıkı dikey (2080×1100) | Çok sıkı dikey (2080×1092) | Çok sıkı (2000×1092) |
+|---|---|---|---|---|---|
+| 60 | 148.5 / 67.5 ✔ | 138.7 / 66.7 ✔ | 137.3 / 66.0 ✔ | 136.3 / 65.5 ✔ | 131.0 / 65.5 ✔ |
+| 65 | 160.9 / 73.1 ✔ | 150.6 / 72.4 ✔ | 148.7 / 71.5 ✔ | 147.6 / 71.0 ✔ | 142.0 / 71.0 ✔ |
+| 70 | 173.2 / 78.8 ✖ | 162.5 / 78.1 ✔ | 160.2 / 77.0 ✔ | 159.0 / 76.4 ✔ | 152.9 / 76.4 ✔ |
+| 72 | 178.2 / 81.0 ✖ | 167.3 / 80.4 ✖ | 164.7 / 79.2 ✔ | 163.5 / 78.6 ✔ | 157.2 / 78.6 ✔ |
+| 74 | 183.2 / 83.2 ✖ | **172.2 / 82.8 ✅** | 169.3 / 81.4 ✖ | 168.1 / 80.8 ✖ | 161.6 / 80.8 ✖ |
+| 75 | 185.6 / 84.4 ✖ | **174.6 / 83.9 ⛔** | **171.6 / 82.5 🟨** | 170.4 / 81.9 ✖ | 163.8 / 81.9 ✖ |
+| 76 | 188.1 / 85.5 ✖ | 177.0 / 85.1 ✖ | 173.9 / 83.6 ✖ | **172.6 / 83.0 🟨** | 166.0 / 83.0 ✖ |
+| 77 | 190.6 / 86.6 ✖ | 179.4 / 86.2 ✖ | 176.2 / 84.7 ✖ | 174.9 / 84.1 ✖ | **168.2 / 84.1 ⛔** |
 
-✔ spec içi · ✖ spec dışı · ✅ / ⛔ / 🟨 gerçek test sonucu. CVT-RB'de dikey toplam Hz'e göre değişir (en az 460 µs dikey boşluk): 60 Hz'de 1111, 74–75 Hz'de 1119.
+✔ spec içi · ✖ spec dışı · kalın hücreler gerçek test: ✅ tam doğrulandı · 🟨 NVIDIA testi geçti, AE ve kare atlama doğrulaması bekliyor · ⛔ monitör "Out of Range" verdi. CVT-RB'de dikey toplam Hz'e göre değişir (en az 460 µs dikey boşluk): 60 Hz'de 1111, 74–75 Hz'de 1119.
 
 **Ünitede ölçülenler (2026-10-30, RTX 3080 HDMI):**
 - **74 Hz, CVT-RB (2080×1119, 82.81 kHz, 172.24 MHz):** çalışıyor. Windows aktif sinyal 74 Hz, DDC AE = 7400, testufo frameskipping'de 1/10 s'de 8 ardışık kare, atlama yok.
-- **75 Hz, CVT-RB (83.9 kHz, 174.5 MHz):** monitör "Input Signal Out of Range, H = 83.9 kHz V = 75 Hz" gösterdi. Reddetme net; kare atlamıyor, görüntü vermiyor.
-- **75 Hz, sıkı dikey (2080×1100, 82.5 kHz, 171.6 MHz):** NVIDIA testi "Test successful". Windows, AE = 7500 ve kare atlama doğrulaması bekleniyor.
+- **75 Hz, CVT-RB (2080×1119, 83.9 kHz, 174.6 MHz):** monitör "Input Signal Out of Range, H = 83.9 kHz V = 75 Hz" gösterdi. Reddetme net; kare atlamıyor, görüntü vermiyor.
+- **75 Hz, sıkı dikey (2080×1100; dikey 3/5/12; 82.5 kHz, 171.6 MHz):** NVIDIA testi geçti. AE = 7500 ve kare atlama doğrulaması bekleniyor.
+- **76 Hz, çok sıkı dikey (2080×1092; yatay 48/32/80, dikey 3/5/4; 82.99 kHz, 172.62 MHz):** NVIDIA testi geçti, Windows aktif sinyal 76 Hz. AE = 7600 ve kare atlama doğrulaması bekleniyor.
+- **77 Hz (2000×1092; yatay 48/32/0, dikey 3/5/4; 84.08 kHz, 168.17 MHz):** "Out of Range". Pixel clock çalışan 76 Hz'den **düşük** olduğu halde reddedildi; demek ki belirleyici sınır **yatay frekans**. (Yatay back porch 0'dı; ama monitörün verdiği mesaj senkron kaybı değil "Out of Range", yani frekans kontrolü.)
+- Not: NVIDIA'nın özel çözünürlük penceresindeki kHz değeri Hz değiştirildikten sonra güncellenmiyor (75 Hz'de 81.40, 76 Hz'de 81.90, 77 Hz'de 82.99 gösterdi). Doğru değer: Hz × dikey toplam.
 
 **Sonuç:**
-- Scaler spec'in biraz üstünü kabul ediyor. Sınır yatay frekansta **82.8 ile 83.9 kHz arasında** (pixel clock'ta 172.2 ile 174.5 MHz arasında); hangisinin belirleyici olduğu henüz ayrılmadı.
+- Scaler spec'in biraz üstünü kabul ediyor. Sınır **yatay frekansta, 83.0 ile 83.9 kHz arasında.** Pixel clock en az 172.6 MHz'e kadar sorun değil.
 - Dikey 60 Hz sınırını uygulamıyor.
-- **Dikey boşluğu kısaltmak** yatay frekansı düşürür: aynı Hz'de daha az satır gönderilir. 75 Hz bu yüzden 1119 yerine 1100 toplam satırla sınırın altına iniyor.
-- Tamamen spec içinde kalmak isteyen için en yüksek değer **72 Hz** (2080×1100 veya 2000×1100).
-- 76 Hz ve üstü her timing'de ölçülen sınırın üstünde; bulucu denemez.
+- **Dikey boşluğu kısaltmak** yatay frekansı düşürür: aynı Hz'de daha az satır gönderilir. 75 ve 76 Hz bu yüzden çalışıyor.
+- **Tavan 76 Hz.** 77 Hz en az 10 satır boşlukla bile 77 × 1090 = 83.9 kHz eder; bu, reddedilen değerle aynı. Görünen 1080 satırın altına inilemediği için 77 Hz bu monitörde yok.
+- Tamamen spec içinde kalmak isteyen için en yüksek değer **72 Hz** (2080×1100 veya 2080×1092).
+- Boşluk kısaldıkça görüntünün kendisi değişmez; olası yan etkiler kenarda kayma, siyah seviyesi (RGB aralığı bilgisi boşlukta taşınır), monitör hoparlöründe cızırtı ve ara sıra kararmadır. Günlük kullanımda gözlenir.
 
 ## Gerçekçi beklentiler
 
-- **Overclock:** 74 Hz doğrulandı; 75 Hz büyük ihtimalle. Daha fazlası yok.
+- **Overclock:** 74 Hz tam doğrulandı; 75 ve 76 Hz NVIDIA testinden geçti (son doğrulama bekliyor). 77 Hz yok; tavan 76 Hz. 74 → 76 arası fark gözle çok az.
 - **Renk:** Kalibrasyonla beyaz nötr, griler renksiz olur. Ama TN'de bakış açısı değişince gamma ve renk kayar, panel 6-bit + FRC. Genel kullanım ve sRGB içerik için iyi, renk kritik iş için zayıf. DaVinci'de son kontrolü telefonda yapmak önemli.
 - **Parlaklık:** 250 nit. PWM olmadığı için arka ışık 0'a kadar titreşimsiz kısılabilir; daha aşağısı için ek karartma var (`08-GORUNTU-YONTEMLERI.md`).
 - **Kontrast:** 600:1, siyahlar gri görünür.
@@ -130,7 +135,7 @@ Her hücre: **pixel clock (MHz) / yatay frekans (kHz).** EDID sınırları 170 M
 
 ## Kablolama
 
-- **HDMI:** Monitör ↔ **RTX 3080'in HDMI çıkışı.** Tek kablo. Sıradan bir High Speed HDMI kablosu yeterli (74–75 Hz'de 172 MHz, HDMI 1.4 için sorun değil).
+- **HDMI:** Monitör ↔ **RTX 3080'in HDMI çıkışı.** Tek kablo. Sıradan bir High Speed HDMI kablosu yeterli (74–76 Hz'de en fazla ~173 MHz, HDMI 1.4 için sorun değil).
 - **VGA:** Boş. v3'te isteğe bağlı: 3090'ın DP çıkışı → **aktif** DP→VGA adaptörü → monitörün VGA girişi (T903).
 - **NVIDIA ayarı:** Çıkış dinamik aralığı **Full** (ilk gün baştan Full'dü). Uygulama v1'de bunu her Hz'de kontrol eder (T304).
 

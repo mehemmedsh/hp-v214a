@@ -23,6 +23,9 @@ HP P21b G4 ünitesinde test edilen gerçek değerler: ilk gün kontrolü (`docs/
 - 2026-10-30 · #12 · 74 Hz CVT-RB (2080×1119, 82.81 kHz, 172.24 MHz) çalışıyor: Windows aktif sinyal 74 Hz, AE = 7400, testufo frameskipping'de 1/10 s'de 8 ardışık kare, atlama yok · Günlük kullanımda gözlem; sorun olursa 72 Hz
 - 2026-10-30 · #12 · 75 Hz CVT-RB (2080×1119, 83.9 kHz, 174.5 MHz) → "Input Signal Out of Range"; scaler sınırı katı uyguluyor, kare atlamak yerine görüntü vermiyor. NVIDIA'nın kendi testi 15 sn'de geri döndü · Gerçek sınır 82.8–83.9 kHz (172.2–174.5 MHz) arası
 - 2026-10-30 · #12 · 75 Hz sıkı dikey (2080×1100, dikey 3/5/12, 82.5 kHz, 171.6 MHz) NVIDIA testinden geçti. Not: NVIDIA penceresi yatay frekansı 81.40 kHz gösterdi; bu 74 Hz'den kalan eski değer, doğrusu 75 × 1100 = 82.5 kHz · Windows, AE = 7500 ve kare atlama ile doğrulanacak. Ders: aynı Hz'de dikey boşluğu kısaltmak yatay frekansı düşürür; bulucu (T206) önce dikey toplamı küçültmeli
+- 2026-10-30 · #12 · 76 Hz çok sıkı dikey (2080×1092; yatay 48/32/80, dikey 3/5/4; 82.99 kHz, 172.62 MHz) NVIDIA testinden geçti, Windows aktif sinyal 76 Hz · AE = 7600 ve kare atlama ile doğrulanacak; kenar, siyah seviyesi, hoparlör ve kararma günlük kullanımda gözlenecek
+- 2026-10-30 · #12 · 77 Hz (2000×1092; yatay 48/32/0, dikey 3/5/4; 84.08 kHz, 168.17 MHz) → "Out of Range". Pixel clock çalışan 76 Hz'den düşük olduğu halde reddedildi → **sınır yatay frekansta, 83.0–83.9 kHz arası**; tavan 76 Hz (77 Hz en az boşlukla bile 83.9 kHz) · T206 aralığı 61 → 76; profilde sınır pixel clock değil yatay frekans olarak tutulur
+- 2026-10-30 · #12 · NVIDIA özel çözünürlük penceresi Hz değişince kHz alanını güncellemiyor (75 Hz'de 81.40, 76'da 81.90, 77'de 82.99 gösterdi) · Doğru değer her zaman Hz × dikey toplam; uygulama kendi hesabını gösterir (T201)
 
 ## Geliştirme dersleri
 
