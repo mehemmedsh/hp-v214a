@@ -84,18 +84,75 @@ public class GuideLocalizationTests
     public void GuideResx_ContainsEssentialHardwareValuesAndWarnings()
     {
         var keys = LoadGuideResx();
-        var allText = string.Join(" ", keys.Values);
 
-        // 00-DONANIM.md ve 08-GORUNTU-YONTEMLERI.md teknik değerleri
-        Assert.Contains("76", allText);
-        Assert.Contains("1092", allText); // 2080x1092 (76 Hz dikey timing)
-        Assert.Contains("82.99", allText); // 76 Hz kHz
-        Assert.Contains("172.62", allText); // 76 Hz MHz
-        Assert.Contains("CVT-RB", allText); // 74 Hz modu
-        Assert.Contains("70", allText); // 70-80 cm mesafe
-        Assert.Contains("üst kenar", allText); // Göz hizası
-        Assert.Contains("epilepsi", allText, StringComparison.OrdinalIgnoreCase); // Işığa duyarlılık uyarısı
-        Assert.Contains("testufo", allText, StringComparison.OrdinalIgnoreCase); // Test sitesi
-        Assert.Contains("cttune", allText, StringComparison.OrdinalIgnoreCase); // ClearType aracı
+        // Her Hz anahtarı için 00-DONANIM.md değerleri ayrı ayrı doğrulanır (metin birleştirmesi yapılmaz)
+        var hz76 = keys["Hz76Details"];
+        Assert.Contains("2080x1092", hz76);
+        Assert.Contains("48/32/80", hz76);
+        Assert.Contains("3/5/4", hz76);
+        Assert.Contains("82.99", hz76);
+        Assert.Contains("172.62", hz76);
+        Assert.Contains("En Yüksek Hız", hz76);
+        Assert.Contains("NVIDIA testi geçti; kullanmadan önce kare atlama testiyle doğrulayın", hz76);
+
+        var hz75 = keys["Hz75Details"];
+        Assert.Contains("2080x1100", hz75);
+        Assert.Contains("3/5/12", hz75);
+        Assert.Contains("82.50", hz75);
+        Assert.Contains("171.60", hz75);
+        Assert.Contains("NVIDIA testi geçti; kullanmadan önce kare atlama testiyle doğrulayın", hz75);
+
+        var hz74 = keys["Hz74Details"];
+        Assert.Contains("2080x1119", hz74);
+        Assert.Contains("82.81", hz74);
+        Assert.Contains("172.24", hz74);
+        Assert.Contains("Doğrulanmış", hz74);
+
+        var hz60 = keys["Hz60Details"];
+        Assert.Contains("2200x1125", hz60);
+        Assert.Contains("67.5", hz60);
+        Assert.Contains("148.5", hz60);
+
+        // Donanım ergonomisi ve güvenlik uyarıları
+        Assert.Contains("üst kenar", keys["SeatingDesc"]);
+        Assert.Contains("epilepsi", keys["PhotosensitivityWarningText"], StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("cttune", keys["ClearTypeDesc"], StringComparison.OrdinalIgnoreCase);
+
+        // Madde 1, 2 ve 4 doğrulaması: dokümanda yer almayan değerler ("25/50", "+/+", "1/8") metinde yok; "1/10" var
+        var allValues = string.Join(" ", keys.Values);
+        Assert.DoesNotContain("25/50", allValues);
+        Assert.DoesNotContain("+/+", allValues);
+        Assert.DoesNotContain("1/8", allValues);
+
+        var frameSkipping = keys["FrameSkippingDesc"];
+        Assert.Contains("1/10", frameSkipping);
+        Assert.Contains("testufo", frameSkipping, StringComparison.OrdinalIgnoreCase);
+
+        // XAML sırası: Işığa duyarlılık uyarısı kare atlama ve hareket kararlılığı testinden önce gelir
+        VerifyPhotosensitivityWarningPrecedesTests();
+    }
+
+    [Fact]
+    public void GuideViewXaml_PhotosensitivityWarningPrecedesStabilityTests()
+    {
+        VerifyPhotosensitivityWarningPrecedesTests();
+    }
+
+    private static void VerifyPhotosensitivityWarningPrecedesTests()
+    {
+        var guideXamlPath = Path.Combine(Root, "src", "MonitorTuner.App", "Views", "GuideView.xaml");
+        Assert.True(File.Exists(guideXamlPath), $"GuideView.xaml bulunamadı: {guideXamlPath}");
+
+        var xaml = File.ReadAllText(guideXamlPath);
+        int warningPos = xaml.IndexOf("Guide.PhotosensitivityWarningTitle", StringComparison.Ordinal);
+        int frameSkippingPos = xaml.IndexOf("Guide.FrameSkippingDesc", StringComparison.Ordinal);
+        int stabilityPos = xaml.IndexOf("Guide.StabilityTestDesc", StringComparison.Ordinal);
+
+        Assert.True(warningPos >= 0, "PhotosensitivityWarningTitle XAML içinde bulunamadı.");
+        Assert.True(frameSkippingPos >= 0, "FrameSkippingDesc XAML içinde bulunamadı.");
+        Assert.True(stabilityPos >= 0, "StabilityTestDesc XAML içinde bulunamadı.");
+
+        Assert.True(warningPos < frameSkippingPos, "Işığa duyarlılık uyarısı kare atlama testinden önce yer almalıdır.");
+        Assert.True(warningPos < stabilityPos, "Işığa duyarlılık uyarısı stabilite testinden önce yer almalıdır.");
     }
 }

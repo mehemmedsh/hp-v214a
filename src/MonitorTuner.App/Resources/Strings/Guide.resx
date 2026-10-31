@@ -38,10 +38,10 @@
     <value>HP P21b G4'ün fabrika modu 60 Hz'dir. Monitörün scaler yongası dikey 60 Hz sınırını zorlamaz ancak yatay frekansta 83.0–83.9 kHz aralığında katı sınıra sahiptir. Bu sebeple donanımın tavan yenileme hızı 76 Hz'dir (77 Hz reddedilir). Modlar NVIDIA Denetim Masası -> Çözünürlük Değiştirme -> Özelleştir -> Özel Çözünürlük Oluştur adımıyla eklenir.</value>
   </data>
   <data name="Hz76Details" xml:space="preserve">
-    <value>• 76 Hz (En Yüksek Hız - Çok Sıkı Dikey): 1920x1080 @ 76 Hz | Zamanlama: Manuel | Ön Boşluk (Front Porch): Yatay 48, Dikey 3 | Senkron Genişliği (Sync Width): Yatay 32, Dikey 5 | Arka Boşluk (Back Porch): Yatay 80, Dikey 4 | Toplam: 2080x1092 | Polarite: Pozitif (+/+) | Yatay Frekans: 82.99 kHz | Piksel Saati: 172.62 MHz.</value>
+    <value>• 76 Hz (En Yüksek Hız - Çok Sıkı Dikey): 1920x1080 @ 76 Hz | Zamanlama: Manuel | Ön Boşluk / Senkron / Arka Boşluk: Yatay 48/32/80, Dikey 3/5/4 | Toplam: 2080x1092 | Yatay Frekans: 82.99 kHz | Piksel Saati: 172.62 MHz | Not: NVIDIA testi geçti; kullanmadan önce kare atlama testiyle doğrulayın.</value>
   </data>
   <data name="Hz75Details" xml:space="preserve">
-    <value>• 75 Hz (Sıkı Dikey - 25/50 fps Video): 1920x1080 @ 75 Hz | Zamanlama: Manuel | Toplam: 2080x1100 (dikey 3/5/12) | Yatay Frekans: 82.50 kHz | Piksel Saati: 171.60 MHz.</value>
+    <value>• 75 Hz (Sıkı Dikey): 1920x1080 @ 75 Hz | Zamanlama: Manuel | Toplam: 2080x1100 (dikey 3/5/12) | Yatay Frekans: 82.50 kHz | Piksel Saati: 171.60 MHz | Not: NVIDIA testi geçti; kullanmadan önce kare atlama testiyle doğrulayın.</value>
   </data>
   <data name="Hz74Details" xml:space="preserve">
     <value>• 74 Hz (CVT-RB - Doğrulanmış Mod): 1920x1080 @ 74 Hz | Zamanlama: CVT Azaltılmış Boşluk (CVT-RB) | Toplam: 2080x1119 | Yatay Frekans: 82.81 kHz | Piksel Saati: 172.24 MHz.</value>
@@ -65,7 +65,7 @@
     <value>Bu testler hızlı hareket eden grafikler ve yanıp sönen desenler içerir. Işığa duyarlı epilepsi, migren veya nöbet geçmişiniz varsa testi yapmayın. Göz yorgunluğu ya da rahatsızlık hissettiğiniz anda testi derhal durdurun.</value>
   </data>
   <data name="FrameSkippingDesc" xml:space="preserve">
-    <value>Kare Atlama Testi (testufo.com/frameskipping):&#10;1. testufo.com/frameskipping adresini tam ekran açın.&#10;2. Telefon kameranızı 1/10 s veya 1/8 s pozlamaya (veya gece moduna) ayarlayın.&#10;3. Akan kutucukların fotoğrafını çekin.&#10;4. Yan yana 8–10 kutucuk kesintisiz aydınlanmışsa kare atlama yoktur. Arada siyah kutular varsa monitör gelen sinyalin karelerini atlıyor demektir.</value>
+    <value>Kare Atlama Testi (testufo.com/frameskipping):&#10;1. testufo.com/frameskipping adresini tam ekran açın.&#10;2. Telefon kameranızı 1/10 s pozlamaya (veya gece moduna) ayarlayın.&#10;3. Akan kutucukların fotoğrafını çekin.&#10;4. Kural: Kareler kesintisiz ardışık olmalı, atlanan kare olmamalı (arada siyah kutu bulunmamalıdır). 8 ardışık kare bir örnektir (74 Hz'de ölçülen sonuç).</value>
   </data>
   <data name="StabilityTestDesc" xml:space="preserve">
     <value>Hareket Kararlılığı Testi: Yüksek Hz modunda 20–30 dakika hareketli içerik çalıştırarak görüntüde titreme, kararma, kenar kayması veya piksel paraziti oluşmadığını gözlemleyin.</value>
@@ -74,19 +74,19 @@
     <value>4. RTX Video Super Resolution (VSR)</value>
   </data>
   <data name="RtxVsrDesc" xml:space="preserve">
-    <value>RTX 3080 Tensor çekirdekleri, tarayıcılarda (Chrome, Edge) ve VLC gibi oynatıcılarda düşük çözünürlüklü videoları yapay zeka ile keskinleştirir ve sıkıştırma bloklarını temizler.&#10;Nasıl açılır: NVIDIA Denetim Masası -> Video -> Video Görüntü Ayarlarını Ayarla -> RTX Video İyileştirmesi -> Süper Çözünürlük (Kalite 3 veya 4 seçilebilir).</value>
+    <value>RTX 3080 Tensor çekirdekleri, tarayıcılarda (Chrome, Edge) ve VLC gibi oynatıcılarda düşük çözünürlüklü videoları yapay zeka ile keskinleştirir ve sıkıştırma bloklarını temizler.&#10;Nasıl açılır: NVIDIA Denetim Masası -> Video -> Video Görüntü Ayarlarını Ayarla -> RTX Video İyileştirmesi -> Süper Çözünürlük (en yüksek kalite seviyesini seçin).</value>
   </data>
   <data name="DldsrTitle" xml:space="preserve">
     <value>5. DLDSR (Deep Learning Dynamic Super Resolution)</value>
   </data>
   <data name="DldsrDesc" xml:space="preserve">
-    <value>Tensör çekirdekleri destekli DLDSR, oyunları 1080p'den daha yüksek çözünürlükte işleyip yapay zeka ile ekrana indirger. Klasik DSR'a göre çok daha az performans kaybıyla pürüzsüz kenar yumuşatma ve doku netliği sağlar.&#10;Nasıl açılır: NVIDIA Denetim Masası -> 3D Ayarları -> 3D Ayarlarının Yönetilmesi -> DSR Çarpanları -> DL 2.25x veya DL 1.78x seçin.</value>
+    <value>Tensör çekirdekleri destekli DLDSR, oyunları 1080p'den daha yüksek çözünürlükte işleyip yapay zeka ile ekrana indirger. Klasik DSR'a göre çok daha az performans kaybıyla pürüzsüz kenar yumuşatma ve doku netliği sağlar.&#10;Nasıl açılır: NVIDIA Denetim Masası -> 3D Ayarları -> 3D Ayarlarının Yönetilmesi -> DSR Çarpanları -> DL çarpanlarından birini seçin.</value>
   </data>
   <data name="ClearTypeTitle" xml:space="preserve">
     <value>6. ClearType Metin Netliği Ayarı</value>
   </data>
   <data name="ClearTypeDesc" xml:space="preserve">
-    <value>108 PPI TN panelde yazıların kenarlarında renk saçılması olmadan keskin görünmesi için Windows ClearType ayarlayıcısını çalıştırın.&#10;Nasıl yapılır: Windows arama çubuğuna cttune yazarak sihirbazı başlatın. ClearType'ı açın ve 5 adımda gözünüze en net gelen metin örneklerini seçin.</value>
+    <value>108 PPI TN panelde yazıların kenarlarında renk saçılması olmadan keskin görünmesi için Windows ClearType ayarlayıcısını çalıştırın.&#10;Nasıl yapılır: Windows arama çubuğuna cttune yazarak sihirbazı başlatın. ClearType'ı açın ve ClearType ayarlayıcısındaki adımları izleyerek gözünüze en net gelen metin örneklerini seçin.</value>
   </data>
   <data name="AmbientLightingTitle" xml:space="preserve">
     <value>7. Ortam Işığı ve Göz Ergonomisi</value>
@@ -98,7 +98,7 @@
     <value>8. 20-20-20 Göz Dinlendirme Kuralı</value>
   </data>
   <data name="Rule202020Desc" xml:space="preserve">
-    <value>Dijital göz yorgunluğunu önlemek için her 20 dakikada bir, en az 20 saniye boyunca, en az 20 fit (yaklaşık 6 metre) uzaktaki bir nesneye odaklanın. Bu alışkanlık göz odaklama kaslarını gevşetir ve göz kuruluğunu engeller.</value>
+    <value>Dijital göz yorgunluğunu önlemek için her 20 dakikada bir, en az 20 saniye boyunca, uzaktaki bir noktaya odaklanın. Bu alışkanlık göz odaklama kaslarını gevşetir ve göz kuruluğunu engeller.</value>
   </data>
   <data name="NightLightConflictTitle" xml:space="preserve">
     <value>9. Windows Gece Işığı ve f.lux Çakışma Uyarısı</value>
