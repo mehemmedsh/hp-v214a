@@ -1,0 +1,17 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/MonitorTuner.App/MonitorTuner.App.csproj" />
+    <Project Path="src/MonitorTuner.Color/MonitorTuner.Color.csproj" />
+    <Project Path="src/MonitorTuner.Composition/MonitorTuner.Composition.csproj" />
+    <Project Path="src/MonitorTuner.Core/MonitorTuner.Core.csproj" />
+    <Project Path="src/MonitorTuner.Hardware.Abstractions/MonitorTuner.Hardware.Abstractions.csproj" />
+    <Project Path="src/MonitorTuner.Hardware/MonitorTuner.Hardware.csproj" />
+    <Project Path="src/MonitorTuner.Safety/MonitorTuner.Safety.csproj" />
+    <Project Path="src/MonitorTuner.Services/MonitorTuner.Services.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/MonitorTuner.ArchitectureFixtures/MonitorTuner.ArchitectureFixtures.csproj" />
+    <Project Path="tests/MonitorTuner.Tests/MonitorTuner.Tests.csproj" />
+    <Project Path="tests/MonitorTuner.Windows.Tests/MonitorTuner.Windows.Tests.csproj" />
+  </Folder>
+</Solution>

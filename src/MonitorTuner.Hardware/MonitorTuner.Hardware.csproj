@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Gerçek Windows donanım kodu: DDC, GPU tablosu, NVIDIA, Windows ekran, kayıt defteri. P/Invoke sadece burada. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MonitorTuner.Core\MonitorTuner.Core.csproj" />
+    <ProjectReference Include="..\MonitorTuner.Hardware.Abstractions\MonitorTuner.Hardware.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>

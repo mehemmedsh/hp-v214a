@@ -1,0 +1,17 @@
+<Project>
+
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <!-- NuGet güvenlik uyarıları derlemeyi aniden kırmasın, uyarı olarak kalsın. -->
+    <WarningsNotAsErrors>NU1901;NU1902;NU1903;NU1904</WarningsNotAsErrors>
+    <!-- Linux (bulut, CI Ubuntu) net10.0-windows projelerini de derler. -->
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <!-- Paketlere sadece uygulamanın dilleri girer: Türkçe (nötr), Azerbaycanca, İngilizce. -->
+    <SatelliteResourceLanguages>tr;az;en</SatelliteResourceLanguages>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+
+</Project>

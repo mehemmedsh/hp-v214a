@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Donanım arayüzleri (platformdan bağımsız); gerçek Windows kodu MonitorTuner.Hardware'de. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MonitorTuner.Core\MonitorTuner.Core.csproj" />
+  </ItemGroup>
+
+</Project>

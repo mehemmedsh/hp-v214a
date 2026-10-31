@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Uygulama servisleri ve renk boru hattı (GPU renk tablosunun tek yazarı: ColorPipeline). -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MonitorTuner.Core\MonitorTuner.Core.csproj" />
+    <ProjectReference Include="..\MonitorTuner.Color\MonitorTuner.Color.csproj" />
+    <ProjectReference Include="..\MonitorTuner.Hardware.Abstractions\MonitorTuner.Hardware.Abstractions.csproj" />
+    <ProjectReference Include="..\MonitorTuner.Safety\MonitorTuner.Safety.csproj" />
+  </ItemGroup>
+
+</Project>

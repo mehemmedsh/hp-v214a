@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ubuntu:
+    name: Ubuntu (derleme + platformdan bağımsız testler)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: global.json
+      - name: Derleme
+        run: bash tools/dev/build.sh Release
+      - name: Platformdan bağımsız testler
+        run: bash tools/dev/test.sh Release
+
+  windows:
+    name: Windows (derleme + tüm testler + win-x64 paket)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: global.json
+      - name: Derleme
+        shell: pwsh
+        run: ./tools/dev/build.ps1 -Configuration Release
+      - name: Tüm testler
+        shell: pwsh
+        run: ./tools/dev/test.ps1 -Configuration Release
+      - name: Self-contained win-x64 paket
+        shell: pwsh
+        run: dotnet publish src/MonitorTuner.App/MonitorTuner.App.csproj -c Release -r win-x64 --self-contained true -o artifacts/MonitorTuner-win-x64 -nologo -v q -tl:off
+      - uses: actions/upload-artifact@v5
+        with:
+          name: MonitorTuner-win-x64
+          path: artifacts/MonitorTuner-win-x64
+          retention-days: 7
+          if-no-files-found: error

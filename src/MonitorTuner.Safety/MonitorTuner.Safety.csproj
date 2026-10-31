@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Güvenlik katmanı: yedek, geri alma noktası, 15 sn onay, DDC yazma sınırı, karartma tabanı. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MonitorTuner.Core\MonitorTuner.Core.csproj" />
+    <ProjectReference Include="..\MonitorTuner.Hardware.Abstractions\MonitorTuner.Hardware.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>

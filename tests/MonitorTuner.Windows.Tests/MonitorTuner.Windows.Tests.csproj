@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Windows'a özel testler: PC'de ve CI Windows'ta çalışır; Linux'ta sadece derlenir. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Shared\**\*.cs" LinkBase="Shared" />
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="Mono.Cecil" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\MonitorTuner.App\MonitorTuner.App.csproj" />
+    <ProjectReference Include="..\..\src\MonitorTuner.Composition\MonitorTuner.Composition.csproj" />
+    <ProjectReference Include="..\..\src\MonitorTuner.Hardware\MonitorTuner.Hardware.csproj" />
+  </ItemGroup>
+
+</Project>

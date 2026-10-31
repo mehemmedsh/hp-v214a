@@ -72,6 +72,6 @@ Dokümanların tamamını okuma, sadece gerekeni oku. Emin olamadığın yerde i
 
 - **Windows (Antigravity):** .NET 10 SDK kurulu olmalı (`dotnet --version` → 10.x). Değilse kullanıcıya `docs/05-HANDOFF.md` → 0'ı göster.
 - **Linux (Claude Code bulut):** `dotnet` yoksa `apt-get update && apt-get install -y dotnet-sdk-10.0` (Microsoft'un indirme sunucusu engelli, Ubuntu paketi çalışıyor). `net10.0-windows` projeleri `EnableWindowsTargeting` ile derlenir; Windows'a özel testler sadece Windows'ta ve CI'da.
-- Çıktıyı kısa tut: `tools/dev/` betikleri (T001 kurar) ya da `dotnet build -nologo -v q -tl:off -clp:"ErrorsOnly;Summary"` ve `dotnet test -nologo -v q -tl:off`.
+- Çıktıyı kısa tut: `tools/dev/` betikleri. Windows: `powershell -NoProfile -ExecutionPolicy Bypass -File tools/dev/build.ps1` ve `... -File tools/dev/test.ps1` (bütün testler; `-Portable` sadece platformdan bağımsızlar). Linux: `bash tools/dev/build.sh` ve `bash tools/dev/test.sh` (platformdan bağımsız testler).
 - CI: `gh run list -L 3`; hata varsa `gh run view <id> --log-failed` çıktısının son 80 satırı (bash: `| tail -n 80`, PowerShell: `| Select-Object -Last 80`). Logun tamamını çekme, `gh run watch` kullanma.
 - Büyük dosyayı baştan sona okuma; arayarak bölümü bul, sadece o aralığı oku. Okuduğunu tekrar okuma.

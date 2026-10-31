@@ -14,7 +14,7 @@ Uygulamanın parçaları ve birbirleriyle nasıl konuştukları. Kod içermez; T
 | Hz modları | Kullanıcı NVIDIA özel çözünürlüğüyle bir kez ekler; uygulama Windows ekran API'siyle modlar arasında geçer | EDID override yazmaktan çok daha az riskli; ilk gün testleri bu yolla yapıldı |
 | Test desenleri | WPF tam ekran pencereler (ayar sihirbazının içinde) | Kare atlama testi testufo ile yapıldığı için DirectX motoruna gerek yok |
 | Ayarlar | `%AppData%` altında JSON; yedekler ayrı klasörde; monitör profili ayrı veri dosyası | Okunabilir, yedeklemesi kolay |
-| Çeviri | `.resx`; özellik başına ayrı dosya; Türkçe nötr dil, Azerbaycanca ve İngilizce T502'de | Paralel görevler aynı dosyada çakışmaz |
+| Çeviri | `.resx`; özellik başına ayrı dosya (`src/MonitorTuner.App/Resources/Strings/<Özellik>.resx`); XAML'de `{loc:Tr Özellik.Ad}`, kodda `Loc.Get("Özellik.Ad")`; Türkçe nötr dil, Azerbaycanca ve İngilizce T502'de (`<Özellik>.az.resx`, `<Özellik>.en.resx`) | Paralel görevler aynı dosyada çakışmaz |
 | Satır sonları | `.gitattributes`: metin dosyaları LF | PC (Windows) ve bulut (Linux) aynı repoda çalışıyor; bash betikleri bozulmaz |
 | Derleme ve test çıktısı | `tools/dev/` içinde sessiz betikler (bash + PowerShell): sadece hata ve özet | Ajanların okuduğu çıktı kısalır, bilgi kaybı yok |
 | 🔧 testleri için çalıştırma | CI her push'ta self-contained `win-x64` paket üretir (7 gün saklama); PC'de .NET 10 SDK ile yerel derleme de mümkün | Kullanıcı istediği yolu seçer |
@@ -127,7 +127,7 @@ Ayrıntılı anlatım: `08-GORUNTU-YONTEMLERI.md`, bölüm 5.
 - Mimari testleri derlenmiş derlemelerin referanslarını okur:
   - Core ve Color hiçbir donanım derlemesine bağlı değil.
   - App, Hardware ve Hardware.Abstractions'a bağlı değil; donanıma Services üzerinden ulaşır.
-  - GPU renk tablosuna yazan arayüz üyesini sadece `ColorPipeline` kullanıyor.
-  - Windows'un gamma tablosu ve DDC fonksiyonları (P/Invoke) sadece Hardware'de.
+  - GPU renk tablosuna yazan arayüz üyesini sadece `ColorPipeline` kullanıyor. Üye `[OnlyColorPipelineMayCall]` (Hardware.Abstractions) ile işaretlenir; onu uygulayan sınıf metodu da aynı kurala girer.
+  - Windows'un gamma tablosu, DDC (`dxva2`), NVIDIA (`nvapi`) ve ekran modu fonksiyonları (P/Invoke) ve `NativeLibrary` sadece Hardware'de. Kurallar `tests/Shared/ArchitectureRules.cs`'te; bilerek ihlal eden örnek `tests/MonitorTuner.ArchitectureFixtures`.
 - Donanım yazma metotları geri alma noktası ister (T002, derleme zamanında).
 - `LESSONS.md` her faz sonunda güncellenir.

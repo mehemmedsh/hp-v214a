@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Arayüz: WPF, tepsi, ayar sihirbazı ve desenler. Donanıma Services üzerinden ulaşır. -->
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <!-- Nötr dil Türkçe: Resources/Strings/*.resx Türkçedir; az ve en T502'de *.az.resx / *.en.resx. -->
+    <NeutralLanguage>tr</NeutralLanguage>
+    <AssemblyTitle>MonitorTuner</AssemblyTitle>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MonitorTuner.Services\MonitorTuner.Services.csproj" />
+    <ProjectReference Include="..\MonitorTuner.Composition\MonitorTuner.Composition.csproj" />
+  </ItemGroup>
+
+</Project>

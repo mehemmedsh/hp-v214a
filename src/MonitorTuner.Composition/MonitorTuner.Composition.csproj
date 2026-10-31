@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Bağlama (composition root): gerçek donanımı servislere bağlar. App, Hardware'i sadece buradan dolaylı görür. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MonitorTuner.Services\MonitorTuner.Services.csproj" />
+    <ProjectReference Include="..\MonitorTuner.Safety\MonitorTuner.Safety.csproj" />
+    <ProjectReference Include="..\MonitorTuner.Hardware\MonitorTuner.Hardware.csproj" />
+  </ItemGroup>
+
+</Project>

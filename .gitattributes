@@ -1,0 +1,7 @@
+# Metin dosyaları repoda ve çalışma kopyasında LF (Windows + Linux aynı repoda; bash betikleri bozulmaz).
+* text=auto eol=lf
+*.bin binary
+*.png binary
+*.jpg binary
+*.ico binary
+*.zip binary

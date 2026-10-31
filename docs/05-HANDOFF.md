@@ -130,7 +130,18 @@ ONAY ise docs/04-FAZLAR.md'de durumu ✅ yap (🔧 görevse 🔧), commit ve pus
 
 ## 5. 🔧 Monitör testi
 
-**Test paketini açma:** T001 bu bölümü doldurur (CI'daki Windows paketini indirme ve PC'de yerel derlemeyle açma).
+**Test paketini açma** (iki yoldan birini seç):
+
+- **A. CI paketi (önerilen, kurulum gerekmez):** CI (GitHub'ın her push'ta kodu derleyip test eden sunucusu) her push'ta Windows paketi üretir ve 7 gün saklar.
+  1. Tarayıcıda github.com/mehemmedsh/hp-v214a → **Actions** → listede test edeceğin commit'in yeşil ✓ olan **CI** çalışmasını aç.
+  2. Sayfanın altındaki **Artifacts** bölümünden `MonitorTuner-win-x64`'ü indir.
+  3. İnen zip'e sağ tık → **Tümünü ayıkla**. Klasördeki `MonitorTuner.App.exe`'yi çift tıkla.
+  4. "Windows bilgisayarınızı korudu" çıkarsa: **Ek bilgi** → **Yine de çalıştır** (uygulama imzasız olduğu için çıkar).
+  - Komutla aynısı: `gh run list -w CI -L 3` ile çalışmanın numarasını bul, sonra `gh run download <numara> -n MonitorTuner-win-x64 -D C:\dev\paket`.
+  - 7 gün geçtiyse paket silinir: Actions'ta o çalışmayı açıp **Re-run all jobs** de ya da B yolunu kullan.
+- **B. Yerel derleme (.NET 10 SDK gerekir):** PowerShell'de `cd C:\dev\hp-inceleme`, `git pull`, sonra `dotnet run --project src/MonitorTuner.App -c Release`.
+
+Uygulamayı sadece sen açarsın; ajanlar açmaz.
 
 **Monitörde kalan kontroller** (kod beklemez):
 - 75 Hz (2080×1100) ve 76 Hz (2080×1092): Windows aktif sinyal, DDC AE = 7500 / 7600 ve testufo kare atlama. **T209'dan önce.**
