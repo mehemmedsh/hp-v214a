@@ -113,16 +113,23 @@ public class GuideLocalizationTests
         Assert.Contains("67.5", hz60);
         Assert.Contains("148.5", hz60);
 
+        var hz50 = keys["Hz50Details"];
+        Assert.Contains("Monitörün EDID tablosunda hazır bulunan 50 Hz modu", hz50);
+        Assert.DoesNotContain("VIC", hz50);
+        Assert.DoesNotContain("CTA-861", hz50);
+
         // Donanım ergonomisi ve güvenlik uyarıları
         Assert.Contains("üst kenar", keys["SeatingDesc"]);
         Assert.Contains("epilepsi", keys["PhotosensitivityWarningText"], StringComparison.OrdinalIgnoreCase);
         Assert.Contains("cttune", keys["ClearTypeDesc"], StringComparison.OrdinalIgnoreCase);
 
-        // Madde 1, 2 ve 4 doğrulaması: dokümanda yer almayan değerler ("25/50", "+/+", "1/8") metinde yok; "1/10" var
+        // Dokümanda yer almayan değerler ("25/50", "+/+", "1/8", "VIC", "CTA-861") metinde yok; "1/10" var
         var allValues = string.Join(" ", keys.Values);
         Assert.DoesNotContain("25/50", allValues);
         Assert.DoesNotContain("+/+", allValues);
         Assert.DoesNotContain("1/8", allValues);
+        Assert.DoesNotContain("VIC", allValues);
+        Assert.DoesNotContain("CTA-861", allValues);
 
         var frameSkipping = keys["FrameSkippingDesc"];
         Assert.Contains("1/10", frameSkipping);
