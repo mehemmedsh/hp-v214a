@@ -1,4 +1,4 @@
-using MonitorTuner.Hardware.Abstractions;
+using MonitorTuner.Core;
 
 namespace MonitorTuner.Services;
 
