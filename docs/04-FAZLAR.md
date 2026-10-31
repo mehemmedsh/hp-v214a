@@ -1,6 +1,6 @@
 # Fazlar ve Görevler
 
-**Sıradaki görev: T002** (Dalga 2, Opus hattı; Gemini hattında Flash ile **T311**). Kapsam 2026-10-30'da 66 görevden 21'e indi (`07-INCELEME.md`, 7. tur; plan dışı kalanlar `06-CIKARILANLAR.md`).
+**Sıradaki görev: T002 incelemesi** (Gemini) ve **T311 incelemesi** (Sonnet); ikisi onaylanınca Dalga 3 (T003, T004). Kapsam 2026-10-30'da 66 görevden 21'e indi (`07-INCELEME.md`, 7. tur; plan dışı kalanlar `06-CIKARILANLAR.md`).
 
 ## Çalışma kuralları
 
@@ -34,6 +34,7 @@
 
 - Her görev yaklaşık **200 satır** değişiklik ve tek konuşmada bitecek boyutta. **Önce test**, sonra kod.
 - Sözleşmeler (T002) kodda yaşar; bir görev sözleşmeyi değiştirmek zorundaysa önce `02-MIMARI.md` güncellenir.
+- Kırmızı testler `[Pending("T___")]` ile atlanır (`tests/MonitorTuner.Tests/Contracts`). Görevi yazan kendi testlerinde `[Pending]`'i `[Fact]` yapar ve testi doldurur; görev bitince kendi numarasıyla `[Pending]` kalmaz.
 - Görev bitince: commit (`T___: ...`), durum 🟨, gerekirse `LESSONS.md`. Commit gövdesinde ne yapıldı, neler test edildi ve inceleyicinin bakması gereken 3 nokta yazar.
 - 🔧 işaretli görev, kullanıcı gerçek monitörde test etmeden ✅ olmaz. Yazan, test adımlarını commit gövdesine ve kullanıcıya verdiği özete yazar.
 - Bir görev, bağımlı olduğu görevler ✅ ya da 🔧 (kodu onaylı, monitör testi bekliyor) olmadan başlamaz.
@@ -70,7 +71,7 @@ Durum: ⬜ bekliyor · 🟨 yazıldı, incelemede · 🔧 onaylandı, monitör t
 | No | Görev | Sınıf | Yazan → İnceleyen | Bağımlı | Dalga | Bitti sayılır | Durum |
 |---|---|---|---|---|---|---|---|
 | T001 | Proje iskeleti: `02-MIMARI.md` → Klasör yapısı'ndaki 8 `MonitorTuner.*` projesi ve test projeleri; dil altyapısı (tüm metinler baştan çeviri dosyasından, özellik başına ayrı `.resx`, ana dil Türkçe); sessiz derleme/test betikleri (`tools/dev`, bash + PowerShell); CI: Ubuntu (derleme + platformdan bağımsız testler) ve Windows (derleme + tüm testler + çalıştırılabilir self-contained `win-x64` paket, 7 gün saklama); mimari testleri (`02-MIMARI.md` → CI korumaları); `05-HANDOFF.md` → 5'e test paketinin nasıl açılacağı | A | Opus → Gemini | — | 1 | Boş çözüm PC'de (Windows) ve CI'da (Ubuntu + Windows) derleniyor; platformdan bağımsız testler Linux'ta da çalışıyor; CI yeşil ve Windows paketi indirilebiliyor; mimari testleri bilerek ihlal eden bir örneği yakalıyor (testte kanıtlı) | ✅ |
-| T002 | Sözleşmeler: `02-MIMARI.md`'deki modül sözleşmelerini arayüzlere ve boş (kırmızı) testlere çevir; donanım yazma metotları geri alma noktası ister; renk boru hattı dahil | A | Opus → Gemini | T001 | 2 | Her modülün arayüzü ve en az bir testi var | ⬜ |
+| T002 | Sözleşmeler: `02-MIMARI.md`'deki modül sözleşmelerini arayüzlere ve boş (kırmızı) testlere çevir; donanım yazma metotları geri alma noktası ister; renk boru hattı dahil | A | Opus → Gemini | T001 | 2 | Her modülün arayüzü ve en az bir testi var | 🟨 |
 | T003 | Sahte donanım: sahte monitör (DDC'li ve DDC'siz, bellek yazma sayacı), sahte GPU renk tablosu, sahte NVIDIA ayarları (dithering, canlılık), sahte ekran modları, sahte kayıt defteri, sahte saat; örnek EDID | B | Opus → Gemini | T002 | 3 | Donanımsız tüm testler sahte donanımla çalışıyor | ⬜ |
 | T004 | Monitör profil dosyası: şema + HP P21b G4 profili (Hz modları ve timing'leri: 50, 60, 72, 74, 75, 76 ve test durumları; ölçülen sınır; OSD yetenekleri; DDC kod tablosu ve 14 kodunun ön ayar eşlemesi; AE/AC okuma kuralları; PWM yok; kaynak `donanim/hp-p21b-g4/`) | B | Gemini → Opus | T002 | 3 | Profil yükleniyor; ilk gün sonuçları işlendi 🔧 | ⬜ |
 

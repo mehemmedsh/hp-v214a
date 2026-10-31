@@ -83,6 +83,26 @@ Ayrıntılı anlatım: `08-GORUNTU-YONTEMLERI.md`, bölüm 5.
 | **Ayar sihirbazı** | Desenler, adım sırası, temel ayarı kaydetme | Kullanıcı seçimleri | Temel ayar | Dolaylı | Sahte monitörle + 🔧 |
 | **Kurtarma** | GPU tablosu, `GdiIcmGammaRange`, dithering ve canlılığı varsayılana döndürür | — | Durum | **Evet** | Sahte sistem + 🔧 |
 
+### Sözleşmeler kodda (T002)
+
+| Modül | Arayüz | Proje |
+|---|---|---|
+| Monitör tanıma | `IMonitorIdentifier`; donanım yarısı `IDisplayEnumerator` | Services; Hardware.Abstractions |
+| Monitör profili | `IMonitorProfileReader` → `MonitorProfile` | Core |
+| Ayar deposu | `ISettingsStore` (özellik başına bölüm) | Services |
+| Güvenlik katmanı | `ISafetyLayer`; GPU tablosu geri yüklemesi için `IGpuTableOwner` | Safety |
+| DDC katmanı | `IDdcControl` (izin listesi, yazma sınırı); ham `IDdcMonitor` | Services; Hardware.Abstractions |
+| Windows ekran katmanı | `IDisplayModes` | Hardware.Abstractions |
+| Hz paneli | `IRefreshRatePanel` | Services |
+| Renk boru hattı | `IColorPipeline` / `ColorPipeline` (iskelet); `IGpuGammaTable`, `IGdiIcmGammaRange`; `IGammaTableCombiner` | Services; Hardware.Abstractions; Color |
+| NVIDIA katmanı | `INvidiaSettings` | Hardware.Abstractions |
+| Kelvin hesaplayıcı · Karartma planlayıcı · Gözle kalibrasyon | `IKelvinCalculator` · `IDimmingPlanner` · `ICalibrationCurves` | Color |
+| Renk profilleri · Ayar sihirbazı · Kurtarma | `IColorProfiles` · `ISetupWizard` · `IRecovery` | Services |
+
+- **Geri alma noktası:** `RestorePoint` (Hardware.Abstractions) kurucusu `internal`; sadece Safety (ve platformdan bağımsız test projesi) `InternalsVisibleTo` ile görür. Hardware.Abstractions'taki her yazma metodu `RestorePoint` ister; okuma metotları `Read`, `Get`, `List`, `Enumerate` ile başlar. Testler: `tests/MonitorTuner.Tests/Contracts`.
+- Donanım arayüzlerinde mod ekleme/silme, firmware, EDID yazma, güç, saat, voltaj ve fan üyesi yoktur (testli).
+- Ortak sayılar `Core.SafetyLimits`'te (15 sn, %15 beyaz, 60 Hz, yasak DDC kodları). Zaman `TimeProvider` ile; sahte saat T003'te.
+
 ## Profil yapısı
 
 **Monitör profili** (veri dosyası, monitör başına): Hz modları ve timing'leri (test durumlarıyla), spec ve ölçülen sınır, OSD yetenekleri (renk ön ayarları, overdrive yok), çalışan DDC kodları ve 14 kodunun eşlemesi, AE/AC okuma kuralları, PWM durumu (yok).
