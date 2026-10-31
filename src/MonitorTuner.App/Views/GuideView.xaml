@@ -1,0 +1,92 @@
+<UserControl x:Class="MonitorTuner.App.Views.GuideView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:loc="clr-namespace:MonitorTuner.App.Localization">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="16" MaxWidth="760">
+            <!-- Başlık ve Tanıtım -->
+            <TextBlock Text="{loc:Tr Guide.PageTitle}" FontSize="20" FontWeight="Bold" Margin="0,0,0,8" />
+            <TextBlock Text="{loc:Tr Guide.IntroText}" TextWrapping="Wrap" Margin="0,0,0,16" Foreground="#555555" />
+
+            <!-- 1. Oturma ve Açı -->
+            <GroupBox Header="{loc:Tr Guide.SeatingTitle}" Margin="0,0,0,14" Padding="10">
+                <StackPanel>
+                    <TextBlock Text="{loc:Tr Guide.SeatingDesc}" TextWrapping="Wrap" Margin="0,0,0,8" />
+                    <Border Background="#F4F4F4" Padding="8" CornerRadius="4">
+                        <TextBlock Text="{loc:Tr Guide.SeatingDiagnosis}" TextWrapping="Wrap" />
+                    </Border>
+                </StackPanel>
+            </GroupBox>
+
+            <!-- 2. Hz Kurulumu -->
+            <GroupBox Header="{loc:Tr Guide.HzTitle}" Margin="0,0,0,14" Padding="10">
+                <StackPanel>
+                    <TextBlock Text="{loc:Tr Guide.HzDesc}" TextWrapping="Wrap" Margin="0,0,0,8" />
+                    <Border Background="#F9F9F9" BorderBrush="#E0E0E0" BorderThickness="1" Padding="8" Margin="0,0,0,6" CornerRadius="4">
+                        <TextBlock Text="{loc:Tr Guide.Hz76Details}" TextWrapping="Wrap" FontWeight="SemiBold" />
+                    </Border>
+                    <Border Background="#F9F9F9" BorderBrush="#E0E0E0" BorderThickness="1" Padding="8" Margin="0,0,0,6" CornerRadius="4">
+                        <TextBlock Text="{loc:Tr Guide.Hz75Details}" TextWrapping="Wrap" />
+                    </Border>
+                    <Border Background="#F9F9F9" BorderBrush="#E0E0E0" BorderThickness="1" Padding="8" Margin="0,0,0,6" CornerRadius="4">
+                        <TextBlock Text="{loc:Tr Guide.Hz74Details}" TextWrapping="Wrap" />
+                    </Border>
+                    <Border Background="#F9F9F9" BorderBrush="#E0E0E0" BorderThickness="1" Padding="8" Margin="0,0,0,6" CornerRadius="4">
+                        <TextBlock Text="{loc:Tr Guide.Hz72Details}" TextWrapping="Wrap" />
+                    </Border>
+                    <Border Background="#F9F9F9" BorderBrush="#E0E0E0" BorderThickness="1" Padding="8" Margin="0,0,0,6" CornerRadius="4">
+                        <TextBlock Text="{loc:Tr Guide.Hz60Details}" TextWrapping="Wrap" />
+                    </Border>
+                    <Border Background="#F9F9F9" BorderBrush="#E0E0E0" BorderThickness="1" Padding="8" CornerRadius="4">
+                        <TextBlock Text="{loc:Tr Guide.Hz50Details}" TextWrapping="Wrap" />
+                    </Border>
+                </StackPanel>
+            </GroupBox>
+
+            <!-- 3. Test ve Epilepsi Uyarısı -->
+            <GroupBox Header="{loc:Tr Guide.TestTitle}" Margin="0,0,0,14" Padding="10">
+                <StackPanel>
+                    <!-- Işığa Duyarlılık Uyarısı -->
+                    <Border Background="#FFF3CD" BorderBrush="#FFEEBA" BorderThickness="1" Padding="10" Margin="0,0,0,10" CornerRadius="4">
+                        <StackPanel>
+                            <TextBlock Text="{loc:Tr Guide.PhotosensitivityWarningTitle}" FontWeight="Bold" Foreground="#856404" Margin="0,0,0,4" />
+                            <TextBlock Text="{loc:Tr Guide.PhotosensitivityWarningText}" TextWrapping="Wrap" Foreground="#856404" />
+                        </StackPanel>
+                    </Border>
+                    <TextBlock Text="{loc:Tr Guide.FrameSkippingDesc}" TextWrapping="Wrap" Margin="0,0,0,8" />
+                    <TextBlock Text="{loc:Tr Guide.StabilityTestDesc}" TextWrapping="Wrap" />
+                </StackPanel>
+            </GroupBox>
+
+            <!-- 4. RTX Video Super Resolution -->
+            <GroupBox Header="{loc:Tr Guide.RtxVsrTitle}" Margin="0,0,0,14" Padding="10">
+                <TextBlock Text="{loc:Tr Guide.RtxVsrDesc}" TextWrapping="Wrap" />
+            </GroupBox>
+
+            <!-- 5. DLDSR -->
+            <GroupBox Header="{loc:Tr Guide.DldsrTitle}" Margin="0,0,0,14" Padding="10">
+                <TextBlock Text="{loc:Tr Guide.DldsrDesc}" TextWrapping="Wrap" />
+            </GroupBox>
+
+            <!-- 6. ClearType -->
+            <GroupBox Header="{loc:Tr Guide.ClearTypeTitle}" Margin="0,0,0,14" Padding="10">
+                <TextBlock Text="{loc:Tr Guide.ClearTypeDesc}" TextWrapping="Wrap" />
+            </GroupBox>
+
+            <!-- 7. Ortam Işığı -->
+            <GroupBox Header="{loc:Tr Guide.AmbientLightingTitle}" Margin="0,0,0,14" Padding="10">
+                <TextBlock Text="{loc:Tr Guide.AmbientLightingDesc}" TextWrapping="Wrap" />
+            </GroupBox>
+
+            <!-- 8. 20-20-20 Kuralı -->
+            <GroupBox Header="{loc:Tr Guide.Rule202020Title}" Margin="0,0,0,14" Padding="10">
+                <TextBlock Text="{loc:Tr Guide.Rule202020Desc}" TextWrapping="Wrap" />
+            </GroupBox>
+
+            <!-- 9. Windows Gece Işığı Çakışması -->
+            <GroupBox Header="{loc:Tr Guide.NightLightConflictTitle}" Margin="0,0,0,14" Padding="10">
+                <TextBlock Text="{loc:Tr Guide.NightLightConflictDesc}" TextWrapping="Wrap" />
+            </GroupBox>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

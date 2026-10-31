@@ -2,8 +2,17 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:loc="clr-namespace:MonitorTuner.App.Localization"
+        xmlns:views="clr-namespace:MonitorTuner.App.Views"
         Title="{loc:Tr Common.AppTitle}"
-        Width="480" Height="240"
+        Width="820" Height="680"
+        MinWidth="640" MinHeight="480"
         WindowStartupLocation="CenterScreen">
-    <TextBlock Margin="24" TextWrapping="Wrap" Text="{loc:Tr Common.SkeletonReady}" />
+    <TabControl>
+        <TabItem Header="{loc:Tr Common.AppTitle}">
+            <TextBlock Margin="24" TextWrapping="Wrap" Text="{loc:Tr Common.SkeletonReady}" />
+        </TabItem>
+        <TabItem Header="{loc:Tr Guide.TabTitle}">
+            <views:GuideView />
+        </TabItem>
+    </TabControl>
 </Window>

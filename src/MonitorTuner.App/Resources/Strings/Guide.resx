@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- T311: Rehber metinleri. Nötr dil Türkçe. -->
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="TabTitle" xml:space="preserve">
+    <value>Rehber</value>
+  </data>
+  <data name="PageTitle" xml:space="preserve">
+    <value>Monitör Kullanım ve İyileştirme Rehberi</value>
+  </data>
+  <data name="IntroText" xml:space="preserve">
+    <value>HP P21b G4 monitörünüzden en yüksek görüntü kalitesini, en akıcı yenileme hızını ve en iyi göz konforunu elde etmek için hazırlanmış başvuru rehberi.</value>
+  </data>
+  <data name="SeatingTitle" xml:space="preserve">
+    <value>1. Oturma Konumu ve Dikey Bakış Açısı (TN Panel)</value>
+  </data>
+  <data name="SeatingDesc" xml:space="preserve">
+    <value>HP P21b G4, 20.7 inç TN panel kullanır. TN panellerde dikey bakış açısı değiştikçe parlaklık ve gamma hızla değişir; göz hizası aşağıda kaldığında ekranın üstü kararır, altı ise soluk görünür. En ideal görüntü için:&#10;• Göz hizası: Ekranın üst kenar hizasında veya biraz altında olmalıdır.&#10;• Oturma mesafesi: 70–80 cm olmalıdır (108 PPI piksel yoğunluğu sayesinde yazılar net kalır; mesafe arttıkça üst-alt açı farkı 28.9°'den 18.3°–20.9° seviyesine düşer).&#10;• Eğim: Monitör öne doğru 0° ile -5° aralığında denenmelidir. Ekranı arkaya yatırmak üst kısmın kararmasını artırır.&#10;• Yükseklik: Monitör ayağı yükseltilemediğinden sandalyeyi yükseltin ya da monitörü alçaltın (VESA 100 kol en temiz çözümdür).</value>
+  </data>
+  <data name="SeatingDiagnosis" xml:space="preserve">
+    <value>2 Dakikalık Hızlı Teşhis: Ekranı düz %50 gri yapın. Başınızı yavaşça 10–15 cm yukarı ve aşağı hareket ettirin. Fark belirgin şekilde değişiyorsa sebep bakış açısıdır. Kesinleştirmek için telefonla 1.5–2 metre mesafeden ortayı hedefleyerek zoom ile fotoğraf çekin; uzaktan fark kayboluyorsa açı, duruyorsa arka ışık dağılımıdır.</value>
+  </data>
+  <data name="HzTitle" xml:space="preserve">
+    <value>2. Yenileme Hızı ve NVIDIA Özel Çözünürlük Kurulumu</value>
+  </data>
+  <data name="HzDesc" xml:space="preserve">
+    <value>HP P21b G4'ün fabrika modu 60 Hz'dir. Monitörün scaler yongası dikey 60 Hz sınırını zorlamaz ancak yatay frekansta 83.0–83.9 kHz aralığında katı sınıra sahiptir. Bu sebeple donanımın tavan yenileme hızı 76 Hz'dir (77 Hz reddedilir). Modlar NVIDIA Denetim Masası -> Çözünürlük Değiştirme -> Özelleştir -> Özel Çözünürlük Oluştur adımıyla eklenir.</value>
+  </data>
+  <data name="Hz76Details" xml:space="preserve">
+    <value>• 76 Hz (En Yüksek Hız - Çok Sıkı Dikey): 1920x1080 @ 76 Hz | Zamanlama: Manuel | Ön Boşluk (Front Porch): Yatay 48, Dikey 3 | Senkron Genişliği (Sync Width): Yatay 32, Dikey 5 | Arka Boşluk (Back Porch): Yatay 80, Dikey 4 | Toplam: 2080x1092 | Polarite: Pozitif (+/+) | Yatay Frekans: 82.99 kHz | Piksel Saati: 172.62 MHz.</value>
+  </data>
+  <data name="Hz75Details" xml:space="preserve">
+    <value>• 75 Hz (Sıkı Dikey - 25/50 fps Video): 1920x1080 @ 75 Hz | Zamanlama: Manuel | Toplam: 2080x1100 (dikey 3/5/12) | Yatay Frekans: 82.50 kHz | Piksel Saati: 171.60 MHz.</value>
+  </data>
+  <data name="Hz74Details" xml:space="preserve">
+    <value>• 74 Hz (CVT-RB - Doğrulanmış Mod): 1920x1080 @ 74 Hz | Zamanlama: CVT Azaltılmış Boşluk (CVT-RB) | Toplam: 2080x1119 | Yatay Frekans: 82.81 kHz | Piksel Saati: 172.24 MHz.</value>
+  </data>
+  <data name="Hz72Details" xml:space="preserve">
+    <value>• 72 Hz (Standart İçi Tavan - 24 fps Film): 1920x1080 @ 72 Hz | 2080x1100 veya 2080x1092 | 24 fps sinema filmleri için kusursuz senkron sağlar.</value>
+  </data>
+  <data name="Hz60Details" xml:space="preserve">
+    <value>• 60 Hz (Orijinal Mod): 1920x1080 @ 60 Hz (Standart 2200x1125, 67.5 kHz, 148.5 MHz). Orijinal mod silinmez ve değiştirilmez.</value>
+  </data>
+  <data name="Hz50Details" xml:space="preserve">
+    <value>• 50 Hz (CTA-861 VIC 31 Modu): Monitörün EDID tablosunda hazır bulunur; 50 fps yayın ve videolar için uygundur.</value>
+  </data>
+  <data name="TestTitle" xml:space="preserve">
+    <value>3. Kare Atlama ve Hareket Kararlılığı Testi</value>
+  </data>
+  <data name="PhotosensitivityWarningTitle" xml:space="preserve">
+    <value>DİKKAT: Işığa Duyarlı Epilepsi ve Migren Uyarısı</value>
+  </data>
+  <data name="PhotosensitivityWarningText" xml:space="preserve">
+    <value>Bu testler hızlı hareket eden grafikler ve yanıp sönen desenler içerir. Işığa duyarlı epilepsi, migren veya nöbet geçmişiniz varsa testi yapmayın. Göz yorgunluğu ya da rahatsızlık hissettiğiniz anda testi derhal durdurun.</value>
+  </data>
+  <data name="FrameSkippingDesc" xml:space="preserve">
+    <value>Kare Atlama Testi (testufo.com/frameskipping):&#10;1. testufo.com/frameskipping adresini tam ekran açın.&#10;2. Telefon kameranızı 1/10 s veya 1/8 s pozlamaya (veya gece moduna) ayarlayın.&#10;3. Akan kutucukların fotoğrafını çekin.&#10;4. Yan yana 8–10 kutucuk kesintisiz aydınlanmışsa kare atlama yoktur. Arada siyah kutular varsa monitör gelen sinyalin karelerini atlıyor demektir.</value>
+  </data>
+  <data name="StabilityTestDesc" xml:space="preserve">
+    <value>Hareket Kararlılığı Testi: Yüksek Hz modunda 20–30 dakika hareketli içerik çalıştırarak görüntüde titreme, kararma, kenar kayması veya piksel paraziti oluşmadığını gözlemleyin.</value>
+  </data>
+  <data name="RtxVsrTitle" xml:space="preserve">
+    <value>4. RTX Video Super Resolution (VSR)</value>
+  </data>
+  <data name="RtxVsrDesc" xml:space="preserve">
+    <value>RTX 3080 Tensor çekirdekleri, tarayıcılarda (Chrome, Edge) ve VLC gibi oynatıcılarda düşük çözünürlüklü videoları yapay zeka ile keskinleştirir ve sıkıştırma bloklarını temizler.&#10;Nasıl açılır: NVIDIA Denetim Masası -> Video -> Video Görüntü Ayarlarını Ayarla -> RTX Video İyileştirmesi -> Süper Çözünürlük (Kalite 3 veya 4 seçilebilir).</value>
+  </data>
+  <data name="DldsrTitle" xml:space="preserve">
+    <value>5. DLDSR (Deep Learning Dynamic Super Resolution)</value>
+  </data>
+  <data name="DldsrDesc" xml:space="preserve">
+    <value>Tensör çekirdekleri destekli DLDSR, oyunları 1080p'den daha yüksek çözünürlükte işleyip yapay zeka ile ekrana indirger. Klasik DSR'a göre çok daha az performans kaybıyla pürüzsüz kenar yumuşatma ve doku netliği sağlar.&#10;Nasıl açılır: NVIDIA Denetim Masası -> 3D Ayarları -> 3D Ayarlarının Yönetilmesi -> DSR Çarpanları -> DL 2.25x veya DL 1.78x seçin.</value>
+  </data>
+  <data name="ClearTypeTitle" xml:space="preserve">
+    <value>6. ClearType Metin Netliği Ayarı</value>
+  </data>
+  <data name="ClearTypeDesc" xml:space="preserve">
+    <value>108 PPI TN panelde yazıların kenarlarında renk saçılması olmadan keskin görünmesi için Windows ClearType ayarlayıcısını çalıştırın.&#10;Nasıl yapılır: Windows arama çubuğuna cttune yazarak sihirbazı başlatın. ClearType'ı açın ve 5 adımda gözünüze en net gelen metin örneklerini seçin.</value>
+  </data>
+  <data name="AmbientLightingTitle" xml:space="preserve">
+    <value>7. Ortam Işığı ve Göz Ergonomisi</value>
+  </data>
+  <data name="AmbientLightingDesc" xml:space="preserve">
+    <value>• Arkadan Aydınlatma (Bias Lighting): Monitörün arkasına ve arkasındaki duvara dolaylı, yumuşak bir ışık yerleştirin. Karanlık odada yalnızca ekrana bakmak göz kaslarını yorar.&#10;• Parlama Kontrolü: Ekrana doğrudan vuran ışık yansımalarını önleyin; monitörü pencereye dik konumlandırın.</value>
+  </data>
+  <data name="Rule202020Title" xml:space="preserve">
+    <value>8. 20-20-20 Göz Dinlendirme Kuralı</value>
+  </data>
+  <data name="Rule202020Desc" xml:space="preserve">
+    <value>Dijital göz yorgunluğunu önlemek için her 20 dakikada bir, en az 20 saniye boyunca, en az 20 fit (yaklaşık 6 metre) uzaktaki bir nesneye odaklanın. Bu alışkanlık göz odaklama kaslarını gevşetir ve göz kuruluğunu engeller.</value>
+  </data>
+  <data name="NightLightConflictTitle" xml:space="preserve">
+    <value>9. Windows Gece Işığı ve f.lux Çakışma Uyarısı</value>
+  </data>
+  <data name="NightLightConflictDesc" xml:space="preserve">
+    <value>Windows Gece Işığı veya f.lux yazılımları ekran kartının donanımsal gamma tablosuna müdahale eder. Bu durum MonitorTuner'ın hassas kalibrasyonu ve Kelvin mavi ışık filtresi ile çakışır. Doğru renkler için Windows Gece Işığı ve f.lux kapatılmalıdır.</value>
+  </data>
+</root>
