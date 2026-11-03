@@ -1,6 +1,6 @@
 # Fazlar ve Görevler
 
-**Sıradaki görev: T311 yeniden incelemesi** (Sonnet); T002 onaylandı, T311 de onaylanınca Dalga 3 (T003, T004). Bu arada Qwen kalibrasyonu (`05-HANDOFF.md` → 9.4). Kapsam 2026-10-30'da 66 görevden 21'e indi (`07-INCELEME.md`, 7. tur; plan dışı kalanlar `06-CIKARILANLAR.md`).
+**Sıradaki görev: T311 düzeltmesi** (Opus, `hp-opus`; yeniden inceleme Sonnet). Sonnet'in yeniden incelemesi DÜZELT verdi (2026-11-04); T002 onaylandı, T311 de onaylanınca Dalga 3 (T003, T004). Bu arada Qwen kalibrasyonu (`05-HANDOFF.md` → 9.4). Kapsam 2026-10-30'da 66 görevden 21'e indi (`07-INCELEME.md`, 7. tur; plan dışı kalanlar `06-CIKARILANLAR.md`).
 
 ## Çalışma kuralları
 
@@ -33,7 +33,8 @@ Düzen 2026-11-03'ten beri: **Opus, Sonnet ve Qwen.** Antigravity (Gemini, Flash
 | **K** | Son kontrol noktası | Kullanıcı (monitör başında) | — | Claude app, Opus (yeni sohbet) |
 
 - Yazan ve inceleyen her zaman farklı model. İnceleme hiçbir görevde atlanmaz.
-- T001, T002 ve T311 eski düzende yazıldı (T001, T002: Opus → Gemini; T311: Flash → Sonnet); satırlarında o kayıt duruyor. T311'in yeniden incelemesi Sonnet'te kalır.
+- T001, T002 ve T311 eski düzende yazıldı (T001, T002: Opus → Gemini; T311: Flash → Sonnet); satırlarında o kayıt duruyor. T311'in incelemesi Sonnet'te kalır.
+- Eski düzende yazılmış bir görevin düzeltmesini yazan model (Flash, Gemini) yapamaz: düzeltmeyi inceleyenden farklı olan model yapar. T311: Opus düzeltir, Sonnet yeniden inceler.
 - **Qwen ön incelemesi ek bir kontroldür:** incelemenin yerine geçmez, ONAY vermez; bulgularını yazan model doğrular (`AGENTS.md` → "Yerel model (Qwen)"). Rol ✅ değilse bu adım yapılmaz.
 - Yazma, inceleme ve düzeltme ayrı konuşmalardır. Düzeltmeyi yazan model yapar (`05-HANDOFF.md` → 4).
 
