@@ -1,6 +1,6 @@
 # Fazlar ve Görevler
 
-**Sıradaki görev: T311 düzeltmesi** (Opus, `hp-opus`; yeniden inceleme Sonnet). Sonnet'in yeniden incelemesi DÜZELT verdi (2026-11-04); T002 onaylandı, T311 de onaylanınca Dalga 3 (T003, T004). Bu arada Qwen kalibrasyonu (`05-HANDOFF.md` → 9.4). Kapsam 2026-10-30'da 66 görevden 21'e indi (`07-INCELEME.md`, 7. tur; plan dışı kalanlar `06-CIKARILANLAR.md`).
+**Sıradaki görev: T311 yeniden incelemesi** (Sonnet, `hp-inceleme`). Opus DÜZELT listesini düzeltti (2026-11-03); T002 onaylandı, T311 de onaylanınca Dalga 3 (T003, T004). Bu arada Qwen kalibrasyonu (`05-HANDOFF.md` → 9.4). Kapsam 2026-10-30'da 66 görevden 21'e indi (`07-INCELEME.md`, 7. tur; plan dışı kalanlar `06-CIKARILANLAR.md`).
 
 ## Çalışma kuralları
 

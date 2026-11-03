@@ -131,6 +131,13 @@ public class GuideLocalizationTests
         Assert.DoesNotContain("VIC", allValues);
         Assert.DoesNotContain("CTA-861", allValues);
 
+        // Önceki incelemede metinden kaldırılan, dokümanda karşılığı olmayan değerler geri gelmemeli
+        string[] removedValues = ["8–10", "Kalite 3", "2.25x", "1.78x", "5 adımda", "20 fit", "6 metre"];
+        foreach (var removed in removedValues)
+        {
+            Assert.DoesNotContain(removed, allValues);
+        }
+
         var frameSkipping = keys["FrameSkippingDesc"];
         Assert.Contains("1/10", frameSkipping);
         Assert.Contains("testufo", frameSkipping, StringComparison.OrdinalIgnoreCase);
