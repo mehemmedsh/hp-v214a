@@ -812,7 +812,7 @@ if ($Mode -eq 'review') {
         if ($keyData.Thr.ContainsKey('toplam')) { $okTxt = 'KALDI'; if ($allItems.Count -le $keyData.Thr['toplam']) { $okTxt = 'TAMAM' }; $hdr.Add('- toplam bulgu: ' + $allItems.Count + ' (en fazla ' + $keyData.Thr['toplam'] + ') -> ' + $okTxt) }
         $un = @($allItems | Where-Object { -not $matched.ContainsKey($_.Id) } | ForEach-Object { $_.Id })
         $unText = '-'
-        if ($un.Count -gt 0) { $unText = ($un -join ', ') + ' -> gercek mi yanlis mi, Flash ile bak (05-HANDOFF -> 9.4)' }
+        if ($un.Count -gt 0) { $unText = ($un -join ', ') + ' -> gercek mi yanlis mi, Sonnet ile bak (05-HANDOFF -> 9.4)' }
         $hdr.Add('- anahtarla eslesmeyen: ' + $unText)
         $hdr.Add('- uydurma (alintisi bulunamayan + dokumanla celisen): en fazla 2 olmali; alintisi bulunamayan: ' + $badText)
     }

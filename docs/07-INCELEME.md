@@ -184,3 +184,16 @@ Kullanıcının kararları: en önemli şey görüntü kalitesi ve göz konforu;
 | T701–T707 | T312 + T313 (gözle ayar) |
 | T801–T809 | Çıktı (T805 → T209) |
 | T901–T909 | Çıktı |
+
+## 8. Tur: Antigravity'den çıkış, Opus + Sonnet + Qwen düzeni (2026-11-03)
+
+Kullanıcının kararı: Antigravity (Gemini, Flash) sistemden çıkar; iş Claude Code'da Opus ve Sonnet ile, yerel Qwen yardımıyla sürer.
+
+| # | Değişiklik |
+|---|---|
+| 8.1 | Ana araç PC'deki Claude Code (masaüstü uygulaması, Windows); bulut oturumu yedek. Kurallar yine `AGENTS.md`'de, `CLAUDE.md` içe aktarıyor |
+| 8.2 | Modeller: A'yı Opus yazar, Sonnet inceler; B'yi Sonnet yazar, Opus inceler (T003: Opus → Sonnet); C'yi Sonnet yazar, Opus inceler (metinde Medium). Biten T001, T002, T311'in kaydı değişmedi |
+| 8.3 | Hatlar: `hp-gemini` → `hp-sonnet`, `hp-gemini2` → `hp-sonnet2`; dalgalar aynı |
+| 8.4 | Flash'ın işleri (sonuç bildirme, kalibrasyon değerlendirmesi, araç soruları) Sonnet · Medium'a geçti; Qwen rolleri aynı |
+| 8.5 | Kota: Qwen → Sonnet → Opus. Opus'un sınırı dolarsa iş Sonnet'e kaydırılmaz; Sonnet hattı sürer |
+| 8.6 | Güvenlik: Antigravity'nin "terminal otomatik çalışmasın" kuralı yerine Claude Code'da varsayılan izin modu; auto ve bypass PC'de kullanılmaz |

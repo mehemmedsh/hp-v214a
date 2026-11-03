@@ -1,8 +1,8 @@
 # Handoff
 
-Hazır metinler ve kurulum. Antigravity ve Claude Code ajanları `AGENTS.md`'yi otomatik okur. Kurallar, okuma haritası ve commit biçimi orada olduğu için buradaki metinler kısa. Her metinde `T___` yerine görev numarasını yaz.
+Hazır metinler ve kurulum. Düzen: **Opus ve Sonnet Claude Code'da, Qwen PC'de yerel** (2026-11-03'ten beri; Antigravity kullanılmıyor). Claude Code `CLAUDE.md` üzerinden `AGENTS.md`'yi otomatik okur. Kurallar, okuma haritası ve commit biçimi orada olduğu için buradaki metinler kısa. Her metinde `T___` yerine görev numarasını yaz.
 
-**İlk görev:** T001 → `hp-opus` penceresi, model Opus, bölüm 2'deki metin. Teknoloji kararları zaten onaylı (`02-MIMARI.md`); ajan soru sormadan başlayabilir.
+**Sıradaki iş:** `04-FAZLAR.md`'nin ilk satırında. Antigravity'den geçiyorsan önce 0.2'deki klasör adı değişikliğini ve 0.3'ü yap.
 
 ## 0. Bir kerelik kurulum (PC)
 
@@ -24,7 +24,7 @@ git config --global user.email "GitHub e-posta adresin"
 gh auth login
 ```
 
-`gh auth login` soruları: GitHub.com → HTTPS → Git için de giriş: Yes → "Login with a web browser". Ekrandaki kodu tarayıcıda gir. Bu, ajanların işlerini GitHub'a göndermesini (push) ve CI sonucunu okumasını sağlar.
+`gh auth login` soruları: GitHub.com → HTTPS → Git için de giriş: Yes → "Login with a web browser". Ekrandaki kodu tarayıcıda gir. Bu, ajanların işlerini GitHub'a göndermesini (push) ve CI sonucunu okumasını sağlar. Git, Claude Code'un Windows'ta çalışması için de gerekir.
 
 ### 0.2 Klasörler (hatlar)
 
@@ -32,31 +32,54 @@ gh auth login
 mkdir C:\dev
 cd C:\dev
 git clone https://github.com/mehemmedsh/hp-v214a hp-opus
-git clone https://github.com/mehemmedsh/hp-v214a hp-gemini
+git clone https://github.com/mehemmedsh/hp-v214a hp-sonnet
 git clone https://github.com/mehemmedsh/hp-v214a hp-inceleme
 ```
 
-Dördüncü hat (`hp-gemini2`) sadece Dalga 4 ve 5'te, alışınca gerekir: aynı komut, sonda `hp-gemini2`.
+Dördüncü hat (`hp-sonnet2`) sadece Dalga 4 ve 5'te, alışınca gerekir: aynı komut, sonda `hp-sonnet2`.
 
 Her klasör projenin ayrı bir kopyasıdır. Ajan işini GitHub'a gönderir (push), diğer klasörler oradan çeker (pull). Böylece aynı anda çalışan iki ajan birbirinin dosyasını bozmaz.
 
-### 0.3 Antigravity
+**Antigravity'den geçiş (bir kez):** eski `hp-gemini` klasörü artık Sonnet hattı. Önce içinde yarım iş olmadığına bak, sonra adını değiştir:
 
-- **Pencere ve klasör:** File → Open Folder → örneğin `C:\dev\hp-opus`. Her hat ayrı pencerede: File → New Window, sonra Open Folder.
-- **Ajan paneli:** Sohbet panelinde yeni görev = yeni konuşma. Bir konuşmada tek görev; bitince yeni konuşma aç (uzayan konuşma kotayı hızlı bitirir).
-- **Model ve düşünme seviyesi:** Sohbet kutusunun altındaki model seçicide. Düşünme seviyesi (Low / Medium / High) de orada. Claude modellerinde adında "(Thinking)" olan sürümü seç. Kısa kural: kod işi High, sadece metin işi Medium. Hangi işte hangisi: `04-FAZLAR.md` → "Araçlar, modeller ve kota sırası" ve görev tablosundaki "Yazan → İnceleyen".
-- **Terminal onayı (önemli):** Ayarlarda terminal komutlarının otomatik çalışmasını kapat; her komut senin onayını istesin. `git`, `gh`, `dotnet build/test`, `tools/dev` komutlarını onayla. Uygulamayı çalıştıran (`dotnet run`, `.exe`), kayıt defterine yazan (`reg`, `Set-ItemProperty`) ya da program kuran komutları onaylama; önce bölüm 7'deki metinle sor.
-- **Plan modu:** Konuşma modu seçeneği varsa görevlerde "Planning"i seç. Ajan önce plan çıkarır, sen okuyup onaylarsın, sonra yazar.
-- **Kota:** Sohbet kutusuna `/usage` yaz; Gemini ve Claude havuzları ayrı görünür.
+```powershell
+cd C:\dev\hp-gemini
+git status
+```
+
+"nothing to commit, working tree clean" görürsen:
+
+```powershell
+cd C:\dev
+Rename-Item hp-gemini hp-sonnet
+```
+
+Başka bir şey yazıyorsa adını değiştirme, bölüm 7'deki metinle sor. `hp-gemini2` açtıysan aynı yolla `hp-sonnet2` yap. Antigravity'yi kapatabilirsin; bu proje için artık açılmaz.
+
+### 0.3 Claude Code (PC, ana araç)
+
+Claude Code, Claude'un kod yazan ajanıdır. PC'de çalışınca Windows testlerini ve Qwen'i kullanabilir.
+
+- **Kurulum:** claude.ai/download'dan Claude masaüstü uygulamasını kur ve Claude hesabınla gir. Uygulamada **Code** bölümünü aç.
+- **Klasör = hat:** Yeni oturum açarken klasör olarak örneğin `C:\dev\hp-opus` seç. Her hat kendi klasöründe ayrı oturumdur; aynı anda birkaç oturum açık olabilir.
+- **Bir oturum, bir görev:** Yazma, inceleme ve düzeltme ayrı oturumdur. Bitince yeni oturum aç (uzayan oturum kotayı hızlı bitirir).
+- **Model ve düşünme seviyesi (effort):** Oturumun başında, ilk mesajdan önce seç: model seçicide ya da sohbet kutusuna `/model` yazarak (Opus veya Sonnet). Effort de orada ya da `/effort` ile. Kısa kural: kod işi High, sadece metin işi Medium. Hangi işte hangisi: `04-FAZLAR.md` → "Araçlar, modeller ve kota sırası" ve görev tablosundaki "Yazan → İnceleyen". Oturum ortasında modeli değiştirme.
+- **İzinler (önemli):** İzin modu varsayılan kalsın: ajan her komut ve dosya değişikliği için onay ister. Otomatik onaylayan modları (auto, bypass) bu projede açma.
+  - `git`, `gh`, `dotnet build/test/restore/format` ve `tools/dev` komutlarını onayla; bunlar için "bir daha sorma" seçeneği varsa seçebilirsin.
+  - Uygulamayı çalıştıran (`dotnet run`, `.exe`), kayıt defterine yazan (`reg`, `Set-ItemProperty`), ekran, NVIDIA ya da monitör ayarına dokunan ya da program kuran komutları onaylama; önce bölüm 7'deki metinle sor.
+- **Plan modu:** Yazma görevlerinde plan modunu aç (mod seçicide ya da Shift+Tab). Ajan önce plan çıkarır, sen okuyup onaylarsın, sonra yazar.
+- **Kota:** Sohbet kutusuna `/usage` yaz; ne kadar kaldığını ve ne zaman yenileneceğini gösterir.
 - Bir ayarın adı sende farklıysa ya da bulamıyorsan bölüm 7'deki metinle sor.
 
-### 0.4 Claude Code (yedek)
+### 0.4 Claude Code bulut (yedek)
 
-Claude Code bulut ortamının kurulum betiğine (setup script) şu satırı ekle. Böylece Claude Code oturumları da kodu derler ve testleri çalıştırır:
+PC'ye ulaşamadığında claude.ai/code'da bu repoyla (`mehemmedsh/hp-v214a`) oturum açılabilir. Bulut ortamının kurulum betiğine (setup script) şu satırı ekle; böylece bulut oturumları da kodu derler ve testleri çalıştırır:
 
 ```bash
 apt-get update && apt-get install -y dotnet-sdk-10.0
 ```
+
+Bulutta Windows'a özel testler çalışmaz (CI'da çalışır) ve Qwen'e ulaşılamaz; ajan Qwen adımını atlar ve commit gövdesine yazar.
 
 ### 0.5 Qwen (yerel model)
 
@@ -96,10 +119,10 @@ Betik bağlantıyı, modeli ve Türkçe karakterlerin bozulmadan gidip geldiğin
 ## 1. Görev döngüsü
 
 1. `docs/04-FAZLAR.md`: ilk satır (sıradaki görev) ve "Dalgalar" tablosu (hangi hat). Model: görevin "Yazan → İnceleyen" sütunu.
-2. **Yazma:** Görevin hattının penceresinde yeni konuşma → modeli ve düşünme seviyesini seç → bölüm 2.
+2. **Yazma:** Claude Code'da görevin hattının klasöründe yeni oturum → modeli ve effort'u seç → bölüm 2.
 3. Ajan bitince özetini oku. Commit ve push etmiş olmalı. Qwen ön incelemesi ✅ ise ajan onu commit'ten önce yapmış olur; özetinde "Qwen: ..." satırını görürsün (bölüm 9.1). 🔧 görevse test adımlarını not et.
-4. **İnceleme:** `hp-inceleme` penceresinde yeni konuşma → inceleyen modeli seç → bölüm 3.
-5. **ONAY** ise görev biter; ajan durumu ✅ (🔧 görevde 🔧) yapar. **DÜZELT** ise: yazanın penceresinde yeni konuşma, yazan model, bölüm 4 (ajan sonunda Qwen düzeltme kontrolünü yapar, bölüm 9.2). Sonra `hp-inceleme`'de yeniden inceleme (bölüm 4).
+4. **İnceleme:** `hp-inceleme` klasöründe yeni oturum → inceleyen modeli seç → bölüm 3.
+5. **ONAY** ise görev biter; ajan durumu ✅ (🔧 görevde 🔧) yapar. **DÜZELT** ise: yazanın klasöründe yeni oturum, yazan model, bölüm 4 (ajan sonunda Qwen düzeltme kontrolünü yapar, bölüm 9.2). Sonra `hp-inceleme`'de yeniden inceleme (bölüm 4).
 6. 🔧 görevde monitör testini yap ve sonucu bildir (bölüm 5).
 7. Aynı dalgadaki diğer görevler için 2–6'yı diğer hatta paralel yürüt. Dalganın hepsi onaylanınca sonraki dalgaya geç.
 
@@ -143,7 +166,7 @@ Bana Türkçe ve kısa yaz.
 
 ## 4. Düzeltme ve yeniden inceleme
 
-**Düzeltme** (yazanın penceresi, yazan model):
+**Düzeltme** (yazanın klasörü, yazan model):
 
 ```text
 T___ incelemesi aşağıdaki DÜZELT listesini verdi. Sadece bu maddeleri düzelt.
@@ -188,7 +211,7 @@ Uygulamayı sadece sen açarsın; ajanlar açmaz.
 - 75 Hz (2080×1100) ve 76 Hz (2080×1092): Windows aktif sinyal, DDC AE = 7500 / 7600 ve testufo kare atlama. **T209'dan önce.**
 - DDC 14 kodunun eşlemesi: OSD'de her renk ön ayarını sırayla seç, ControlMyMonitor'da 14'ün değerini oku (12–15 ve tahmin edilen 2, 4, 8, 11). **T004'ten önce.**
 
-**Sonucu bildirme** (`hp-inceleme`, Flash · Medium yeterli):
+**Sonucu bildirme** (`hp-inceleme`, Sonnet · Medium yeterli):
 
 ```text
 T___ 🔧 testini monitörde yaptım. Sonuç: [geçti / geçmedi]. Notlarım: [...]
@@ -199,19 +222,23 @@ DÜZELT listesi biçiminde ver. Commit ve push et. Bana Türkçe ve kısa yaz.
 
 ## 6. Kota bitince
 
-- **Antigravity'nin Claude havuzu (Opus, Sonnet) bitti:** önce Gemini hattındaki işlere geç (yazma, inceleme, düzeltme; hangisi: `04-FAZLAR.md` → Dalgalar ve görev tabloları). Gemini hattında yapılacak iş kalmadıysa sıradaki Opus/Sonnet işini Claude Code'da yap. claude.ai/code → bu repoyla (`mehemmedsh/hp-v214a`) yeni oturum → Opus ya da Sonnet (effort high) → bölüm 2, 3 veya 4'teki metnin aynısı. Claude Code, `CLAUDE.md` üzerinden `AGENTS.md`'yi okur. Bulut oturumunda Qwen'e ulaşılamaz: ajan Qwen adımını atlar ve commit gövdesine yazar (PC'deki Claude Code'da çalışırsan Qwen adımı yapılır).
-- **Gemini havuzu bitti:** Gemini işleri bekler; Opus hattı o arada sürebilir.
-- **Görevin ortasında bitti:** Modeli değiştirme. Havuz yenilenince aynı konuşmaya "devam et" yaz.
+- **Kullanım sınırı doldu:** `/usage` ne zaman yenileneceğini gösterir; yenilenene kadar bekle.
+- **Sadece Opus'un sınırı doldu:** o arada Sonnet hattındaki işlere geç (Sonnet yazma, Sonnet düzeltme, Sonnet incelemesi; hangisi: `04-FAZLAR.md` → Dalgalar ve görev tabloları). Opus işini Sonnet'e verme.
+- **Görevin ortasında doldu:** Modeli değiştirme. Yenilenince aynı oturuma "devam et" yaz.
+- **PC'ye ulaşamıyorsun:** bölüm 0.4 (bulut oturumu), bölüm 2, 3 veya 4'teki metnin aynısıyla.
 
-## 7. Takıldığında yardım (Claude, yeni sohbet)
+## 7. Takıldığında yardım (yeni oturum)
 
-Önce ucuz yollar (bölüm 9.3): hata mesajı, CI logu, komut çıktısı → Qwen; Antigravity'nin ekranı, menüsü, ayarı → Flash. Bunlar çözmezse, cevaplar birbirini tutmazsa ya da bir karar gerekiyorsa (kural, plan, geri alınamayan iş) Claude'a sor: claude.ai/code'da bu repoyla yeni bir oturum aç ve yapıştır:
+Önce ucuz yol: hata mesajı, CI logu, komut çıktısı → Qwen (bölüm 9.3). Qwen çözmezse ya da soru Claude Code'un ekranı, menüsü, ayarı hakkındaysa → **Sonnet · Medium**. Bir karar gerekiyorsa (kural, plan, geri alınamayan iş) ya da cevaplar birbirini tutmuyorsa → **Opus · High**.
+
+Claude Code'da `hp-inceleme` klasöründe yeni bir oturum aç ve yapıştır:
 
 ```text
-hp-v214a projesindeyim; Antigravity'de çalışıyorum ve Antigravity'ye yeni başladım.
-AGENTS.md ve docs/05-HANDOFF.md'nin gerekli bölümlerini oku. Kod yazma; ne yapmam gerektiğini
-Türkçe, kısa ve adım adım anlat. Gerekirse Antigravity'ye yapıştıracağım metni yaz.
-Şu an: Dalga __, görev T___, pencere hp-____, model ____.
+Bu bir yardım oturumu: kod yazma, dosya değiştirme, komut çalıştırma.
+hp-v214a projesindeyim; Claude Code'a yeni geçtim. AGENTS.md ve docs/05-HANDOFF.md'nin
+gerekli bölümlerini oku. Ne yapmam gerektiğini Türkçe, kısa ve adım adım anlat.
+Gerekirse görev oturumuna yapıştıracağım metni yaz.
+Şu an: Dalga __, görev T___, klasör hp-____, model ____.
 Sorun / anlamadığım şey: [...]
 Ekranda gördüğüm mesaj (varsa, aynen): [...]
 ```
@@ -233,7 +260,7 @@ Görev listesi, LESSONS.md ve monitör test sonuçlarım aşağıda. Değerlendi
 
 ## 9. Qwen adımları
 
-Hangi rolün açık olduğu: `04-FAZLAR.md` → "Qwen rolleri". Komutlar `C:\dev\hp-...` klasörlerinden birinde, PowerShell'de çalışır. Her çalıştırma `.qwen\` klasörüne üç dosya yazar: sonuç (`...md`), Qwen'e giden paket (`...-paket.md`) ve Qwen'in düşünmesi (`...-dusunme.md`). Bu klasör GitHub'a gitmez.
+Hangi rolün açık olduğu: `04-FAZLAR.md` → "Qwen rolleri". Komutlar `C:\dev\hp-...` klasörlerinden birinde, PowerShell'de çalışır (ajan PC'deki Claude Code'da kendisi çalıştırır). Her çalıştırma `.qwen\` klasörüne üç dosya yazar: sonuç (`...md`), Qwen'e giden paket (`...-paket.md`) ve Qwen'in düşünmesi (`...-dusunme.md`). Bu klasör GitHub'a gitmez.
 
 ### 9.1 Ön inceleme (yazan ajan yapar)
 
@@ -246,7 +273,7 @@ git add -A
 powershell -NoProfile -ExecutionPolicy Bypass -File tools/dev/qwen-review.ps1 -Task T___
 ```
 
-Sonra yazanın aynı konuşmasına yapıştır:
+Sonra yazanın aynı oturumuna yapıştır:
 
 ```text
 Qwen ön incelemesi bitti: .qwen/T___-review-son.md. AGENTS.md → "Yerel model (Qwen)" kuralına
@@ -266,36 +293,27 @@ powershell -NoProfile -ExecutionPolicy Bypass -File tools/dev/qwen-review.ps1 -T
 
 Listeyi elle kaydedeceksen: Not Defteri → yapıştır → Farklı kaydet → `C:\dev\hp-...\.qwen\duzelt-T___.md`, kodlama UTF-8. Zaten commit edilmiş düzeltmeyi kontrol etmek için sona `-Commits <kısa-hash>` ekle (birden çoksa virgülle).
 
-### 9.3 Yardım: hata açıklama (Qwen) ve Antigravity soruları (Flash)
+### 9.3 Yardım: hata açıklama (Qwen)
 
 **Qwen** (hata mesajı, derleme hatası, CI logu, git veya PowerShell çıktısı): Ollama uygulamasını aç → yeni sohbet → model `qwen3.8:27b`. Gerekirse `AGENTS.md`'yi sohbete sürükleyip bırak. Yapıştır:
 
 ```text
-hp-v214a projesindeyim (C# / .NET 10 / WPF, Windows 11); Antigravity'de çalışıyorum.
+hp-v214a projesindeyim (C# / .NET 10 / WPF, Windows 11); Claude Code'da çalışıyorum.
 Aşağıdaki hatayı ya da çıktıyı Türkçe, kısa ve adım adım açıkla: ne demek, muhtemel sebebi,
 ne yapmalıyım. Kod yazma.
 Sadece şu komutları önerebilirsin: git (status, log, diff, pull --rebase, add, commit, push),
 gh, dotnet restore/build/test/format, tools/dev betikleri. Kayıt defterine, NVIDIA'ya, sürücüye
 ya da monitöre dokunan; dosya silen; git reset --hard, push --force, clean gibi geri alınamayan
-komut önerme. Antigravity'nin menüleri hakkında bilgin eski olabilir: menü adı tahmin etme,
-"Flash'a sor" de. Emin değilsen "emin değilim" yaz.
-Şu an: görev T___, pencere hp-____.
+komut önerme. Claude Code'un menüleri hakkında bilgin eski olabilir: menü adı tahmin etme,
+"Sonnet'e sor" de. Emin değilsen "emin değilim" yaz.
+Şu an: görev T___, klasör hp-____.
 Hata / çıktı (aynen):
 [...]
 ```
 
 Uzun CI logunda son 80 satır yeter: `gh run view <numara> --log-failed | Select-Object -Last 80`.
 
-**Flash** (Antigravity'nin ekranı, menüsü, ayarı): `hp-inceleme` penceresi → yeni konuşma → Flash · Medium:
-
-```text
-Antigravity'ye yeni başladım; hp-v214a projesindeyim. Kod yazma, dosya değiştirme, komut çalıştırma.
-Gerekirse AGENTS.md ve docs/05-HANDOFF.md'nin ilgili bölümünü oku. Türkçe, kısa ve adım adım anlat.
-Sorum: [...]
-Ekranda gördüğüm (aynen): [...]
-```
-
-Qwen ya da Flash çözemezse, ikisi farklı şey söylerse ya da karar gerekiyorsa: bölüm 7.
+Qwen çözemezse ya da soru Claude Code'un ekranı, menüsü, ayarı hakkındaysa: bölüm 7.
 
 ### 9.4 Kalibrasyon
 
@@ -327,7 +345,7 @@ Betik sonuçta anahtarla eşleşmeyi sayar ve TAMAM / KALDI yazar. Eşleştirme 
 powershell -NoProfile -ExecutionPolicy Bypass -File tools/dev/qwen-review.ps1 -Task T001 -Commits 5af407e -Name kal3
 ```
 
-**Geçer:** "yüksek" önemde yanlış bulgu en fazla 1, uydurma en fazla 2. Bulgunun doğru mu yanlış mı olduğuna Flash bakar (aşağıdaki metin).
+**Geçer:** "yüksek" önemde yanlış bulgu en fazla 1, uydurma en fazla 2. Bulgunun doğru mu yanlış mı olduğuna Sonnet bakar (aşağıdaki metin).
 
 **3. Düzeltme kontrolü: T311 düzeltmeleri, iki koşu.** 10 maddelik liste düzeltmelerden yeniden yazıldı (`tools/dev/qwen/kalibrasyon/T311-duzelt.md`).
 
@@ -342,7 +360,7 @@ Beklenen:
 
 **Geçer:** düzelmeyen maddeye "düzeldi" denmez ve 20 kararın en az 18'i doğru.
 
-Antigravity'deki T311 inceleme konuşmasında asıl DÜZELT listesi duruyorsa onu da dene: `.qwen\duzelt-T311.md` olarak kaydet ve `-List .qwen/duzelt-T311.md` ile çalıştır.
+Eski T311 inceleme konuşmasında (Antigravity) asıl DÜZELT listesi duruyorsa onu da dene: `.qwen\duzelt-T311.md` olarak kaydet ve `-List .qwen/duzelt-T311.md` ile çalıştır.
 
 **4. Hata açıklama: iki eski hata.** Ollama uygulamasında, 9.3'teki metinle, ayrı sohbetlerde sor:
 - **Hata:** `error CS0426: The type name 'App' does not exist in the type 'App'` (proje adı `App` iken).
@@ -352,7 +370,7 @@ Antigravity'deki T311 inceleme konuşmasında asıl DÜZELT listesi duruyorsa on
 
 **Geçer:** ikisi de doğru ve tehlikeli komut önermiyor.
 
-**Sonucu bildirme** (`hp-inceleme`, Flash · Medium, yeni konuşma):
+**Sonucu bildirme** (`hp-inceleme`, Sonnet · Medium, yeni oturum):
 
 ```text
 Qwen kalibrasyonunu yaptım. Sonuçlar .qwen/ klasöründe: kal1.md … kal5.md.

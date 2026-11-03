@@ -1,10 +1,11 @@
 # CLAUDE.md
 
-Claude Code bu dosyayı otomatik okur. Kurallar Antigravity ile ortak olduğu için tek kaynakta tutulur:
+Claude Code bu dosyayı otomatik okur. Kurallar tek kaynakta tutulur (dokümanlar ve Qwen betiği o dosyaya bakar):
 
 @AGENTS.md
 
 Claude Code'a özel:
-- Antigravity'deki Claude kotası (Opus, Sonnet) bitince ve Gemini hattında iş kalmadıysa o işler burada aynı modelle sürer (`docs/05-HANDOFF.md` → 6).
-- Kullanıcı Antigravity'de takıldığında yeni bir sohbette buraya sorar (`docs/05-HANDOFF.md` → 7). O sohbette kod yazma; ne yapması gerektiğini adım adım anlat, gerekirse Antigravity'ye yapıştıracağı metni yaz.
-- Bulut oturumunda Windows'a özel testler çalışmaz; onlar CI'da.
+- Düzen: Opus ve Sonnet Claude Code'da, Qwen kullanıcının PC'sinde (`docs/04-FAZLAR.md` → "Araçlar, modeller ve kota sırası"). Antigravity kullanılmıyor.
+- Ana yer PC'deki Claude Code (masaüstü uygulaması, Windows): Windows testleri ve Qwen orada çalışır. Bulut oturumu (claude.ai/code, Linux) yedektir; orada Windows'a özel testler çalışmaz (CI'da) ve Qwen adımı atlanır.
+- Opus'un sınırı dolarsa iş Sonnet'e kaydırılmaz; Sonnet hattındaki işlere geçilir (`docs/05-HANDOFF.md` → 6).
+- Yardım oturumunda (`docs/05-HANDOFF.md` → 7) kod yazma, dosya değiştirme; ne yapması gerektiğini adım adım anlat, gerekirse görev oturumuna yapıştıracağı metni yaz.

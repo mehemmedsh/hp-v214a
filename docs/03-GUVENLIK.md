@@ -48,12 +48,12 @@ Bu uygulama monitörün, ekran kartının ve Windows'un ekran ayarlarına yazıy
 
 ## 6. Ajanlar ve geliştirme ortamı
 
-Antigravity ajanı kullanıcının bilgisayarında, gerçek monitörün yanında çalışır.
+Claude Code ajanı (masaüstü uygulaması) kullanıcının bilgisayarında, gerçek monitörün yanında çalışır.
 
 - Ajan uygulamayı ve donanıma yazan kodu çalıştırmaz. Testler sahte donanımla çalışır; 🔧 testlerini sadece kullanıcı yapar.
 - Ajan kayıt defterine, ekran ayarlarına, NVIDIA ayarlarına veya monitöre (DDC) dokunan komut çalıştırmaz.
 - Serbest komutlar: `git`, `gh`, `dotnet restore/build/test/format`, `tools/dev/` betikleri. Başka bir komut ya da program kurulumu kullanıcının onayıyla.
-- Antigravity'de terminal komutlarının otomatik çalışması kapalı tutulur (`05-HANDOFF.md` → 0.3).
+- Claude Code'da izin modu varsayılan kalır: her komut kullanıcının onayını ister; otomatik onay modları (auto, bypass) PC'de kullanılmaz (`05-HANDOFF.md` → 0.3).
 
 ## 7. Işığa duyarlılık uyarısı
 

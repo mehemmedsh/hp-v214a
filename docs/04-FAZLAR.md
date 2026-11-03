@@ -6,35 +6,34 @@
 
 ### Araçlar, modeller ve kota sırası
 
-| Kısaltma | Nerede | Model | Düşünme seviyesi | Kota |
+Düzen 2026-11-03'ten beri: **Opus, Sonnet ve Qwen.** Antigravity (Gemini, Flash) kullanılmıyor.
+
+| Kısaltma | Nerede | Model | Düşünme seviyesi (effort) | Kota |
 |---|---|---|---|---|
-| **Opus** | Antigravity | Claude Opus 5.5, adında **(Thinking)** olan | seviye seçeneği varsa **High** | Antigravity Claude havuzu |
-| **Sonnet** | Antigravity | Claude Sonnet 5.5, adında **(Thinking)** olan | seviye seçeneği varsa **High**; sadece metin incelemesinde (T311, T502) **Medium** | Antigravity Claude havuzu |
-| **Gemini** | Antigravity | Gemini 4 Argon (seçicide yoksa Gemini 3.8 Flash) | **High** | Antigravity Gemini havuzu |
-| **Flash** | Antigravity | Gemini 3.8 Flash | **Medium** | Antigravity Gemini havuzu |
+| **Opus** | Claude Code, PC (masaüstü uygulaması, Windows) | Claude Opus 5.5 | **High**; sadece metin işinde **Medium** | Claude aboneliği (Opus, Sonnet'ten hızlı tüketir) |
+| **Sonnet** | Claude Code, PC (masaüstü uygulaması, Windows) | Claude Sonnet 5.5 | **High**; sadece metin işinde (T311, T502, sonuç bildirme) **Medium** | Claude aboneliği |
 | **Qwen** | Kullanıcının PC'si: Ollama (`tools/dev/qwen-review.ps1` ve Ollama uygulaması) | Qwen 3.8 27B (`qwen3.8:27b`, 4-bit, sadece RTX 3090) | düşünme açık (varsayılan) | Yerel, kota yok; ~47 token/sn, bir ön inceleme birkaç dakika |
 
 - **Kısa kural:** kod işi **High**, sadece metin işi **Medium**; hiçbir işte Low yok.
+- **Yedek:** Claude Code bulut oturumu (claude.ai/code, Linux), PC'ye ulaşılamadığında. Orada Windows'a özel testler çalışmaz (CI'da) ve Qwen yoktur; ajan Qwen adımını atlar, nedenini commit gövdesine yazar.
 - **Kota sırası** (önce ucuz olan):
   1. **Qwen** (yerel, sınırsız): ön inceleme, düzeltme kontrolü, hata ve log açıklama; sadece "Qwen rolleri"nde ✅ olanlar.
-  2. **Antigravity Gemini havuzu:** Gemini ve Flash işleri; Antigravity'nin ekranı ve ayarlarıyla ilgili sorular (Flash).
-  3. **Antigravity Claude havuzu:** Opus ve Sonnet işleri (görev tablosundaki gibi).
-  4. **Claude Code / claude.ai en son:** Qwen'in ve Flash'ın çözemediği ya da karar gerektiren yardım soruları (`05-HANDOFF.md` → 7) ve T503.
-- **Antigravity'nin Claude havuzu biterse** (kullanıcı kararı, 2026-11-03): önce Gemini hattındaki işlere geç (yazma, inceleme, düzeltme). Gemini hattında yapılacak iş kalmadıysa Opus/Sonnet işi Claude Code'da aynı modelle sürer (effort high).
-- Gemini havuzu biterse Gemini işleri havuz yenilenene kadar bekler (5 saatte bir yenilenir, haftalık tavanı var); o arada Opus hattı sürer.
-- Görevin ortasında kota biterse model değiştirilmez: havuz yenilenince aynı konuşmada "devam et" yazılır.
-- Antigravity'de Claude ve GPT aynı havuzu kullanır. Codex yok; tek GPT modeli (GPT-OSS-120B) 2 Kasım 2026'da kalkıyor. O havuzda sadece Opus ve Sonnet kullanılır.
+  2. **Sonnet:** B ve C yazma, A inceleme, metin işleri, monitör testi ve kalibrasyon sonucunu bildirme, Claude Code'un ekranı ve ayarlarıyla ilgili sorular.
+  3. **Opus:** A yazma (ve T003), B ve C inceleme, karar gerektiren yardım soruları (`05-HANDOFF.md` → 7), T503.
+- **Kullanım sınırı dolarsa** (`/usage` ne zaman yenileneceğini gösterir): yenilenene kadar bekle. Sadece Opus'un sınırı dolduysa o arada Sonnet hattındaki işlere geç (Sonnet yazma ve düzeltme, Sonnet incelemesi). Bir görevin modeli kota yüzünden değiştirilmez: Opus işi Sonnet'e, Sonnet işi Opus'a kaydırılmaz.
+- Görevin ortasında sınır dolarsa model değiştirilmez: yenilenince aynı oturumda "devam et" yazılır.
 
 ### Görev sınıfları
 
 | Sınıf | Ne tür iş | Yazan | Ön inceleme | İnceleyen |
 |---|---|---|---|---|
-| **A** | Donanıma veya sistem ayarına yazan, güvenlikle ilgili ya da her şeyin temeli olan iş | Opus | Qwen | Gemini, `03-GUVENLIK.md` kontrol listesiyle |
-| **B** | Mantık, algoritma, akış | Gemini (T003'ü temel olduğu için Opus yazar) | Qwen | Opus (T003'ü Gemini) |
-| **C** | Arayüz, metin | Gemini; metin ve çeviride Flash | Qwen | Sonnet |
+| **A** | Donanıma veya sistem ayarına yazan, güvenlikle ilgili ya da her şeyin temeli olan iş | Opus | Qwen | Sonnet, `03-GUVENLIK.md` kontrol listesiyle |
+| **B** | Mantık, algoritma, akış | Sonnet (T003'ü temel olduğu için Opus yazar) | Qwen | Opus (T003'ü Sonnet) |
+| **C** | Arayüz, metin | Sonnet (metin ve çeviride Medium) | Qwen | Opus (metinde Medium) |
 | **K** | Son kontrol noktası | Kullanıcı (monitör başında) | — | Claude app, Opus (yeni sohbet) |
 
 - Yazan ve inceleyen her zaman farklı model. İnceleme hiçbir görevde atlanmaz.
+- T001, T002 ve T311 eski düzende yazıldı (T001, T002: Opus → Gemini; T311: Flash → Sonnet); satırlarında o kayıt duruyor. T311'in yeniden incelemesi Sonnet'te kalır.
 - **Qwen ön incelemesi ek bir kontroldür:** incelemenin yerine geçmez, ONAY vermez; bulgularını yazan model doğrular (`AGENTS.md` → "Yerel model (Qwen)"). Rol ✅ değilse bu adım yapılmaz.
 - Yazma, inceleme ve düzeltme ayrı konuşmalardır. Düzeltmeyi yazan model yapar (`05-HANDOFF.md` → 4).
 
@@ -59,10 +58,10 @@ Durum: ⬜ kalibrasyon bekliyor · ✅ açık · ⛔ kapalı (geçemedi ya da so
   - Kim yakalar: yanlış "düzelmedi"yi düzelten, yanlış "düzeldi"yi yeniden inceleyen.
   - Ne zaman güvenilmez: düzeltmenin açtığı yeni sorunlara bakmaz; bu ona sorulmaz.
 - **Hata ve log açıklama.**
-  - Güvence: sadece açıklar. `AGENTS.md`'deki serbest komutlar dışında önerdiği komutu (kayıt defteri, NVIDIA, sürücü, `git reset --hard`, `git push --force`, silme) kullanıcı çalıştırmaz; Flash'a ya da Claude'a sorar.
-  - Ne zaman güvenilmez: Antigravity'nin ekranı ve ayarları (bilgisi eski olabilir → Flash) ve proje kararları (→ Claude).
+  - Güvence: sadece açıklar. `AGENTS.md`'deki serbest komutlar dışında önerdiği komutu (kayıt defteri, NVIDIA, sürücü, `git reset --hard`, `git push --force`, silme) kullanıcı çalıştırmaz; Sonnet'e sorar (`05-HANDOFF.md` → 7).
+  - Ne zaman güvenilmez: Claude Code'un ekranı ve ayarları (bilgisi eski olabilir → Sonnet) ve proje kararları (→ Opus).
 - **Qwen'e verilmeyenler:** A sınıfı yazma, tek başına inceleme, ONAY, Azerbaycanca çeviri, C taslağı, commit mesajı.
-  - Kalan C işleri T305 (DDC), T310 (panik kısayolu) ve T502 (çeviri). Zayıf taslak DÜZELT turu açar; her tur bir Sonnet konuşması demek.
+  - Kalan C işleri T305 (DDC), T310 (panik kısayolu) ve T502 (çeviri). Zayıf taslak DÜZELT turu açar; her tur bir Sonnet düzeltme ve bir Opus yeniden inceleme oturumu demek.
   - Commit mesajını işi yapan ajan zaten bildiği için yazar.
 
 ### Görev kuralları
@@ -79,13 +78,13 @@ Durum: ⬜ bekliyor · 🟨 yazıldı, incelemede · 🔧 onaylandı, monitör t
 
 ### Paralel çalışma (hatlar)
 
-- Her hat ayrı bir klasör (ayrı `git clone`) ve Antigravity'de ayrı bir penceredir: `hp-opus` (Opus yazma ve düzeltme), `hp-gemini` (Gemini yazma ve düzeltme), `hp-gemini2` (aynı dalgadaki ikinci Gemini işi), `hp-inceleme` (incelemeler; sadece okur, derler, test eder). Kurulum: `05-HANDOFF.md` → 0.
-- Aynı dalgadaki görevler aynı anda yazılır, sonra çapraz incelenir: Opus'un görevini Gemini, Gemini'nin görevini Opus (B) ya da Sonnet (C) inceler. Bir dalga, görevlerinin hepsi onaylanınca biter.
+- Her hat ayrı bir klasör (ayrı `git clone`) ve Claude Code'da o klasörde açılan ayrı bir oturumdur: `hp-opus` (Opus yazma ve düzeltme), `hp-sonnet` (Sonnet yazma ve düzeltme), `hp-sonnet2` (aynı dalgadaki ikinci Sonnet işi), `hp-inceleme` (incelemeler; sadece okur, derler, test eder). Kurulum: `05-HANDOFF.md` → 0.
+- Aynı dalgadaki görevler aynı anda yazılır, sonra çapraz incelenir: Opus'un görevini Sonnet, Sonnet'in görevini Opus inceler. Bir dalga, görevlerinin hepsi onaylanınca biter.
 - Kalite için: ilk iki dalgada tek yazma hattı; alışınca iki; rahat edince üç. Hat sayısı toplam kullanımı artırmaz, sadece işi kısaltır.
 
 ## Dalgalar
 
-| Dalga | Opus hattı | Gemini hattı | 2. Gemini hattı |
+| Dalga | Opus hattı | Sonnet hattı | 2. Sonnet hattı |
 |---|---|---|---|
 | 1 | T001 | — | — |
 | 2 | T002 | T311 (Flash) | — |
@@ -96,7 +95,7 @@ Durum: ⬜ bekliyor · 🟨 yazıldı, incelemede · 🔧 onaylandı, monitör t
 | 7 | T303 | T313 | — |
 | 8 | T209 | T308 | — |
 | 9 | T104 | T310 | — |
-| 10 | — | T502 (Flash) | — |
+| 10 | — | T502 | — |
 | 11 | T503: kullanıcı + Claude app | | |
 
 ---
@@ -107,38 +106,38 @@ Durum: ⬜ bekliyor · 🟨 yazıldı, incelemede · 🔧 onaylandı, monitör t
 |---|---|---|---|---|---|---|---|
 | T001 | Proje iskeleti: `02-MIMARI.md` → Klasör yapısı'ndaki 8 `MonitorTuner.*` projesi ve test projeleri; dil altyapısı (tüm metinler baştan çeviri dosyasından, özellik başına ayrı `.resx`, ana dil Türkçe); sessiz derleme/test betikleri (`tools/dev`, bash + PowerShell); CI: Ubuntu (derleme + platformdan bağımsız testler) ve Windows (derleme + tüm testler + çalıştırılabilir self-contained `win-x64` paket, 7 gün saklama); mimari testleri (`02-MIMARI.md` → CI korumaları); `05-HANDOFF.md` → 5'e test paketinin nasıl açılacağı | A | Opus → Gemini | — | 1 | Boş çözüm PC'de (Windows) ve CI'da (Ubuntu + Windows) derleniyor; platformdan bağımsız testler Linux'ta da çalışıyor; CI yeşil ve Windows paketi indirilebiliyor; mimari testleri bilerek ihlal eden bir örneği yakalıyor (testte kanıtlı) | ✅ |
 | T002 | Sözleşmeler: `02-MIMARI.md`'deki modül sözleşmelerini arayüzlere ve boş (kırmızı) testlere çevir; donanım yazma metotları geri alma noktası ister; renk boru hattı dahil | A | Opus → Gemini | T001 | 2 | Her modülün arayüzü ve en az bir testi var | ✅ |
-| T003 | Sahte donanım: sahte monitör (DDC'li ve DDC'siz, bellek yazma sayacı), sahte GPU renk tablosu, sahte NVIDIA ayarları (dithering, canlılık), sahte ekran modları, sahte kayıt defteri, sahte saat; örnek EDID | B | Opus → Gemini | T002 | 3 | Donanımsız tüm testler sahte donanımla çalışıyor | ⬜ |
-| T004 | Monitör profil dosyası: şema + HP P21b G4 profili (Hz modları ve timing'leri: 50, 60, 72, 74, 75, 76 ve test durumları; ölçülen sınır; OSD yetenekleri; DDC kod tablosu ve 14 kodunun ön ayar eşlemesi; AE/AC okuma kuralları; PWM yok; kaynak `donanim/hp-p21b-g4/`) | B | Gemini → Opus | T002 | 3 | Profil yükleniyor; ilk gün sonuçları işlendi 🔧 | ⬜ |
+| T003 | Sahte donanım: sahte monitör (DDC'li ve DDC'siz, bellek yazma sayacı), sahte GPU renk tablosu, sahte NVIDIA ayarları (dithering, canlılık), sahte ekran modları, sahte kayıt defteri, sahte saat; örnek EDID | B | Opus → Sonnet | T002 | 3 | Donanımsız tüm testler sahte donanımla çalışıyor | ⬜ |
+| T004 | Monitör profil dosyası: şema + HP P21b G4 profili (Hz modları ve timing'leri: 50, 60, 72, 74, 75, 76 ve test durumları; ölçülen sınır; OSD yetenekleri; DDC kod tablosu ve 14 kodunun ön ayar eşlemesi; AE/AC okuma kuralları; PWM yok; kaynak `donanim/hp-p21b-g4/`) | B | Sonnet → Opus | T002 | 3 | Profil yükleniyor; ilk gün sonuçları işlendi 🔧 | ⬜ |
 
 ## Faz 1 — Çekirdek
 
 | No | Görev | Sınıf | Yazan → İnceleyen | Bağımlı | Dalga | Bitti sayılır | Durum |
 |---|---|---|---|---|---|---|---|
-| T102 | Monitör tanıma (model, seri no, bağlantı tipi, bağlı olduğu kart; VGA'daysa uyarı) ve ayar deposu (`%AppData%` altında JSON, yedekler ayrı klasörde) | B | Gemini → Opus | T003 | 4 | Sahte sistemle tanıma ve depo testleri geçiyor | ⬜ |
-| T103 | Güvenlik katmanı: DDC ve GPU tablosu yedeği, geri alma noktaları, 15 sn onay zamanlayıcısı, "fabrika ayarına dön", kaldırma temizliği | A | Opus → Gemini | T003 | 4 | Sahte donanımla her yazma geri alınabiliyor; onaylanmayan değişiklik 15 sn'de dönüyor | ⬜ |
-| T104 | Kurtarma dosyası (GPU tablosunu sıfırlar, `GdiIcmGammaRange`'i eski haline döndürür, dithering ve canlılığı varsayılana alır) ve "görüntü gelmezse" talimatı (başka port, güvenli mod, NVIDIA özel çözünürlüğünü silme) | A | Opus → Gemini | T103, T302, T303 | 9 | Kurtarma dosyası sahte sistemde her şeyi varsayılana döndürüyor; gerçek PC'de bir kez çalıştırıldı 🔧 | ⬜ |
+| T102 | Monitör tanıma (model, seri no, bağlantı tipi, bağlı olduğu kart; VGA'daysa uyarı) ve ayar deposu (`%AppData%` altında JSON, yedekler ayrı klasörde) | B | Sonnet → Opus | T003 | 4 | Sahte sistemle tanıma ve depo testleri geçiyor | ⬜ |
+| T103 | Güvenlik katmanı: DDC ve GPU tablosu yedeği, geri alma noktaları, 15 sn onay zamanlayıcısı, "fabrika ayarına dön", kaldırma temizliği | A | Opus → Sonnet | T003 | 4 | Sahte donanımla her yazma geri alınabiliyor; onaylanmayan değişiklik 15 sn'de dönüyor | ⬜ |
+| T104 | Kurtarma dosyası (GPU tablosunu sıfırlar, `GdiIcmGammaRange`'i eski haline döndürür, dithering ve canlılığı varsayılana alır) ve "görüntü gelmezse" talimatı (başka port, güvenli mod, NVIDIA özel çözünürlüğünü silme) | A | Opus → Sonnet | T103, T302, T303 | 9 | Kurtarma dosyası sahte sistemde her şeyi varsayılana döndürüyor; gerçek PC'de bir kez çalıştırıldı 🔧 | ⬜ |
 
 ## Faz 2 — Yenileme hızı
 
 | No | Görev | Sınıf | Yazan → İnceleyen | Bağımlı | Dalga | Bitti sayılır | Durum |
 |---|---|---|---|---|---|---|---|
-| T209 | Hz paneli: Windows mod listesi; onaylı modlar (76, 75, 72, 60, 50) arasında elle geçiş; 15 sn onay; monitörden (DDC AE) gerçek Hz doğrulaması; sürücü güncellemesi modu silerse uyarı ve NVIDIA'ya girilecek değerler (profilden); spec dışı moda ilk geçişte uyarı | A | Opus → Gemini | T004, T103, T301 | 8 | Sahte sistemde geçiş, geri dönüş ve doğrulama testleri geçiyor; gerçek monitörde 60 ↔ 76 geçişi ve geri dönüş 🔧 | ⬜ |
+| T209 | Hz paneli: Windows mod listesi; onaylı modlar (76, 75, 72, 60, 50) arasında elle geçiş; 15 sn onay; monitörden (DDC AE) gerçek Hz doğrulaması; sürücü güncellemesi modu silerse uyarı ve NVIDIA'ya girilecek değerler (profilden); spec dışı moda ilk geçişte uyarı | A | Opus → Sonnet | T004, T103, T301 | 8 | Sahte sistemde geçiş, geri dönüş ve doğrulama testleri geçiyor; gerçek monitörde 60 ↔ 76 geçişi ve geri dönüş 🔧 | ⬜ |
 
 ## Faz 3 — Görüntü, renk ve göz konforu
 
 | No | Görev | Sınıf | Yazan → İnceleyen | Bağımlı | Dalga | Bitti sayılır | Durum |
 |---|---|---|---|---|---|---|---|
-| T301 | DDC katmanı: yetenek testi (DDC var mı, hangi kodlar), okuma/yazma, yazma izin listesi (04/05/08 ve E6–FF asla), yazma sınırı (bırakınca tek yazma, tekrar engeli), AC değerinin taşma düzeltmesi | A | Opus → Gemini | T004, T103 | 5 | Sahte monitörde sınırlar çalışıyor; gerçek monitörde okuma ve tek bir parlaklık yazması 🔧 | ⬜ |
-| T302 | Renk boru hattı: GPU tablosunun tek sahibi; katman sırası kalibrasyon → mavi ışık (GPU kısmı) → ek karartma; `GdiIcmGammaRange` (tek seferlik yönetici onayı, eski değer yedeklenir); dış değişiklik tespiti, geri yükleme ve uyarı; kapanışta tabloda sadece kalibrasyon kalır | A | Opus → Gemini | T103 | 6 | Sahte tabloda birleştirme, geri yükleme ve kapanış testleri geçiyor; gerçek PC'de tablo yazılıp geri alındı 🔧 | ⬜ |
-| T303 | NVIDIA ayarları: dithering (GPU tablosu kullanılırken açık) ve canlılık (sadece Film ve Oyun profillerinde); kapanışta ikisi de varsayılana döner | A | Opus → Gemini | T302 | 7 | Sahte sürücüyle aç/kapa ve geri dönüş testleri geçiyor; gerçek monitörde gradyanda bant yok 🔧 | ⬜ |
-| T305 | DDC paneli: parlaklık, kontrast, renk ön ayarı, RGB kazancı, keskinlik, giriş, hoparlör sesi; dijital parlaklık koruması; DDC yoksa OSD talimatı | C | Gemini → Sonnet | T102 | 5 | Sahte monitörle panel çalışıyor | ⬜ |
-| T306 | Parlaklık ve ek karartma: tek kaydırıcı (arka ışık 100 → 0, sonra GPU ile %15 tabana kadar); kaydırıcı bırakılınca tek yazma | B | Gemini → Opus | T003 | 5 | Karartma planı sınır değer testleri geçiyor | ⬜ |
-| T307 | Mavi ışık filtresi: Kelvin hesabı (6500K → 1900K); önce monitör RGB kazancı, sınırda GPU; kalibrasyona fark olarak; Low Blue Light kısayolu; isteğe bağlı yavaş akşam geçişi (varsayılan kapalı, sadece renk); Gece ışığı/f.lux uyarısı | B | Gemini → Opus | T003 | 4 | Kelvin tablosu (`08-GORUNTU-YONTEMLERI.md` → 4) birebir; monitör/GPU paylaşımı testli | ⬜ |
-| T308 | Renk profilleri (presetler): Gündüz, Akşam, Gece, Kod, Film, Oyun, DaVinci zaman çizelgesi (nötr, efektsiz) ve kullanıcı profilleri; parlaklık, renk, mavi ışık, ek karartma ve canlılığı bir kez ayarlar; Hz'e dokunmaz; sadece elle | B | Gemini → Opus | T303, T306, T307 | 8 | Her profil sahte donanımda doğru değerleri yazıyor; Hz değişmiyor | ⬜ |
-| T310 | Sistem tepsisi, kısayollar, panik kısayolu (mavi ışık, ek karartma, canlılık kapanır; kalibrasyon kalır) | C | Gemini → Sonnet | T308 | 9 | Tepsiden profil seçimi ve panik testleri geçiyor | ⬜ |
+| T301 | DDC katmanı: yetenek testi (DDC var mı, hangi kodlar), okuma/yazma, yazma izin listesi (04/05/08 ve E6–FF asla), yazma sınırı (bırakınca tek yazma, tekrar engeli), AC değerinin taşma düzeltmesi | A | Opus → Sonnet | T004, T103 | 5 | Sahte monitörde sınırlar çalışıyor; gerçek monitörde okuma ve tek bir parlaklık yazması 🔧 | ⬜ |
+| T302 | Renk boru hattı: GPU tablosunun tek sahibi; katman sırası kalibrasyon → mavi ışık (GPU kısmı) → ek karartma; `GdiIcmGammaRange` (tek seferlik yönetici onayı, eski değer yedeklenir); dış değişiklik tespiti, geri yükleme ve uyarı; kapanışta tabloda sadece kalibrasyon kalır | A | Opus → Sonnet | T103 | 6 | Sahte tabloda birleştirme, geri yükleme ve kapanış testleri geçiyor; gerçek PC'de tablo yazılıp geri alındı 🔧 | ⬜ |
+| T303 | NVIDIA ayarları: dithering (GPU tablosu kullanılırken açık) ve canlılık (sadece Film ve Oyun profillerinde); kapanışta ikisi de varsayılana döner | A | Opus → Sonnet | T302 | 7 | Sahte sürücüyle aç/kapa ve geri dönüş testleri geçiyor; gerçek monitörde gradyanda bant yok 🔧 | ⬜ |
+| T305 | DDC paneli: parlaklık, kontrast, renk ön ayarı, RGB kazancı, keskinlik, giriş, hoparlör sesi; dijital parlaklık koruması; DDC yoksa OSD talimatı | C | Sonnet → Opus | T102 | 5 | Sahte monitörle panel çalışıyor | ⬜ |
+| T306 | Parlaklık ve ek karartma: tek kaydırıcı (arka ışık 100 → 0, sonra GPU ile %15 tabana kadar); kaydırıcı bırakılınca tek yazma | B | Sonnet → Opus | T003 | 5 | Karartma planı sınır değer testleri geçiyor | ⬜ |
+| T307 | Mavi ışık filtresi: Kelvin hesabı (6500K → 1900K); önce monitör RGB kazancı, sınırda GPU; kalibrasyona fark olarak; Low Blue Light kısayolu; isteğe bağlı yavaş akşam geçişi (varsayılan kapalı, sadece renk); Gece ışığı/f.lux uyarısı | B | Sonnet → Opus | T003 | 4 | Kelvin tablosu (`08-GORUNTU-YONTEMLERI.md` → 4) birebir; monitör/GPU paylaşımı testli | ⬜ |
+| T308 | Renk profilleri (presetler): Gündüz, Akşam, Gece, Kod, Film, Oyun, DaVinci zaman çizelgesi (nötr, efektsiz) ve kullanıcı profilleri; parlaklık, renk, mavi ışık, ek karartma ve canlılığı bir kez ayarlar; Hz'e dokunmaz; sadece elle | B | Sonnet → Opus | T303, T306, T307 | 8 | Her profil sahte donanımda doğru değerleri yazıyor; Hz değişmiyor | ⬜ |
+| T310 | Sistem tepsisi, kısayollar, panik kısayolu (mavi ışık, ek karartma, canlılık kapanır; kalibrasyon kalır) | C | Sonnet → Opus | T308 | 9 | Tepsiden profil seçimi ve panik testleri geçiyor | ⬜ |
 | T311 | Rehber (metin): oturma ve açı (TN), Hz kurulumu (NVIDIA özel çözünürlük değerleri, `00-DONANIM.md`), kare atlama ve stabilite testi (testufo, ışığa duyarlılık uyarısıyla), RTX Video Super Resolution, DLDSR, ClearType, ortam ışığı, 20-20-20 kuralı, Gece ışığı/f.lux kapalı | C | Flash → Sonnet | T001 | 2 | Metinler çeviri dosyasında; uygulamada rehber sayfasında açılıyor | 🟨 |
-| T312 | Ayar sihirbazı 1 (desenler ve monitör ayarları): ısınma ve konum hatırlatması; siyah/beyaz kırpma ile kontrast ve parlaklık; keskinlik (yazı kenarında hale yok); RGB Full kontrolü; TN açı deseni; ölü piksel ve homojenlik; Pixel ekranıyla yan yana beyaz eşleme (DDC RGB kazancı); sonucu "temel ayar" olarak kaydeder | B | Gemini → Opus | T305 | 6 | Desenler açılıyor, adımlar sahte monitörde değer yazıyor; gerçek monitörde sihirbaz baştan sona 🔧 | ⬜ |
-| T313 | Ayar sihirbazı 2 (gözle kalibrasyon): gamma (dama desenleriyle, hedef 2.2) ve gri dengesi (koyu, orta ve açık gride renk kayması kalmayacak şekilde); sonuç renk boru hattının kalibrasyon katmanına; dithering açık | B | Gemini → Opus | T302, T312 | 7 | Eğri hesabı testli; gerçek monitörde gri basamaklar nötr, gradyanda bant yok 🔧 | ⬜ |
+| T312 | Ayar sihirbazı 1 (desenler ve monitör ayarları): ısınma ve konum hatırlatması; siyah/beyaz kırpma ile kontrast ve parlaklık; keskinlik (yazı kenarında hale yok); RGB Full kontrolü; TN açı deseni; ölü piksel ve homojenlik; Pixel ekranıyla yan yana beyaz eşleme (DDC RGB kazancı); sonucu "temel ayar" olarak kaydeder | B | Sonnet → Opus | T305 | 6 | Desenler açılıyor, adımlar sahte monitörde değer yazıyor; gerçek monitörde sihirbaz baştan sona 🔧 | ⬜ |
+| T313 | Ayar sihirbazı 2 (gözle kalibrasyon): gamma (dama desenleriyle, hedef 2.2) ve gri dengesi (koyu, orta ve açık gride renk kayması kalmayacak şekilde); sonuç renk boru hattının kalibrasyon katmanına; dithering açık | B | Sonnet → Opus | T302, T312 | 7 | Eğri hesabı testli; gerçek monitörde gri basamaklar nötr, gradyanda bant yok 🔧 | ⬜ |
 
 ## Faz 5 — Tamamlama
 
@@ -146,12 +145,12 @@ Durum: ⬜ bekliyor · 🟨 yazıldı, incelemede · 🔧 onaylandı, monitör t
 
 | No | Görev | Sınıf | Yazan → İnceleyen | Bağımlı | Dalga | Bitti sayılır | Durum |
 |---|---|---|---|---|---|---|---|
-| T502 | Çeviriler: Azerbaycanca ve İngilizce (Türkçe ana dil) | C | Flash → Sonnet | T209, T305–T313 | 10 | Tüm ekranlar üç dilde | ⬜ |
+| T502 | Çeviriler: Azerbaycanca ve İngilizce (Türkçe ana dil) | C | Sonnet → Opus | T209, T305–T313 | 10 | Tüm ekranlar üç dilde | ⬜ |
 | T503 | **Son kontrol noktası:** uçtan uca test, `LESSONS.md`, plan dışı fikirler için karar | K | Kullanıcı → Claude app Opus | hepsi | 11 | Kullanıcı onayı | ⬜ |
 
 ## Özet
 
-| Faz | Görev | Opus yazar | Gemini / Flash yazar | Kontrol noktası |
+| Faz | Görev | Opus yazar | Sonnet yazar (T311: Flash) | Kontrol noktası |
 |---|---|---|---|---|
 | 0 | 4 | 3 | 1 | — |
 | 1 | 3 | 2 | 1 | — |
@@ -160,14 +159,11 @@ Durum: ⬜ bekliyor · 🟨 yazıldı, incelemede · 🔧 onaylandı, monitör t
 | 5 | 2 | 0 | 1 | T503 |
 | **Toplam** | **21** | **9** | **11** | **1** |
 
-**Tahmini kullanım (2026-11-03, Qwen'li düzen):**
+**Tahmini kullanım (2026-11-03, Opus + Sonnet + Qwen düzeni, kalan iş):**
 
-- **Antigravity Claude havuzu:** yaklaşık 20 konuşma (9 Opus yazma, 7 Opus inceleme, 4 Sonnet inceleme). Bu sayı kalite kuralı yüzünden azalmaz: her görevde Claude ya yazar ya inceler.
-- **Antigravity Gemini havuzu:** yaklaşık 20 konuşma (11 yazma, 9 inceleme).
-- **Düzeltmeler:** her DÜZELT turu 1 Claude konuşması demek. Şimdiye kadar %20–40 ekliyordu; Qwen ön incelemesi ve düzeltme kontrolü açıksa tahminen %10–20 ekler.
-- **Claude Code / claude.ai:**
-  - T503.
-  - Gemini hattında iş kalmadığında Claude havuzundan taşan işler.
-  - Sadece Qwen'in ve Flash'ın çözemediği yardım soruları: dalga başına ~1 yerine ~0,3.
-- **Toplam:** kalan iş için Claude konuşması tahmini ~31–36'dan ~23–27'ye iner (≈ %25).
+- **Opus:** yaklaşık 18 oturum (7 yazma: T003, T103, T104, T209, T301, T302, T303; 10 inceleme: Sonnet'in yazdığı görevler; T503).
+- **Sonnet:** yaklaşık 18 oturum (10 yazma: T004, T102, T305, T306, T307, T308, T310, T312, T313, T502; 7 inceleme: Opus'un yazdığı görevler; T311 yeniden incelemesi).
+- **Düzeltmeler:** her DÜZELT turu bir yazan + bir yeniden inceleme oturumu. Şimdiye kadar %20–40 ekliyordu; Qwen ön incelemesi ve düzeltme kontrolü açıksa tahminen %10–20 ekler.
+- **Yardım ve sonuç bildirme:** Sonnet · Medium, kısa oturumlar; önce Qwen.
+- Eski düzendeki Gemini işleri artık Claude kotasından gider. Bu yüzden Opus'un işi az tutuldu: Opus sadece A yazar ve B, C inceler; daha çok iş Sonnet'te.
 - **Kalibrasyona bağlı:** ön inceleme ⛔ kalırsa düzeltme payı eski hâline döner.
