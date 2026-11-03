@@ -32,3 +32,10 @@ HP P21b G4 ünitesinde test edilen gerçek değerler: ilk gün kontrolü (`docs/
 - 2026-10-30 · Plan · Bulut oturumunda deneme: .NET SDK yoktu, Microsoft'un indirme sunucusu engelli; Ubuntu paketi `dotnet-sdk-10.0` kuruldu. WPF projesi `EnableWindowsTargeting` ile Linux'ta derlendi, `net10.0` testleri çalıştı. Sadece `App` adlı projede `App` sınıfı ad alanıyla çakıştı (CS0426) · Kurulum `CLAUDE.md`'de; projeler `MonitorTuner.*` adını alır
 - 2026-10-30 · Plan · Antigravity `CLAUDE.md`'yi okumuyor, `AGENTS.md`'yi okuyor · Kurallar `AGENTS.md`'de tek kaynak; `CLAUDE.md` onu içe aktarıyor
 - 2026-10-30 · Plan · Kapsam daraltılırken dithering, canlılık ve GPU boru hattı bir an çıkarıldı; kullanıcının birinci önceliği görüntü kalitesi olduğu için geri alındı · Bir özelliği çıkarmadan önce birinci önceliğe (görüntü kalitesi, göz konforu) etkisini yaz
+- 2026-11-03 · Plan · Qwen kurulumunda dört tuzak yaşandı:
+  - `ollama run` penceresine çok satırlı yapıştırma her satırı ayrı mesaj olarak gönderdi.
+  - PowerShell 5.1'de boruyla verilen Türkçe metin bozuldu.
+  - `*ollama*` ile `Stop-Process` kurulum programını da kapattı.
+  - 16k bağlamı aşan girdi sessizce kırpıldı.
+  - Bundan sonra: Qwen'e fark ve dokümanlar `tools/dev/qwen-review.ps1` ile verilir (UTF-8, bağlam tahmini, parçalama); tuzaklar `05-HANDOFF.md` → 9.5'te.
+- 2026-11-03 · Plan · Betik yazılırken ajanın aracı `\u00e7` gibi kaçışları gerçek harfe çevirdi. BOM'suz .ps1'de bu harfler PowerShell 5.1'de bozulur, ’ gibi tırnaklar dizeyi erken kapatır · `.ps1` dosyaları ASCII kalır; Türkçe harf `TR '{00e7}'` biçiminde yazılır, Türkçe metinler ayrı UTF-8 dosyalarda tutulur

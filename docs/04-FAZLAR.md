@@ -1,6 +1,6 @@
 # Fazlar ve Görevler
 
-**Sıradaki görev: T002 incelemesi** (Gemini) ve **T311 incelemesi** (Sonnet); ikisi onaylanınca Dalga 3 (T003, T004). Kapsam 2026-10-30'da 66 görevden 21'e indi (`07-INCELEME.md`, 7. tur; plan dışı kalanlar `06-CIKARILANLAR.md`).
+**Sıradaki görev: T002 incelemesi** (Gemini) ve **T311 yeniden incelemesi** (Sonnet); ikisi onaylanınca Dalga 3 (T003, T004). Bu arada Qwen kalibrasyonu (`05-HANDOFF.md` → 9.4). Kapsam 2026-10-30'da 66 görevden 21'e indi (`07-INCELEME.md`, 7. tur; plan dışı kalanlar `06-CIKARILANLAR.md`).
 
 ## Çalışma kuralları
 
@@ -12,23 +12,58 @@
 | **Sonnet** | Antigravity | Claude Sonnet 5.5, adında **(Thinking)** olan | seviye seçeneği varsa **High**; sadece metin incelemesinde (T311, T502) **Medium** | Antigravity Claude havuzu |
 | **Gemini** | Antigravity | Gemini 4 Argon (seçicide yoksa Gemini 3.8 Flash) | **High** | Antigravity Gemini havuzu |
 | **Flash** | Antigravity | Gemini 3.8 Flash | **Medium** | Antigravity Gemini havuzu |
+| **Qwen** | Kullanıcının PC'si: Ollama (`tools/dev/qwen-review.ps1` ve Ollama uygulaması) | Qwen 3.8 27B (`qwen3.8:27b`, 4-bit, sadece RTX 3090) | düşünme açık (varsayılan) | Yerel, kota yok; ~47 token/sn, bir ön inceleme birkaç dakika |
 
 - **Kısa kural:** kod işi **High**, sadece metin işi **Medium**; hiçbir işte Low yok.
-- **Önce Antigravity.** Antigravity'nin Claude havuzu biterse Opus ve Sonnet işleri Claude Code'da aynı modelle sürer (effort high). Gemini havuzu biterse Gemini işleri havuz yenilenene kadar bekler (5 saatte bir yenilenir, haftalık tavanı var).
+- **Kota sırası** (önce ucuz olan):
+  1. **Qwen** (yerel, sınırsız): ön inceleme, düzeltme kontrolü, hata ve log açıklama; sadece "Qwen rolleri"nde ✅ olanlar.
+  2. **Antigravity Gemini havuzu:** Gemini ve Flash işleri; Antigravity'nin ekranı ve ayarlarıyla ilgili sorular (Flash).
+  3. **Antigravity Claude havuzu:** Opus ve Sonnet işleri (görev tablosundaki gibi).
+  4. **Claude Code / claude.ai en son:** Qwen'in ve Flash'ın çözemediği ya da karar gerektiren yardım soruları (`05-HANDOFF.md` → 7) ve T503.
+- **Antigravity'nin Claude havuzu biterse** (kullanıcı kararı, 2026-11-03): önce Gemini hattındaki işlere geç (yazma, inceleme, düzeltme). Gemini hattında yapılacak iş kalmadıysa Opus/Sonnet işi Claude Code'da aynı modelle sürer (effort high).
+- Gemini havuzu biterse Gemini işleri havuz yenilenene kadar bekler (5 saatte bir yenilenir, haftalık tavanı var); o arada Opus hattı sürer.
 - Görevin ortasında kota biterse model değiştirilmez: havuz yenilenince aynı konuşmada "devam et" yazılır.
 - Antigravity'de Claude ve GPT aynı havuzu kullanır. Codex yok; tek GPT modeli (GPT-OSS-120B) 2 Kasım 2026'da kalkıyor. O havuzda sadece Opus ve Sonnet kullanılır.
 
 ### Görev sınıfları
 
-| Sınıf | Ne tür iş | Yazan | İnceleyen |
-|---|---|---|---|
-| **A** | Donanıma veya sistem ayarına yazan, güvenlikle ilgili ya da her şeyin temeli olan iş | Opus | Gemini, `03-GUVENLIK.md` kontrol listesiyle |
-| **B** | Mantık, algoritma, akış | Gemini (T003'ü temel olduğu için Opus yazar) | Opus (T003'ü Gemini) |
-| **C** | Arayüz, metin | Gemini; metin ve çeviride Flash | Sonnet |
-| **K** | Son kontrol noktası | Kullanıcı (monitör başında) | Claude app, Opus (yeni sohbet) |
+| Sınıf | Ne tür iş | Yazan | Ön inceleme | İnceleyen |
+|---|---|---|---|---|
+| **A** | Donanıma veya sistem ayarına yazan, güvenlikle ilgili ya da her şeyin temeli olan iş | Opus | Qwen | Gemini, `03-GUVENLIK.md` kontrol listesiyle |
+| **B** | Mantık, algoritma, akış | Gemini (T003'ü temel olduğu için Opus yazar) | Qwen | Opus (T003'ü Gemini) |
+| **C** | Arayüz, metin | Gemini; metin ve çeviride Flash | Qwen | Sonnet |
+| **K** | Son kontrol noktası | Kullanıcı (monitör başında) | — | Claude app, Opus (yeni sohbet) |
 
 - Yazan ve inceleyen her zaman farklı model. İnceleme hiçbir görevde atlanmaz.
+- **Qwen ön incelemesi ek bir kontroldür:** incelemenin yerine geçmez, ONAY vermez; bulgularını yazan model doğrular (`AGENTS.md` → "Yerel model (Qwen)"). Rol ✅ değilse bu adım yapılmaz.
 - Yazma, inceleme ve düzeltme ayrı konuşmalardır. Düzeltmeyi yazan model yapar (`05-HANDOFF.md` → 4).
+
+### Qwen rolleri
+
+Qwen'e bir rol, önce geçmiş bir işte denenip geçerse verilir (kalibrasyon: `05-HANDOFF.md` → 9.4). Model, 4-bit sürüm ya da bağlam değişirse kalibrasyon tekrarlanır.
+
+| Rol | Ne yapar | Kim çalıştırır | Durum |
+|---|---|---|---|
+| Ön inceleme | Farkı görev satırı ve okuma haritasındaki dokümanlarla karşılaştırır; alıntılı bulgu listesi verir | Yazan ajan, commit'ten önce | ⬜ kalibrasyon bekliyor |
+| Düzeltme kontrolü | DÜZELT listesindeki her madde için düzeldi / düzelmedi / emin değilim | Düzelten ajan, commit'ten önce | ⬜ kalibrasyon bekliyor |
+| Hata ve log açıklama | Hata mesajını, CI logunu, komut çıktısını açıklar | Kullanıcı, Ollama uygulaması (`05-HANDOFF.md` → 9.3) | ⬜ kalibrasyon bekliyor |
+
+Durum: ⬜ kalibrasyon bekliyor · ✅ açık · ⛔ kapalı (geçemedi ya da sorun çıktı)
+
+- **Ön inceleme.**
+  - Güvence: asıl inceleme aynen yapılır. Betik her bulgunun alıntısını farkta ve dokümanda arar, bulamazsa "uydurma olabilir" diye işaretler; yazan her bulguyu kendisi doğrular.
+  - Kim yakalar: Qwen'in uydurduğunu yazan; yazanın haksız reddettiğini inceleyen (Qwen satırını en son okur); Qwen'in kaçırdığını inceleyen.
+  - Ne zaman güvenilmez: kalibrasyondan önce; fark parçalara bölündüğünde dosyalar arası sorunlarda. "Bulgu yok" demesi hiçbir şey kanıtlamaz.
+- **Düzeltme kontrolü.**
+  - Güvence: yeniden inceleme aynen yapılır.
+  - Kim yakalar: yanlış "düzelmedi"yi düzelten, yanlış "düzeldi"yi yeniden inceleyen.
+  - Ne zaman güvenilmez: düzeltmenin açtığı yeni sorunlara bakmaz; bu ona sorulmaz.
+- **Hata ve log açıklama.**
+  - Güvence: sadece açıklar. `AGENTS.md`'deki serbest komutlar dışında önerdiği komutu (kayıt defteri, NVIDIA, sürücü, `git reset --hard`, `git push --force`, silme) kullanıcı çalıştırmaz; Flash'a ya da Claude'a sorar.
+  - Ne zaman güvenilmez: Antigravity'nin ekranı ve ayarları (bilgisi eski olabilir → Flash) ve proje kararları (→ Claude).
+- **Qwen'e verilmeyenler:** A sınıfı yazma, tek başına inceleme, ONAY, Azerbaycanca çeviri, C taslağı, commit mesajı.
+  - Kalan C işleri T305 (DDC), T310 (panik kısayolu) ve T502 (çeviri). Zayıf taslak DÜZELT turu açar; her tur bir Sonnet konuşması demek.
+  - Commit mesajını işi yapan ajan zaten bildiği için yazar.
 
 ### Görev kuralları
 
@@ -125,4 +160,14 @@ Durum: ⬜ bekliyor · 🟨 yazıldı, incelemede · 🔧 onaylandı, monitör t
 | 5 | 2 | 0 | 1 | T503 |
 | **Toplam** | **21** | **9** | **11** | **1** |
 
-**Tahmini kullanım:** Antigravity Claude havuzu yaklaşık 20 konuşma (9 Opus yazma, 7 Opus inceleme, 4 Sonnet inceleme). Antigravity Gemini havuzu yaklaşık 20 konuşma (11 yazma, 9 inceleme). Düzeltmeler %20–40 ekler. Claude Code sadece Antigravity'nin Claude havuzu bitince kullanılır.
+**Tahmini kullanım (2026-11-03, Qwen'li düzen):**
+
+- **Antigravity Claude havuzu:** yaklaşık 20 konuşma (9 Opus yazma, 7 Opus inceleme, 4 Sonnet inceleme). Bu sayı kalite kuralı yüzünden azalmaz: her görevde Claude ya yazar ya inceler.
+- **Antigravity Gemini havuzu:** yaklaşık 20 konuşma (11 yazma, 9 inceleme).
+- **Düzeltmeler:** her DÜZELT turu 1 Claude konuşması demek. Şimdiye kadar %20–40 ekliyordu; Qwen ön incelemesi ve düzeltme kontrolü açıksa tahminen %10–20 ekler.
+- **Claude Code / claude.ai:**
+  - T503.
+  - Gemini hattında iş kalmadığında Claude havuzundan taşan işler.
+  - Sadece Qwen'in ve Flash'ın çözemediği yardım soruları: dalga başına ~1 yerine ~0,3.
+- **Toplam:** kalan iş için Claude konuşması tahmini ~31–36'dan ~23–27'ye iner (≈ %25).
+- **Kalibrasyona bağlı:** ön inceleme ⛔ kalırsa düzeltme payı eski hâline döner.

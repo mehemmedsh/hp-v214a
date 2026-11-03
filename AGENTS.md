@@ -49,6 +49,16 @@ Arayüz → Uygulama servisleri → Güvenlik → Donanım → Saf mantık. Aray
 - Kullanım limiti yaklaşınca yeni göreve başlama; yarım görev bırakma.
 - Hazır metinler (kurulum, yazma, inceleme, düzeltme, yardım): `docs/05-HANDOFF.md`.
 
+## Yerel model (Qwen)
+
+Kullanıcının PC'sinde yerel bir model var: Qwen, `tools/dev/qwen-review.ps1` ile çalışır. Hangi rolün açık olduğu `docs/04-FAZLAR.md` → "Qwen rolleri"nde; sadece ✅ olanı kullan.
+
+- **Ön inceleme** (yazmanın son adımı): derle, test et → `git add -A` → `powershell -NoProfile -ExecutionPolicy Bypass -File tools/dev/qwen-review.ps1 -Task T___` (birkaç dakika sürer; sonuç ekranda ve `.qwen/T___-review-son.md`'de).
+- **Düzeltme kontrolü** (düzeltmenin son adımı): DÜZELT listesini `.qwen/duzelt-T___.md`'ye yaz → `git add -A` → aynı komut, sonuna `-Mode fix`.
+- Qwen'in söylediği ipucudur, kanıt değil: her bulguyu kodda ve dokümanda kendin doğrula; doğruysa düzelt, değilse uygulama. Commit gövdesinin en sonuna yaz: `Qwen: N bulgu; düzeltilen B1, B3; reddedilen B2 (tek satır gerekçe)`.
+- Qwen ONAY vermez, incelemenin yerine geçmez, kod yazmaz. Betik çalışmazsa ya da bulut oturumundaysan (Linux) bu adımı atla, nedenini aynı satıra yaz; görevi bekletme.
+- İnceleyen: commit gövdesindeki Qwen satırını kendi incelemeni bitirdikten sonra okur.
+
 ## Okuma haritası
 
 Dokümanların tamamını okuma, sadece gerekeni oku. Emin olamadığın yerde ilgili dokümanı aç; tahminle yazma.

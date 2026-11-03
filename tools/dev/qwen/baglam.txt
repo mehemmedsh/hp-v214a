@@ -1,0 +1,10 @@
+# Qwen paketine her zaman giren bölümler. tools/dev/qwen-review.ps1 okur (UTF-8).
+# Biçim: dosya → başlık (başlığın başı yeter). Bir başlık değişirse burayı da güncelle.
+# Okuma haritası "harita:" satırındaki bölümden okunur; göreve göre eklenecek dokümanlar oradan gelir.
+# Görev satırı ve bağımlı görevlerin durumu docs/04-FAZLAR.md'den ayrıca eklenir.
+AGENTS.md → Kullanıcının öncelikleri
+AGENTS.md → Değişmez kurallar
+AGENTS.md → Katmanlar
+docs/04-FAZLAR.md → Görev sınıfları
+docs/04-FAZLAR.md → Görev kuralları
+harita: AGENTS.md → Okuma haritası

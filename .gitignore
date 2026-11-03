@@ -5,3 +5,4 @@ TestResults/
 .vs/
 .vscode/
 *.user
+.qwen/
