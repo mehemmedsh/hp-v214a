@@ -51,4 +51,38 @@ public class ModuleContractMapTests
         Assert.True(typeof(IColorPipeline).IsAssignableFrom(typeof(ColorPipeline)));
         Assert.True(typeof(IGpuTableOwner).IsAssignableFrom(typeof(ColorPipeline)));
     }
+
+    /// <summary>Arayüz (App) Hardware.Abstractions ve Safety'yi görmemeli; Services'in herkese açık arayüzleri bu tipleri imzada taşımaz.</summary>
+    [Fact]
+    public void ServicesInterfaces_DoNotExposeHardwareOrSafetyTypes()
+    {
+        var forbidden = new[] { typeof(IDdcMonitor).Assembly, typeof(ISafetyLayer).Assembly };
+        var leaks = typeof(IDdcControl).Assembly.GetExportedTypes()
+            .Where(t => t.IsInterface)
+            .SelectMany(t => t.GetMembers().Where(m => m.DeclaringType == t).SelectMany(m => SignatureTypes(m).Select(s => (t, m, s))))
+            .Where(x => forbidden.Contains(x.s.Assembly))
+            .Select(x => $"{x.t.Name}.{x.m.Name} -> {x.s.Name}")
+            .ToList();
+
+        Assert.Empty(leaks);
+    }
+
+    private static IEnumerable<Type> SignatureTypes(System.Reflection.MemberInfo member)
+    {
+        IEnumerable<Type> roots = member switch
+        {
+            System.Reflection.MethodInfo m => m.GetParameters().Select(p => p.ParameterType).Append(m.ReturnType),
+            System.Reflection.PropertyInfo p => [p.PropertyType],
+            System.Reflection.EventInfo e => e.EventHandlerType is { } h ? [h] : [],
+            _ => [],
+        };
+        return roots.SelectMany(Expand);
+    }
+
+    private static IEnumerable<Type> Expand(Type t)
+    {
+        if (t.HasElementType) return Expand(t.GetElementType()!);
+        if (t.IsGenericType) return t.GetGenericArguments().SelectMany(Expand).Append(t.GetGenericTypeDefinition());
+        return [t];
+    }
 }
