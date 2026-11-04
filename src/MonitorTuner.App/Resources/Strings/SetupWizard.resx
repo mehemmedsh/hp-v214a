@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ayar sihirbazı 1 (T312). Nötr dil Türkçe; Azerbaycanca ve İngilizce T502'de (SetupWizard.az.resx, SetupWizard.en.resx). -->
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="TabTitle" xml:space="preserve">
+    <value>Ayar sihirbazı</value>
+  </data>
+  <data name="PageTitle" xml:space="preserve">
+    <value>Ayar sihirbazı: desenlerle monitör ayarı</value>
+  </data>
+  <data name="Intro" xml:space="preserve">
+    <value>Sihirbaz başlarken mavi ışık filtresi ve ek karartma geçici kapanır, bitince geri gelir. Desenler yanıp sönmez; kareleri sen değiştirirsin. İptal edersen monitör ayarların sihirbaz öncesine döner.</value>
+  </data>
+  <data name="PatternKeys" xml:space="preserve">
+    <value>Sağ ok ya da Boşluk: sonraki kare · Sol ok: önceki kare · Esc: kapat</value>
+  </data>
+  <data name="SampleText" xml:space="preserve">
+    <value>Pijamalı hasta yağız şoföre çabucak güvendi. 0123456789</value>
+  </data>
+  <data name="Step_WarmUpAndPosition_Title" xml:space="preserve">
+    <value>Isınma ve konum</value>
+  </data>
+  <data name="Step_WarmUpAndPosition_Text" xml:space="preserve">
+    <value>Monitörü en az 30 dakika açık bırak; arka ışık ilk dakikalarda kayar. Gözün ekranın üst kenarı hizasında ya da biraz altında olsun, mesafe 70–80 cm. Oda ışığı her zamanki çalışma ışığın gibi olsun. OSD'de Renk: Custom RGB (RGB kazancı için), Keskinlik: 4, Overscan: Kapalı; NVIDIA'da çıkış dinamik aralığı: Full.</value>
+  </data>
+  <data name="Step_BlackAndWhiteClipping_Title" xml:space="preserve">
+    <value>Kontrast ve parlaklık</value>
+  </data>
+  <data name="Step_BlackAndWhiteClipping_Text" xml:space="preserve">
+    <value>Önce açık gri deseninde (230–254) en yüksek kontrastı bul: yan yana basamakların hepsi ayırt edilebilsin. Sonra koyu gri deseninde (1–25) parlaklığı ayarla: en koyu basamaklar görünsün ama siyah zemin parlamasın. Parlaklık artırmak için arka ışık kullanılır; kontrast başlangıç değerinin üstüne çıkmaz.</value>
+  </data>
+  <data name="Step_Sharpness_Title" xml:space="preserve">
+    <value>Keskinlik</value>
+  </data>
+  <data name="Step_Sharpness_Text" xml:space="preserve">
+    <value>Yazı kenarında beyaz çizgi (hale) çıkmayan en yüksek keskinliği seç. Hem açık zemin üstünde koyu hem koyu zemin üstünde açık yazıya bak.</value>
+  </data>
+  <data name="Step_FullRgbCheck_Title" xml:space="preserve">
+    <value>RGB Full kontrolü</value>
+  </data>
+  <data name="Step_FullRgbCheck_Text" xml:space="preserve">
+    <value>Siyaha yakın 1–16 basamaklarının siyah zeminden ayrı görünmesi gerekir. Görünmüyorsa NVIDIA'daki çıkış dinamik aralığı Limited olabilir: Full yap.</value>
+  </data>
+  <data name="Step_ViewingAngle_Title" xml:space="preserve">
+    <value>Açı deseni</value>
+  </data>
+  <data name="Step_ViewingAngle_Text" xml:space="preserve">
+    <value>Üst, orta ve alt şeritler aynı griyi gösterir. Eşit görünene kadar sandalyeyi ya da monitörün eğimini değiştir: gözün üst kenar hizasında, eğim 0° ile −5° arası. Başını yukarı aşağı oynatıp farkın nasıl değiştiğine bak.</value>
+  </data>
+  <data name="Step_DeadPixelsAndUniformity_Title" xml:space="preserve">
+    <value>Ölü piksel ve homojenlik</value>
+  </data>
+  <data name="Step_DeadPixelsAndUniformity_Text" xml:space="preserve">
+    <value>Siyah, beyaz, kırmızı, yeşil ve maviyi sırayla gez: ekranda değişmeyen nokta ölü ya da takılı pikseldir. Üç gri karede parlak ya da koyu lekeler, köşelerde ışık sızıntısı ara.</value>
+  </data>
+  <data name="Step_WhiteMatch_Title" xml:space="preserve">
+    <value>Beyaz eşleme</value>
+  </data>
+  <data name="Step_WhiteMatch_Text" xml:space="preserve">
+    <value>Pixel'in ekranında 'Doğal' renk modunda beyaz bir sayfa aç ve monitörün yanına koy. İki beyaz aynı sıcaklıkta görünene kadar kırmızı, yeşil ve mavi kazancı azalt (artırma yok: parlaklık düşer). RGB kazancı için monitörün OSD'sinde Renk: Custom RGB seçili olmalı.</value>
+  </data>
+</root>

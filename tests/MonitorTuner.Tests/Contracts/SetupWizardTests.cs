@@ -1,13 +1,272 @@
+using Microsoft.Extensions.Time.Testing;
+using MonitorTuner.Color;
+using MonitorTuner.Core;
+using MonitorTuner.Core.Profiles;
+using MonitorTuner.Services;
+using MonitorTuner.Tests.Fakes;
+
 namespace MonitorTuner.Tests.Contracts;
 
-/// <summary>Ayar sihirbazı sözleşmesi (02-MIMARI.md). Kırmızı testleri görevi yazan doldurur.</summary>
+/// <summary>
+/// Ayar sihirbazı 1 (T312, 02-MIMARI.md). Sahte monitör ve gerçek DDC paneli üzerinden: başlarken efektler kapanır,
+/// bitince geri gelir; adımlar DDC paneliyle (dijital parlaklık koruması dahil) yazar; sonuç temel ayar olarak kaydedilir.
+/// </summary>
 public class SetupWizardTests
 {
+    private static readonly MonitorProfile Profile =
+        new MonitorProfileReader().Read(File.ReadAllText(Path.Combine(RepoRoot.Find(), "profiles", "hp-p21b-g4.json")));
+
+    private static readonly MonitorKey Key = new("HP P21b G4", "SN1", "HDMI", "RTX 3080");
+    private const byte Brightness = 0x10, Contrast = 0x12, Preset = 0x14, Red = 0x16, Green = 0x18, Blue = 0x1A, Sharpness = 0x87;
+    private const int CustomRgb = 11;
+
+    private sealed class FakeStore : ISettingsStore
+    {
+        public Dictionary<string, object> Sections { get; } = [];
+        public string BackupFolder => "";
+        public T? Read<T>(MonitorKey monitor, string section) => Sections.TryGetValue(section, out var v) && v is T t ? t : default;
+        public void Write<T>(MonitorKey monitor, string section, T value) => Sections[section] = value!;
+    }
+
+    private sealed class StubBlueLight : IBlueLightFilter
+    {
+        public int Kelvin { get; set; } = 4000; // mavi ışık açık: RGB kazancı normalde kilitli
+        public bool IsSuspended { get; set; }
+        public int SuspendCalls { get; private set; }
+        public int ResumeCalls { get; private set; }
+        public EveningSettings Evening { get; set; } = EveningSettings.Default;
+        public BlueLightState Suspend() { SuspendCalls++; IsSuspended = true; return Idle(); }
+        public BlueLightState Resume() { ResumeCalls++; IsSuspended = false; return Idle(); }
+        public BlueLightState SetKelvin(int kelvin) => throw new NotSupportedException();
+        public BlueLightState Disable() => throw new NotSupportedException();
+        public BlueLightState Shutdown() => throw new NotSupportedException();
+        public LowBlueLightResult SelectMonitorLowBlueLight() => throw new NotSupportedException();
+        public IReadOnlyList<ColorConflict> CheckConflicts() => [];
+        public bool Tick() => false;
+        private BlueLightState Idle() => new(Kelvin, true, RgbGains.Neutral, RgbGains.Neutral, []);
+    }
+
+    private sealed class StubBrightness : IBrightnessControl
+    {
+        public bool DimmingActive { get; private set; } = true; // ek karartma açık: arka ışık normalde kilitli
+        public int SuspendCalls { get; private set; }
+        public int ResumeCalls { get; private set; }
+        public bool Suspend() { SuspendCalls++; DimmingActive = false; return true; }
+        public bool Resume() { ResumeCalls++; DimmingActive = true; return true; }
+        public DimmingPlan Preview(double slider) => throw new NotSupportedException();
+        public BrightnessState Commit(double slider) => throw new NotSupportedException();
+        public double? ReadSlider() => throw new NotSupportedException();
+        public bool DisableDimming() => throw new NotSupportedException();
+        public bool Shutdown() => throw new NotSupportedException();
+    }
+
+    private sealed class Rig
+    {
+        public Rig(FakeDdcMonitor? monitor = null, bool customRgb = true)
+        {
+            Monitor = monitor ?? FakeDdcMonitor.HpP21bG4();
+            if (customRgb) Monitor.SetMonitorValue(Preset, CustomRgb);
+            Ddc = new DirectDdcControl(Monitor, Profile);
+            var panel = new DdcPanel(Profile, Ddc, BlueLight, Store, Key, ConnectionType.Hdmi, () => Brightness_.DimmingActive);
+            Wizard = new SetupWizard(panel, Brightness_, BlueLight, Store, Key, Time);
+        }
+
+        public FakeDdcMonitor Monitor { get; }
+        public DirectDdcControl Ddc { get; }
+        public StubBlueLight BlueLight { get; } = new();
+        public StubBrightness Brightness_ { get; } = new();
+        public FakeStore Store { get; } = new();
+        public FakeTimeProvider Time { get; } = new();
+        public SetupWizard Wizard { get; }
+
+        public int Value(byte code) => Monitor.Read(FakeHardware.Display, code)!.Value.Current;
+    }
+
+    [Fact]
+    public void Steps_AreTheT312Steps_InOrder() =>
+        Assert.Equal(
+            [WizardStep.WarmUpAndPosition, WizardStep.BlackAndWhiteClipping, WizardStep.Sharpness, WizardStep.FullRgbCheck,
+             WizardStep.ViewingAngle, WizardStep.DeadPixelsAndUniformity, WizardStep.WhiteMatch],
+            new Rig().Wizard.Steps);
+
     /// <summary>Sihirbaz başlarken efektler kapanır, bitince geri gelir.</summary>
-    [Pending("T312")]
-    public void Begin_TurnsEffectsOff_FinishBringsThemBack() => Assert.Fail("T312");
+    [Fact]
+    public void Begin_TurnsEffectsOff_FinishBringsThemBack()
+    {
+        var rig = new Rig();
+
+        rig.Wizard.Begin();
+        rig.Wizard.Begin(); // ikinci çağrı efektleri bir daha kapatmaz
+
+        Assert.Equal(1, rig.BlueLight.SuspendCalls);
+        Assert.Equal(1, rig.Brightness_.SuspendCalls);
+        Assert.Equal(0, rig.BlueLight.ResumeCalls + rig.Brightness_.ResumeCalls);
+        Assert.Empty(rig.Monitor.Writes); // Begin monitöre hiçbir şey yazmaz
+
+        rig.Wizard.Finish();
+
+        Assert.Equal(1, rig.BlueLight.ResumeCalls);
+        Assert.Equal(1, rig.Brightness_.ResumeCalls);
+        Assert.False(rig.Wizard.IsActive);
+    }
 
     /// <summary>Bitince DDC değerleri ve kalibrasyon temel ayar olarak kaydedilir.</summary>
-    [Pending("T312")]
-    public void Finish_SavesBaseline() => Assert.Fail("T312");
+    [Fact]
+    public void Finish_SavesBaseline()
+    {
+        var rig = new Rig();
+        rig.Wizard.Begin();
+        Assert.Equal(PanelSetResult.Written, rig.Wizard.SetDdc(PanelSetting.Brightness, 40));
+        Assert.Equal(PanelSetResult.Written, rig.Wizard.SetDdc(PanelSetting.Contrast, 70));
+        Assert.Equal(PanelSetResult.Written, rig.Wizard.SetDdc(PanelSetting.Sharpness, 3));
+        Assert.Equal(PanelSetResult.Written, rig.Wizard.SetDdc(PanelSetting.RedGain, 250));
+        Assert.Equal(PanelSetResult.Written, rig.Wizard.SetDdc(PanelSetting.BlueGain, 245));
+
+        var baseline = rig.Wizard.Finish();
+
+        Assert.Equal(40, baseline.DdcValues[Brightness]);
+        Assert.Equal(70, baseline.DdcValues[Contrast]);
+        Assert.Equal(3, baseline.DdcValues[Sharpness]);
+        Assert.Equal((250, 255, 245), ((int)baseline.DdcValues[Red], (int)baseline.DdcValues[Green], (int)baseline.DdcValues[Blue]));
+        Assert.DoesNotContain(Preset, baseline.DdcValues.Keys); // renk ön ayarı sihirbazın değil
+        Assert.Equal(GammaRamp.Identity, baseline.Calibration); // kalibrasyon T313'te; şimdilik birim tablo
+
+        // Yeni örnek (uygulama yeniden açıldı) aynı temel ayarı depodan okur.
+        var reopened = new SetupWizard(
+            new DdcPanel(Profile, rig.Ddc, rig.BlueLight, rig.Store, Key, ConnectionType.Hdmi), rig.Brightness_, rig.BlueLight,
+            rig.Store, Key, rig.Time).LoadBaseline();
+        Assert.NotNull(reopened);
+        Assert.Equal(baseline.DdcValues, reopened.DdcValues);
+        Assert.Equal(GammaRamp.Identity, reopened.Calibration);
+    }
+
+    [Fact]
+    public void Cancel_RestoresValues_ResumesEffects_SavesNothing()
+    {
+        var rig = new Rig();
+        rig.Wizard.Begin();
+        rig.Wizard.SetDdc(PanelSetting.Brightness, 40);
+        rig.Wizard.SetDdc(PanelSetting.Contrast, 60);
+        rig.Wizard.SetDdc(PanelSetting.GreenGain, 240);
+
+        var failed = rig.Wizard.Cancel();
+
+        Assert.Empty(failed);
+        Assert.Equal((55, 72, 255), (rig.Value(Brightness), rig.Value(Contrast), rig.Value(Green)));
+        Assert.Equal(1, rig.BlueLight.ResumeCalls);
+        Assert.Equal(1, rig.Brightness_.ResumeCalls);
+        Assert.False(rig.Wizard.IsActive);
+        Assert.DoesNotContain(SetupWizard.Section, rig.Store.Sections.Keys);
+    }
+
+    [Fact]
+    public void Cancel_ReportsWhatCouldNotBeRestored_AndStillResumesEffects()
+    {
+        var rig = new Rig();
+        rig.Wizard.Begin();
+        rig.Wizard.SetDdc(PanelSetting.Brightness, 40);
+        rig.Wizard.SetDdc(PanelSetting.Sharpness, 3);
+        rig.Ddc.Override = code => code == Sharpness ? DdcWriteResult.Throttled : null;
+
+        var failed = rig.Wizard.Cancel();
+
+        Assert.Equal([PanelSetting.Sharpness], failed);
+        Assert.Equal(55, rig.Value(Brightness));
+        Assert.Equal(1, rig.BlueLight.ResumeCalls);
+        Assert.Equal(1, rig.Brightness_.ResumeCalls);
+    }
+
+    /// <summary>Efektler kapandığı için mavi ışık ve ek karartma yüzünden kilitli ayarlar sihirbazda açılır.</summary>
+    [Fact]
+    public void SetDdc_IsNotLockedByBlueLightOrDimming_WhileWizardRuns()
+    {
+        var rig = new Rig();
+
+        rig.Wizard.Begin();
+
+        Assert.Equal(PanelSetResult.Written, rig.Wizard.SetDdc(PanelSetting.Brightness, 40));
+        Assert.Equal(PanelSetResult.Written, rig.Wizard.SetDdc(PanelSetting.GreenGain, 250));
+    }
+
+    [Fact]
+    public void SetDdc_KeepsDigitalBrightnessProtection()
+    {
+        var rig = new Rig();
+        rig.Wizard.Begin();
+
+        Assert.Equal(PanelSetResult.BlockedDigitalBoost, rig.Wizard.SetDdc(PanelSetting.Contrast, 90)); // tavan 72
+        Assert.Equal(PanelSetResult.OutOfRange, rig.Wizard.SetDdc(PanelSetting.Contrast, 5)); // %15 tabanı
+        Assert.Equal(0, rig.Monitor.WriteCount(Contrast));
+    }
+
+    [Fact]
+    public void SetDdc_RgbGain_NeedsCustomRgbPreset()
+    {
+        var rig = new Rig(customRgb: false);
+        rig.Wizard.Begin();
+
+        Assert.Equal(PanelSetResult.Locked, rig.Wizard.SetDdc(PanelSetting.RedGain, 250));
+        Assert.Equal(0, rig.Monitor.WriteCount(Red));
+    }
+
+    [Theory]
+    [InlineData(PanelSetting.ColorPreset)] // Custom RGB profilde "estimated": ön ayarı kullanıcı OSD'den seçer
+    [InlineData(PanelSetting.Input)]
+    [InlineData(PanelSetting.Volume)]
+    public void SetDdc_OnlyTheWizardsSettings(PanelSetting setting)
+    {
+        var rig = new Rig();
+        rig.Wizard.Begin();
+
+        Assert.Equal(PanelSetResult.NotSupported, rig.Wizard.SetDdc(setting, 10));
+        Assert.Empty(rig.Monitor.Writes);
+    }
+
+    [Fact]
+    public void WithoutDdc_StepsReportNoDdc_AndFinishStillWorks()
+    {
+        var rig = new Rig(FakeDdcMonitor.WithoutDdc(), customRgb: false);
+        rig.Wizard.Begin();
+
+        Assert.Equal(PanelSetResult.NoDdc, rig.Wizard.SetDdc(PanelSetting.Brightness, 40));
+        var baseline = rig.Wizard.Finish();
+
+        Assert.Empty(baseline.DdcValues);
+        Assert.Equal(1, rig.Brightness_.ResumeCalls);
+    }
+
+    [Fact]
+    public void BeforeBegin_SetDdcAndFinishRefuse()
+    {
+        var wizard = new Rig().Wizard;
+
+        Assert.Throws<InvalidOperationException>(() => wizard.SetDdc(PanelSetting.Brightness, 40));
+        Assert.Throws<InvalidOperationException>(wizard.Finish);
+        Assert.Empty(wizard.Cancel()); // Begin'den önce iptal zararsız
+    }
+
+    [Fact]
+    public void WarmUp_CountsDownThirtyMinutes_FromBegin()
+    {
+        var rig = new Rig();
+        Assert.Equal(TimeSpan.FromMinutes(30), SetupWizard.WarmUp);
+        rig.Wizard.Begin();
+
+        Assert.Equal(SetupWizard.WarmUp, rig.Wizard.WarmUpRemaining);
+        rig.Time.Advance(TimeSpan.FromMinutes(12));
+        Assert.Equal(TimeSpan.FromMinutes(18), rig.Wizard.WarmUpRemaining);
+        rig.Time.Advance(TimeSpan.FromMinutes(40));
+        Assert.Equal(TimeSpan.Zero, rig.Wizard.WarmUpRemaining);
+    }
+
+    /// <summary>Gamma ve gri dengesi T313'ün işi; T312'de çağrılırsa sessizce yok sayılmaz.</summary>
+    [Fact]
+    public void SetCalibration_IsNotPartOfT312()
+    {
+        var rig = new Rig();
+        rig.Wizard.Begin();
+
+        Assert.Throws<NotSupportedException>(() => rig.Wizard.SetCalibration(
+            new CalibrationChoices(2.2, RgbGains.Neutral, RgbGains.Neutral, RgbGains.Neutral)));
+    }
 }
