@@ -560,7 +560,7 @@ public class BlueLightFilterTests
     [Fact]
     public void LowBlueLight_Estimated_IsNotWritten()
     {
-        var rig = new Rig();
+        var rig = new Rig(WithLowBlueLight(MappingConfidence.Estimated));
 
         Assert.Equal(LowBlueLightResult.NotConfirmed, rig.Filter.SelectMonitorLowBlueLight());
         Assert.Empty(rig.Ddc.Writes);

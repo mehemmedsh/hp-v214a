@@ -312,18 +312,32 @@ public class DdcPanelTests
     [Fact]
     public void ColorPreset_OnlyConfirmedMappingsAreSelectable()
     {
-        var choices = new Rig().State(PanelSetting.ColorPreset).Choices;
+        var rig = new Rig(profile: WithEstimated(4, 15));
+        var choices = rig.State(PanelSetting.ColorPreset).Choices;
 
         Assert.Equal([2, 4, 5, 8, 11, 12, 13, 14, 15], choices.Select(c => c.Value));
-        Assert.Equal([5], choices.Where(c => c.Selectable).Select(c => c.Value));
+        Assert.Equal([2, 5, 8, 11, 12, 13, 14], choices.Where(c => c.Selectable).Select(c => c.Value));
         Assert.Equal("Neutral", choices.Single(c => c.Value == 5).Name);
         Assert.Equal("CustomRgb", choices.Single(c => c.Value == CustomRgb).Name);
+        Assert.Equal("HpEnhancePlus", choices.Single(c => c.Value == 12).Name);
+        Assert.Equal("Night", choices.Single(c => c.Value == 15).Name);
     }
+
+    /// <summary>Gerçek profilde 14'ün dokuz değeri de monitörde doğrulandı (2026-11-04); hepsi seçilebilir.</summary>
+    [Fact]
+    public void ColorPreset_HpProfile_EveryValueIsSelectable() =>
+        Assert.All(new Rig().State(PanelSetting.ColorPreset).Choices, c => Assert.True(c.Selectable));
+
+    private static MonitorProfile WithEstimated(params int[] ddcValues) =>
+        Profile with
+        {
+            ColorPresetMap = [.. Profile.ColorPresetMap.Select(m => ddcValues.Contains(m.DdcValue) ? m with { Confidence = MappingConfidence.Estimated } : m)],
+        };
 
     [Fact]
     public void ColorPreset_EstimatedMapping_IsNeverWritten()
     {
-        var rig = new Rig();
+        var rig = new Rig(profile: WithEstimated(4, CustomRgb));
 
         Assert.Equal(PanelSetResult.NotConfirmed, rig.Panel.Set(PanelSetting.ColorPreset, 4)); // Warm: tahmin
         Assert.Equal(PanelSetResult.NotConfirmed, rig.Panel.Set(PanelSetting.ColorPreset, CustomRgb));
@@ -334,11 +348,7 @@ public class DdcPanelTests
     [Fact]
     public void ColorPreset_ConfirmedMapping_IsWritten()
     {
-        var profile = Profile with
-        {
-            ColorPresetMap = [.. Profile.ColorPresetMap.Select(m => m.DdcValue == 4 ? m with { Confidence = MappingConfidence.Confirmed } : m)],
-        };
-        var rig = new Rig(profile: profile);
+        var rig = new Rig();
 
         Assert.Equal(PanelSetResult.Written, rig.Panel.Set(PanelSetting.ColorPreset, 4));
         Assert.Equal(4, rig.Monitor.Read(FakeHardware.Display, Preset)!.Value.Current);

@@ -44,7 +44,7 @@ Ham döküm: `donanim/hp-p21b-g4/ddc-vcp-60hz.txt`.
 |---|---|---|---|---|
 | 10 | Parlaklık | R/W | 55 (0–100) | Arka ışık |
 | 12 | Kontrast | R/W | 72 (0–100) | — |
-| 14 | Renk ön ayarı | R/W | 5 | Değerler: 2, 4, 5, 8, 11, 12, 13, 14, 15. Tahmin: 2 Native, 4 Warm, 5 Neutral (doğrulandı), 8 Cool, 11 Custom RGB; 12–15 Night / Low Blue Light / Reading / HP Enhance+ (sıra doğrulanacak) |
+| 14 | Renk ön ayarı | R/W | 5 | Değerler: 2, 4, 5, 8, 11, 12, 13, 14, 15. **OSD'de tek tek okunarak doğrulandı (2026-11-04):** 2 Native, 4 Warm, 5 Neutral, 8 Cool, 11 Custom RGB, 12 HP Enhance+ (Medium), 13 Low Blue Light, 14 Reading, 15 Night. **Ön ayar değişince 10 (parlaklık) ve 0C da ön ayara göre değişir** (parlaklık: Cool 75, Native 14, Custom RGB 0, HP Enhance+ 10); ön ayar değişince okunmalı |
 | 16 / 18 / 1A | RGB kazancı | R/W | 255 / 255 / 255 (max 255) | Sadece azaltılabilir |
 | 0C | Renk sıcaklığı isteği | R/W | 40 (max 126), 0B artış = 50 | Çalışıp çalışmadığı T301'de test edilir |
 | 6C / 6E / 70 | Kanal başına siyah seviyesi | R/W | 128 (max 255) | Kullanılmıyor (kamerasız ayarda gerek yok) |
@@ -52,8 +52,8 @@ Ham döküm: `donanim/hp-p21b-g4/ddc-vcp-60hz.txt`.
 | 60 | Giriş | R/W | 17 | 17 = HDMI, 1 = VGA |
 | 62 | Ses | R/W | 50 | Hoparlör |
 | 86, 87, 8D | Ölçekleme, keskinlik (1–7), sessize alma | R/W | 2, 4, 2 | — |
-| **AE** | Dikey frekans | R | 6000 | **Gerçek gelen Hz × 100.** 74 Hz'de 7400 okundu |
-| **AC** | Yatay frekans | R | 1964 | **Hz cinsinden, 16 bit taşmalı:** 60 Hz'de 1964 + 65536 = 67 500; 74 Hz'de 17264 + 65536 = 82 800 |
+| **AE** | Dikey frekans | R | 6000 | **Gerçek gelen Hz × 100.** 74 Hz'de 7400, 76 Hz'de 7600 okundu |
+| **AC** | Yatay frekans | R | 1964 | **Hz cinsinden, 16 bit taşmalı:** 60 Hz'de 1964 + 65536 = 67 500; 74 Hz'de 17264 + 65536 = 82 800; 76 Hz'de 17564 + 65536 = 83 100 (hesap 82 992; monitörün ölçümü birkaç yüz Hz oynar) |
 | C0 | Kullanım süresi | R | 2167 | Saat; OSD ile aynı |
 | C8 | Scaler | R | 22021 (0x5605) | Muhtemelen MStar |
 | C9 / DF | Firmware / VCP sürümü | R | 256 / 514 | 1.0 / MCCS 2.2 |

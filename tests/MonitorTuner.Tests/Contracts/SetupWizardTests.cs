@@ -210,7 +210,7 @@ public class SetupWizardTests
     }
 
     [Theory]
-    [InlineData(PanelSetting.ColorPreset)] // Custom RGB profilde "estimated": ön ayarı kullanıcı OSD'den seçer
+    [InlineData(PanelSetting.ColorPreset)] // ön ayar değişince monitör parlaklığı da değişir: ön ayarı kullanıcı OSD'den seçer
     [InlineData(PanelSetting.Input)]
     [InlineData(PanelSetting.Volume)]
     public void SetDdc_OnlyTheWizardsSettings(PanelSetting setting)

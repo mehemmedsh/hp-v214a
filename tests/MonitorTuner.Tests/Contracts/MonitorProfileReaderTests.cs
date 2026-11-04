@@ -194,7 +194,7 @@ public class MonitorProfileReaderTests
     }
 
     [Fact]
-    public void Read_HpProfile_ColorPresetMapCoversEveryDdcValue_OnlyNeutralConfirmed()
+    public void Read_HpProfile_ColorPresetMapCoversEveryDdcValue_AllConfirmedOnTheMonitor()
     {
         var profile = HpProfile();
         var possible = profile.DdcCodes.Single(c => c.Code == 0x14).PossibleValues;
@@ -209,8 +209,12 @@ public class MonitorProfileReaderTests
         Assert.Equal(OsdColorPreset.Warm, profile.ColorPresetMap.Single(m => m.DdcValue == 4).Preset);
         Assert.Equal(OsdColorPreset.Cool, profile.ColorPresetMap.Single(m => m.DdcValue == 8).Preset);
         Assert.Equal(OsdColorPreset.CustomRgb, profile.ColorPresetMap.Single(m => m.DdcValue == 11).Preset);
-        // 12–15'in sırası OSD'den doğrulanana kadar tahmin; T307 tahmini değeri yazmamalı.
-        Assert.All(profile.ColorPresetMap.Where(m => m.DdcValue != 5), m => Assert.Equal(MappingConfidence.Estimated, m.Confidence));
+        // 12–15 monitörde OSD'den tek tek okunarak doğrulandı (2026-11-04, T004 🔧).
+        Assert.Equal(OsdColorPreset.HpEnhancePlus, profile.ColorPresetMap.Single(m => m.DdcValue == 12).Preset);
+        Assert.Equal(OsdColorPreset.LowBlueLight, profile.ColorPresetMap.Single(m => m.DdcValue == 13).Preset);
+        Assert.Equal(OsdColorPreset.Reading, profile.ColorPresetMap.Single(m => m.DdcValue == 14).Preset);
+        Assert.Equal(OsdColorPreset.Night, profile.ColorPresetMap.Single(m => m.DdcValue == 15).Preset);
+        Assert.All(profile.ColorPresetMap, m => Assert.Equal(MappingConfidence.Confirmed, m.Confidence));
     }
 
     [Fact]
@@ -220,7 +224,7 @@ public class MonitorProfileReaderTests
 
         Assert.Equal(100, rules.VerticalDivisor);
         Assert.Equal(65536, rules.HorizontalWrapModulus);
-        Assert.Equal(2, rules.Samples.Count);
+        Assert.Equal(3, rules.Samples.Count);
         foreach (var s in rules.Samples)
         {
             Assert.Equal(s.RefreshHz, s.Ae / (double)rules.VerticalDivisor);
@@ -228,11 +232,12 @@ public class MonitorProfileReaderTests
             Assert.InRange(s.HorizontalHz, rules.HorizontalMinHz, rules.HorizontalMaxHz);
         }
 
-        // Örnekler gerçekten profildeki modların yatay frekansı (monitör 100 Hz'e yuvarlıyor).
+        // Örnekler gerçekten profildeki modların yatay frekansı (monitörün ölçümü birkaç yüz Hz oynar: 76 Hz'de
+        // 83 100 okundu, hesap 82 992).
         foreach (var s in rules.Samples)
         {
             var mode = HpProfile().Modes.Single(m => m.RefreshHz == s.RefreshHz);
-            Assert.InRange(Math.Abs(mode.Timing.HorizontalKhz(s.RefreshHz) * 1000 - s.HorizontalHz), 0, 100);
+            Assert.InRange(Math.Abs(mode.Timing.HorizontalKhz(s.RefreshHz) * 1000 - s.HorizontalHz), 0, 150);
         }
     }
 

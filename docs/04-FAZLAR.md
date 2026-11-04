@@ -1,6 +1,6 @@
 # Fazlar ve Görevler
 
-**Sıradaki: T307 düzeltmesinin yeniden incelemesi (Opus), paralel Dalga 5 (T301 Opus, T305 Sonnet, T306 Sonnet).** Dalga 4'ten T103 ✅ ve T102 ✅ bitti; T307 🟨 (inceleme DÜZELT verdi, düzeltme `12997b3`'te). Dalga 3 bitti: T003 ✅, T004 🔧 (kod onaylandı; monitörde 14 eşlemesi ve 75/76 Hz AE kontrolü bekliyor, `05-HANDOFF.md` → Monitörde kalan kontroller). T002 ve T311 de onaylandı (2026-11-04). Kapsam 2026-10-30'da 66 görevden 21'e indi (`07-INCELEME.md`, 7. tur; plan dışı kalanlar `06-CIKARILANLAR.md`).
+**Sıradaki: T307 düzeltmesinin yeniden incelemesi (Opus), paralel Dalga 5 (T301 Opus, T305 Sonnet, T306 Sonnet).** Dalga 4'ten T103 ✅ ve T102 ✅ bitti; T307 🟨 (inceleme DÜZELT verdi, düzeltme `12997b3`'te). Dalga 3 bitti: T003 ✅, T004 ✅ (14 eşlemesi monitörde doğrulandı 2026-11-04; 76 Hz AE = 7600 okundu; 75 Hz AE ve iki modun kare atlama kontrolü T209'dan önce bekliyor, `05-HANDOFF.md` → Monitörde kalan kontroller). T002 ve T311 de onaylandı (2026-11-04). Kapsam 2026-10-30'da 66 görevden 21'e indi (`07-INCELEME.md`, 7. tur; plan dışı kalanlar `06-CIKARILANLAR.md`).
 
 ## Çalışma kuralları
 
@@ -78,7 +78,7 @@ Durum: ⬜ bekliyor · 🟨 yazıldı, incelemede · 🔧 onaylandı, monitör t
 | T001 | Proje iskeleti: `02-MIMARI.md` → Klasör yapısı'ndaki 8 `MonitorTuner.*` projesi ve test projeleri; dil altyapısı (tüm metinler baştan çeviri dosyasından, özellik başına ayrı `.resx`, ana dil Türkçe); sessiz derleme/test betikleri (`tools/dev`, bash + PowerShell); CI: Ubuntu (derleme + platformdan bağımsız testler) ve Windows (derleme + tüm testler + çalıştırılabilir self-contained `win-x64` paket, 7 gün saklama); mimari testleri (`02-MIMARI.md` → CI korumaları); `05-HANDOFF.md` → 5'e test paketinin nasıl açılacağı | A | Opus → Gemini | — | 1 | Boş çözüm PC'de (Windows) ve CI'da (Ubuntu + Windows) derleniyor; platformdan bağımsız testler Linux'ta da çalışıyor; CI yeşil ve Windows paketi indirilebiliyor; mimari testleri bilerek ihlal eden bir örneği yakalıyor (testte kanıtlı) | ✅ |
 | T002 | Sözleşmeler: `02-MIMARI.md`'deki modül sözleşmelerini arayüzlere ve boş (kırmızı) testlere çevir; donanım yazma metotları geri alma noktası ister; renk boru hattı dahil | A | Opus → Gemini | T001 | 2 | Her modülün arayüzü ve en az bir testi var | ✅ |
 | T003 | Sahte donanım: sahte monitör (DDC'li ve DDC'siz, bellek yazma sayacı), sahte GPU renk tablosu, sahte NVIDIA ayarları (dithering, canlılık), sahte ekran modları, sahte kayıt defteri, sahte saat; örnek EDID | B | Opus → Sonnet | T002 | 3 | Donanımsız tüm testler sahte donanımla çalışıyor | ✅ |
-| T004 | Monitör profil dosyası: şema + HP P21b G4 profili (Hz modları ve timing'leri: 50, 60, 72, 74, 75, 76 ve test durumları; ölçülen sınır; OSD yetenekleri; DDC kod tablosu ve 14 kodunun ön ayar eşlemesi; AE/AC okuma kuralları; PWM yok; kaynak `donanim/hp-p21b-g4/`) | B | Sonnet → Opus | T002 | 3 | Profil yükleniyor; ilk gün sonuçları işlendi 🔧 | 🔧 |
+| T004 | Monitör profil dosyası: şema + HP P21b G4 profili (Hz modları ve timing'leri: 50, 60, 72, 74, 75, 76 ve test durumları; ölçülen sınır; OSD yetenekleri; DDC kod tablosu ve 14 kodunun ön ayar eşlemesi; AE/AC okuma kuralları; PWM yok; kaynak `donanim/hp-p21b-g4/`) | B | Sonnet → Opus | T002 | 3 | Profil yükleniyor; ilk gün sonuçları işlendi; 14 eşlemesi monitörde doğrulandı 🔧 | ✅ |
 
 ## Faz 1 — Çekirdek
 

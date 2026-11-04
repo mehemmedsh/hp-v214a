@@ -71,7 +71,6 @@ public class DdcControlTests
     [InlineData(0x87, 0)]
     [InlineData(0x87, 8)]
     [InlineData(0x14, 3)]  // olası değerlerde yok
-    [InlineData(0x14, 13)] // Low Blue Light: eşleme tahmin (estimated)
     public void Write_ValueNotAllowed_IsForbidden(int code, int value)
     {
         var rig = new Rig();
@@ -93,6 +92,20 @@ public class DdcControlTests
 
         rig.Safety.RollBack(write.RestorePoint);
         Assert.Equal(55, rig.Ddc.Read(Brightness)!.Value.Current);
+    }
+
+    /// <summary>Profilde eşlemesi doğrulanmamış (estimated) bir ön ayar yazılmaz.</summary>
+    [Fact]
+    public void Write_EstimatedColorPreset_IsForbidden()
+    {
+        var estimated = Profile with
+        {
+            ColorPresetMap = [.. Profile.ColorPresetMap.Select(m => m.DdcValue == 13 ? m with { Confidence = MappingConfidence.Estimated } : m)],
+        };
+        var rig = new Rig(profile: estimated);
+
+        Assert.Equal(DdcWriteResult.Forbidden, rig.Ddc.Write(ColorPreset, 13));
+        Assert.Empty(rig.Hw.Monitor.Writes);
     }
 
     [Fact]
@@ -275,8 +288,9 @@ public class DdcControlTests
     /// <summary>Sahte sistem + gerçek Güvenlik katmanı + DDC katmanı. <paramref name="editCaps"/> yetenek dizesini değiştirir.</summary>
     private sealed class Rig
     {
-        public Rig(Func<string?, string?>? editCaps = null, FakeDdcMonitor? monitor = null)
+        public Rig(Func<string?, string?>? editCaps = null, FakeDdcMonitor? monitor = null, MonitorProfile? profile = null)
         {
+            var Profile = profile ?? DdcControlTests.Profile;
             Hw = new FakeHardware(monitor ?? FakeDdcMonitor.HpP21bG4());
             Edited = new EditedMonitor(Hw.Monitor, editCaps ?? (c => c));
             Safety = new SafetyLayer(

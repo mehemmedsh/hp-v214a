@@ -44,7 +44,7 @@
     {
       "refreshHz": 76, "status": "nvidiaPassed", "source": "customResolution",
       "timing": { "hActive": 1920, "hFrontPorch": 48, "hSync": 32, "hBackPorch": 80, "vActive": 1080, "vFrontPorch": 3, "vSync": 5, "vBackPorch": 4 },
-      "note": "Tavan. Çok sıkı dikey. NVIDIA testi geçti, Windows 76 Hz; AE = 7600 ve kare atlama doğrulaması bekliyor. Kenar kayması, siyah seviyesi, hoparlör cızırtısı ve kararma günlük kullanımda gözlenir."
+      "note": "Tavan. Çok sıkı dikey. NVIDIA testi geçti, Windows 76 Hz; DDC AE = 7600 doğrulandı (AC = 17564, taşmalı: 17564 + 65536 = 83100 Hz); kare atlama doğrulaması bekliyor. Kenar kayması, siyah seviyesi, hoparlör cızırtısı ve kararma günlük kullanımda gözlenir."
     }
   ],
   "rejectedModes": [
@@ -73,10 +73,10 @@
     {"code": "05", "name": "Restore Factory Luminance/ Contrast", "access": "writeOnly", "maximum": 1, "possibleValues": [], "appMayWrite": false, "note": "Fabrika sıfırlaması; asla yazılmaz"},
     {"code": "08", "name": "Restore Factory Color Defaults", "access": "writeOnly", "maximum": 1, "possibleValues": [], "appMayWrite": false, "note": "Fabrika sıfırlaması; asla yazılmaz"},
     {"code": "0B", "name": "Color Temperature Increment", "access": "readOnly", "maximum": null, "possibleValues": [], "appMayWrite": false},
-    {"code": "0C", "name": "Color Temperature Request", "access": "readWrite", "maximum": 126, "possibleValues": [], "appMayWrite": false, "note": "Çalışıp çalışmadığı T301 yetenek testinde bakılır; o zamana kadar yazılmaz"},
-    {"code": "10", "name": "Brightness", "access": "readWrite", "maximum": 100, "possibleValues": [], "appMayWrite": true},
+    {"code": "0C", "name": "Color Temperature Request", "access": "readWrite", "maximum": 126, "possibleValues": [], "appMayWrite": false, "note": "Çalışıp çalışmadığı T301 yetenek testinde bakılır; o zamana kadar yazılmaz. Değeri renk ön ayarına göre değişir (2026-11-04)"},
+    {"code": "10", "name": "Brightness", "access": "readWrite", "maximum": 100, "possibleValues": [], "appMayWrite": true, "note": "Değer renk ön ayarına bağlı: ön ayar değişince monitör kendi parlaklığını yükler (Cool 75, Native 14, Custom RGB 0, HP Enhance+ 10; 2026-11-04). Ön ayar değişince yeniden okunmalı"},
     {"code": "12", "name": "Contrast", "access": "readWrite", "maximum": 100, "possibleValues": [], "appMayWrite": true},
-    {"code": "14", "name": "Select Color Preset", "access": "readWrite", "maximum": 15, "possibleValues": [2, 4, 5, 8, 11, 12, 13, 14, 15], "appMayWrite": true, "note": "Renk ön ayarı; eşleme colorPresetMap içinde"},
+    {"code": "14", "name": "Select Color Preset", "access": "readWrite", "maximum": 15, "possibleValues": [2, 4, 5, 8, 11, 12, 13, 14, 15], "appMayWrite": true, "note": "Renk ön ayarı; eşleme colorPresetMap içinde (2026-11-04 OSD'de tek tek okunarak doğrulandı). Ön ayar değişince 10 (parlaklık) ve 0C da değişir; HP Enhance+ OSD'de Medium seviyesinde okundu"},
     {"code": "16", "name": "Video Gain (Drive): Red", "access": "readWrite", "maximum": 255, "possibleValues": [], "appMayWrite": true, "note": "Sadece azaltılabilir (255 = tam)"},
     {"code": "18", "name": "Video Gain (Drive): Green", "access": "readWrite", "maximum": 255, "possibleValues": [], "appMayWrite": true, "note": "Sadece azaltılabilir (255 = tam)"},
     {"code": "1A", "name": "Video Gain (Drive): Blue", "access": "readWrite", "maximum": 255, "possibleValues": [], "appMayWrite": true, "note": "Sadece azaltılabilir (255 = tam)"},
@@ -105,15 +105,15 @@
     {"code": "DF", "name": "VCP Version", "access": "readOnly", "maximum": null, "possibleValues": [], "appMayWrite": false, "note": "MCCS 2.2"}
   ],
   "colorPresetMap": [
-    { "ddcValue": 2, "preset": "native", "confidence": "estimated" },
-    { "ddcValue": 4, "preset": "warm", "confidence": "estimated" },
+    { "ddcValue": 2, "preset": "native", "confidence": "confirmed" },
+    { "ddcValue": 4, "preset": "warm", "confidence": "confirmed" },
     { "ddcValue": 5, "preset": "neutral", "confidence": "confirmed" },
-    { "ddcValue": 8, "preset": "cool", "confidence": "estimated" },
-    { "ddcValue": 11, "preset": "customRgb", "confidence": "estimated" },
-    { "ddcValue": 12, "preset": "night", "confidence": "estimated" },
-    { "ddcValue": 13, "preset": "lowBlueLight", "confidence": "estimated" },
-    { "ddcValue": 14, "preset": "reading", "confidence": "estimated" },
-    { "ddcValue": 15, "preset": "hpEnhancePlus", "confidence": "estimated" }
+    { "ddcValue": 8, "preset": "cool", "confidence": "confirmed" },
+    { "ddcValue": 11, "preset": "customRgb", "confidence": "confirmed" },
+    { "ddcValue": 12, "preset": "hpEnhancePlus", "confidence": "confirmed" },
+    { "ddcValue": 13, "preset": "lowBlueLight", "confidence": "confirmed" },
+    { "ddcValue": 14, "preset": "reading", "confidence": "confirmed" },
+    { "ddcValue": 15, "preset": "night", "confidence": "confirmed" }
   ],
   "frequencyReadout": {
     "verticalDivisor": 100,
@@ -122,7 +122,8 @@
     "horizontalMaxHz": 90000,
     "samples": [
       { "refreshHz": 60, "ae": 6000, "ac": 1964, "horizontalHz": 67500 },
-      { "refreshHz": 74, "ae": 7400, "ac": 17264, "horizontalHz": 82800 }
+      { "refreshHz": 74, "ae": 7400, "ac": 17264, "horizontalHz": 82800 },
+      { "refreshHz": 76, "ae": 7600, "ac": 17564, "horizontalHz": 83100 }
     ]
   }
 }

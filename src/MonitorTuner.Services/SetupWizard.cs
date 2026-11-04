@@ -20,8 +20,9 @@ public sealed class SetupWizard : ISetupWizard
     public static readonly TimeSpan WarmUp = TimeSpan.FromMinutes(30);
 
     /// <summary>
-    /// Sihirbazın dokunabildiği ayarlar. Renk ön ayarı yok: profilde Custom RGB henüz doğrulanmadı (estimated), iptalde
-    /// geri yazılamazdı; beyaz eşleme için kullanıcı OSD'den Custom RGB'yi seçer, değilse kazanç <see cref="PanelSetResult.Locked"/> döner.
+    /// Sihirbazın dokunabildiği ayarlar. Renk ön ayarı yok: ön ayar değişince monitör parlaklığı da kendi kayıtlı değerine
+    /// geçer (DDC 10 ön ayara bağlı), taban değerler karışırdı; beyaz eşleme için kullanıcı OSD'den Custom RGB'yi seçer,
+    /// değilse kazanç <see cref="PanelSetResult.Locked"/> döner.
     /// </summary>
     private static readonly PanelSetting[] Tunable =
     [
