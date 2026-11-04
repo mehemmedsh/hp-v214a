@@ -229,9 +229,15 @@ public sealed class BlueLightFilter : IBlueLightFilter
     {
         var restored = true;
         LoadPersisted();
-        SyncExternal();
-        if (_baseCodes is not null)
+        if (_baseCodes is not null && !IsRgbGainPresetActive())
         {
+            // Başka renk ön ayarı seçili: 16/18/1A o ön ayarın değerleri, ne yazılır ne "kullanıcı değişikliği" sayılır.
+            // Kayıtlı baz durur; ön ayar Custom RGB'ye dönünce sonraki Restore/Apply geri yazar. Monitör payı etkisiz.
+            Array.Fill(_monitorShare, 1.0);
+        }
+        else if (_baseCodes is not null)
+        {
+            SyncExternal();
             for (var i = 0; i < GainCodes.Length; i++)
             {
                 if (_currentCodes[i] != _baseCodes[i]
@@ -275,9 +281,7 @@ public sealed class BlueLightFilter : IBlueLightFilter
     {
         if (!_ddc.IsAvailable || !GainCodes.All(_ddc.WritableCodes.Contains)) return false;
 
-        if (_ddc.Read(ColorPresetCode) is not { } preset) return false;
-        var mapping = _profile.ColorPresetMap.FirstOrDefault(m => m.DdcValue == preset.Current);
-        if (mapping?.Preset != _profile.Osd.RgbGainPreset) return false;
+        if (!IsRgbGainPresetActive()) return false;
 
         LoadPersisted();
         if (_baseCodes is not null)
@@ -293,6 +297,14 @@ public sealed class BlueLightFilter : IBlueLightFilter
         Array.Fill(_monitorShare, 1.0);
         SavePersisted();
         return true;
+    }
+
+    /// <summary>Monitörün renk ön ayarı RGB kazancının etkili olduğu ön ayar mı (profil: Custom RGB). Okunamazsa false.</summary>
+    private bool IsRgbGainPresetActive()
+    {
+        if (_ddc.Read(ColorPresetCode) is not { } preset) return false;
+        var mapping = _profile.ColorPresetMap.FirstOrDefault(m => m.DdcValue == preset.Current);
+        return mapping?.Preset == _profile.Osd.RgbGainPreset;
     }
 
     /// <summary>Önceki oturumdan (çökme, kapanış) kalan baz varsa onu alır; bir kez bakar.</summary>
@@ -315,7 +327,8 @@ public sealed class BlueLightFilter : IBlueLightFilter
 
     /// <summary>
     /// 16/18/1A bizim yazdığımızdan farklıysa kullanıcı (OSD, T305) değiştirmiştir: o kanalda yeni baz odur
-    /// (02-MIMARI.md → Ayar sahipliği 1), geri yükleme onu ezmez.
+    /// (02-MIMARI.md → Ayar sahipliği 1), geri yükleme onu ezmez. Sadece RGB kazanç ön ayarı (Custom RGB) seçiliyken
+    /// çağrılır; başka ön ayarda bu kodlar o ön ayarın değeridir.
     /// </summary>
     private void SyncExternal()
     {

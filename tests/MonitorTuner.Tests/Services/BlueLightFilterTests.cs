@@ -381,6 +381,80 @@ public class BlueLightFilterTests
         Assert.Equal(210, rig.Ddc.Values[0x18]);
     }
 
+    // ---- Başka renk ön ayarı: 16/18/1A o ön ayarın değerleridir, bizim yazdığımız değil ----
+
+    /// <summary>
+    /// Filtre açıkken kullanıcı OSD'de ön ayarı Custom RGB'den başka birine aldı (Neutral, 14=5): 16/18/1A farklı
+    /// okunur ama kullanıcı değişikliği değildir. Kazanç yazılmaz, kayıt silinmez, GPU katmanı kapanır; Custom RGB'ye
+    /// dönünce sonraki Disable kayıtlı bazı geri yazar.
+    /// </summary>
+    [Fact]
+    public void Disable_WhileOtherColorPreset_WritesNoGainsAndKeepsStoredBase_UntilCustomRgbReturns()
+    {
+        var rig = new Rig();
+        rig.Filter.SetKelvin(3000);
+        var low = (rig.Ddc.Values[0x16], rig.Ddc.Values[0x18], rig.Ddc.Values[0x1A]);
+        Assert.NotEqual((255, 255, 255), low);
+
+        rig.Ddc.Values[0x14] = 5; // Neutral
+        (rig.Ddc.Values[0x16], rig.Ddc.Values[0x18], rig.Ddc.Values[0x1A]) = (255, 255, 255);
+        rig.Ddc.Writes.Clear();
+
+        rig.Filter.Disable();
+
+        Assert.Empty(rig.Ddc.Writes);
+        Assert.Equal((255, 255, 255), (rig.Ddc.Values[0x16], rig.Ddc.Values[0x18], rig.Ddc.Values[0x1A]));
+        var record = rig.Store.Read<BlueLightBaseRecord>(Key, BlueLightFilter.BaseSection)!;
+        Assert.Equal(3, record.Base.Length);
+
+        // Kullanıcı Custom RGB'ye döndü: monitör düşük kodları hatırlıyor.
+        rig.Ddc.Values[0x14] = 11;
+        (rig.Ddc.Values[0x16], rig.Ddc.Values[0x18], rig.Ddc.Values[0x1A]) = low;
+
+        rig.Filter.Disable();
+
+        Assert.Equal((255, 255, 255), (rig.Ddc.Values[0x16], rig.Ddc.Values[0x18], rig.Ddc.Values[0x1A]));
+        Assert.Empty(rig.Store.Read<BlueLightBaseRecord>(Key, BlueLightFilter.BaseSection)!.Base);
+    }
+
+    /// <summary>Aynı durum, uygulama yeniden açılınca: yeni örnek Disable düşük kodları değil ilk bazı yazar.</summary>
+    [Fact]
+    public void Disable_AfterOtherColorPreset_NewInstanceRestoresOriginalBase()
+    {
+        var rig = new Rig();
+        rig.Ddc.Values[0x16] = 240;
+        rig.Ddc.Values[0x18] = 250;
+        rig.Ddc.Values[0x1A] = 250;
+        rig.Filter.SetKelvin(3000);
+        var low = (rig.Ddc.Values[0x16], rig.Ddc.Values[0x18], rig.Ddc.Values[0x1A]);
+
+        rig.Ddc.Values[0x14] = 5;
+        (rig.Ddc.Values[0x16], rig.Ddc.Values[0x18], rig.Ddc.Values[0x1A]) = (255, 255, 255);
+        rig.Filter.Disable();
+        rig.Ddc.Values[0x14] = 11;
+        (rig.Ddc.Values[0x16], rig.Ddc.Values[0x18], rig.Ddc.Values[0x1A]) = low;
+
+        rig.NewFilter().Disable();
+
+        Assert.Equal((240, 250, 250), (rig.Ddc.Values[0x16], rig.Ddc.Values[0x18], rig.Ddc.Values[0x1A]));
+    }
+
+    /// <summary>Başka ön ayardayken Disable GPU katmanını yine kapatır ve monitör payı etkisiz (1) bildirilir.</summary>
+    [Fact]
+    public void Disable_WhileOtherColorPreset_StillClearsGpuLayer()
+    {
+        var rig = new Rig();
+        rig.Filter.SetKelvin(1900);
+        Assert.NotNull(rig.Pipeline.Layer);
+        rig.Ddc.Values[0x14] = 5;
+
+        var state = rig.Filter.Disable();
+
+        Assert.Null(rig.Pipeline.Layer);
+        Assert.Equal(RgbGains.Neutral, state.Monitor);
+        Assert.Equal(RgbGains.Neutral, state.Gpu);
+    }
+
     // ---- Güvenlik ----
 
     /// <summary>Sadece 16/18/1A yazılır (parlaklık 10, ön ayar 14 ve yasak kodlara değil); aynı değer tekrar yazılmaz.</summary>
