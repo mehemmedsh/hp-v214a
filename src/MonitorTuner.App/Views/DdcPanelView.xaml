@@ -1,0 +1,66 @@
+<UserControl x:Class="MonitorTuner.App.Views.DdcPanelView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:loc="clr-namespace:MonitorTuner.App.Localization">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+    </UserControl.Resources>
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="16" MaxWidth="760">
+            <TextBlock Text="{loc:Tr DdcPanel.PageTitle}" FontSize="20" FontWeight="Bold" Margin="0,0,0,8" />
+            <TextBlock Text="{loc:Tr DdcPanel.Intro}" TextWrapping="Wrap" Margin="0,0,0,6" Foreground="#555555" />
+            <TextBlock Text="{loc:Tr DdcPanel.BrightnessHint}" TextWrapping="Wrap" Margin="0,0,0,12" Foreground="#555555" />
+
+            <Button Content="{loc:Tr DdcPanel.Refresh}" HorizontalAlignment="Left" Padding="10,4" Margin="0,0,0,10"
+                    Click="Refresh_Click" />
+            <TextBlock Text="{Binding Status}" TextWrapping="Wrap" Margin="0,0,0,10" FontWeight="SemiBold" />
+
+            <!-- DDC yoksa: OSD talimatı -->
+            <Border Background="#FFF3CD" BorderBrush="#FFEEBA" BorderThickness="1" Padding="10" CornerRadius="4"
+                    Visibility="{Binding ShowOsdInstructions, Converter={StaticResource BoolToVisibility}}">
+                <StackPanel>
+                    <TextBlock Text="{loc:Tr DdcPanel.Osd_Title}" FontWeight="Bold" Foreground="#856404" Margin="0,0,0,4" />
+                    <TextBlock Text="{Binding OsdText}" TextWrapping="Wrap" Foreground="#856404" />
+                </StackPanel>
+            </Border>
+
+            <ItemsControl ItemsSource="{Binding Items}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="0,0,0,12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="200" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="48" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Column="0" Text="{Binding Title}" VerticalAlignment="Center" />
+
+                            <!-- Kaydırıcı: sürüklerken yazılmaz, bırakınca tek yazma -->
+                            <Slider Grid.Column="1" Minimum="{Binding Minimum}" Maximum="{Binding Maximum}"
+                                    Value="{Binding Value, Mode=TwoWay}" IsEnabled="{Binding IsEditable}"
+                                    Visibility="{Binding IsSlider, Converter={StaticResource BoolToVisibility}}"
+                                    SmallChange="1" LargeChange="5" TickFrequency="1" IsSnapToTickEnabled="True"
+                                    Thumb.DragCompleted="Slider_Released" KeyUp="Slider_Released"
+                                    PreviewMouseLeftButtonUp="Slider_Released" />
+                            <TextBlock Grid.Column="2" Text="{Binding ValueText}" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                       Visibility="{Binding IsSlider, Converter={StaticResource BoolToVisibility}}" />
+
+                            <ComboBox Grid.Column="1" Grid.ColumnSpan="2" ItemsSource="{Binding ChoiceList}"
+                                      SelectedItem="{Binding SelectedChoice, Mode=TwoWay}" IsEnabled="{Binding IsEditable}"
+                                      Visibility="{Binding IsChoice, Converter={StaticResource BoolToVisibility}}" />
+
+                            <TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding LockText}"
+                                       TextWrapping="Wrap" Foreground="#856404" FontSize="12" Margin="0,2,0,0"
+                                       Visibility="{Binding HasLock, Converter={StaticResource BoolToVisibility}}" />
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

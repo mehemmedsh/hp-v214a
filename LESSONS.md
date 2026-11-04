@@ -39,3 +39,5 @@ HP P21b G4 ünitesinde test edilen gerçek değerler: ilk gün kontrolü (`docs/
   - 16k bağlamı aşan girdi sessizce kırpıldı.
   - Qwen 2026-11-04'te çıkarıldı (betik, Ollama adımları ve rolleri silindi); bu tuzaklar artık geçerli değil, kayıt olarak duruyor.
 - 2026-11-03 · Plan · Betik yazılırken ajanın aracı `\u00e7` gibi kaçışları gerçek harfe çevirdi. BOM'suz .ps1'de bu harfler PowerShell 5.1'de bozulur, ’ gibi tırnaklar dizeyi erken kapatır · `.ps1` dosyaları ASCII kalır; Türkçe harf `TR '{00e7}'` biçiminde yazılır, Türkçe metinler ayrı UTF-8 dosyalarda tutulur
+- 2026-11-04 · T305 · `Loc.Get` anahtarı tek noktalıdır (`Özellik.Ad`); `Setting.Brightness` gibi ikinci nokta ArgumentException atar · .resx anahtarında alt çizgi kullan (`DdcPanel.Setting_Brightness`)
+- 2026-11-04 · T305 · Aynı klasörde iki ajan oturumu (T305 ve T306) çalışırken `02-MIMARI.md` ve HEAD ben okumadan değişti; ortak dosyaya yazmadan önce yeniden oku, commit'e sadece kendi dosyalarını ekle (`git add` yol yol)
