@@ -40,6 +40,7 @@ public class DdcPanelTests
         public BlueLightState Suspend() => throw new NotSupportedException();
         public BlueLightState Resume() => throw new NotSupportedException();
         public BlueLightState Shutdown() => throw new NotSupportedException();
+        public BlueLightState? Reconcile() => null;
         public LowBlueLightResult SelectMonitorLowBlueLight() => throw new NotSupportedException();
         public IReadOnlyList<ColorConflict> CheckConflicts() => [];
         public bool Tick() => false;

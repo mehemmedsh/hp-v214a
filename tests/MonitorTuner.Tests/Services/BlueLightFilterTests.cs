@@ -488,6 +488,111 @@ public class BlueLightFilterTests
         Assert.Empty(rig.Store.Read<BlueLightBaseRecord>(Key, BlueLightFilter.BaseSection)!.Base);
     }
 
+    // ---- Reconcile: açılışta ve Custom RGB'ye dönüşte kalan kaydı toparlar ----
+
+    /// <summary>
+    /// Akşam geçişi monitörü ısıtırken uygulama çöktü. Yeni örnek açılışta Reconcile ile kayıtlı bazı geri yazar ve
+    /// kaydı siler; bu kullanıcı seçimi sayılmaz, aynı akşam Tick yine ısıtır.
+    /// </summary>
+    [Fact]
+    public void Reconcile_AfterCrash_RestoresBase_AndEveningStillWarms()
+    {
+        var rig = new Rig();
+        rig.Ddc.Values[0x16] = 240;
+        rig.Filter.Evening = On();
+        rig.Clock.SetUtcNow(Evening21 + TimeSpan.FromMinutes(20));
+        Assert.True(rig.Filter.Tick());
+        Assert.NotEqual(255, rig.Ddc.Values[0x1A]);
+
+        rig.Clock.SetUtcNow(Evening21 + TimeSpan.FromMinutes(25));
+        var second = rig.NewFilter();
+        var state = second.Reconcile();
+
+        Assert.NotNull(state);
+        Assert.True(state.Applied);
+        Assert.Equal((240, 255, 255), (rig.Ddc.Values[0x16], rig.Ddc.Values[0x18], rig.Ddc.Values[0x1A]));
+        Assert.Empty(rig.Store.Read<BlueLightBaseRecord>(Key, BlueLightFilter.BaseSection)!.Base);
+
+        second.Evening = On();
+        rig.Clock.SetUtcNow(Evening21 + TimeSpan.FromMinutes(30));
+        Assert.True(second.Tick());
+        Assert.InRange(second.Kelvin, KelvinCalculator.MinKelvin, 6499);
+        Assert.NotEqual(255, rig.Ddc.Values[0x1A]);
+    }
+
+    /// <summary>
+    /// Neutral'dayken Disable kaydı bıraktı (kazanç yazılamazdı). Kullanıcı Custom RGB'ye dönünce Reconcile, filtre
+    /// yeniden açılmadan kayıtlı bazı geri yazar.
+    /// </summary>
+    [Fact]
+    public void Reconcile_OnReturnToCustomRgb_RestoresBaseLeftByDisableInOtherPreset()
+    {
+        var rig = new Rig();
+        rig.Filter.SetKelvin(3000);
+        var low = (rig.Ddc.Values[0x16], rig.Ddc.Values[0x18], rig.Ddc.Values[0x1A]);
+        rig.Ddc.Values[0x14] = 5; // Neutral
+        (rig.Ddc.Values[0x16], rig.Ddc.Values[0x18], rig.Ddc.Values[0x1A]) = (255, 255, 255);
+        rig.Filter.Disable();
+        Assert.Equal(3, rig.Store.Read<BlueLightBaseRecord>(Key, BlueLightFilter.BaseSection)!.Base.Length);
+
+        rig.Ddc.Values[0x14] = 11; // Custom RGB: monitör düşük kodları hatırlıyor
+        (rig.Ddc.Values[0x16], rig.Ddc.Values[0x18], rig.Ddc.Values[0x1A]) = low;
+
+        var state = rig.Filter.Reconcile();
+
+        Assert.NotNull(state);
+        Assert.True(state.Applied);
+        Assert.Equal(6500, state.Kelvin);
+        Assert.Equal((255, 255, 255), (rig.Ddc.Values[0x16], rig.Ddc.Values[0x18], rig.Ddc.Values[0x1A]));
+        Assert.Empty(rig.Store.Read<BlueLightBaseRecord>(Key, BlueLightFilter.BaseSection)!.Base);
+    }
+
+    /// <summary>Kayıt yoksa Reconcile ne DDC'ye ne GPU'ya ne depoya yazar; filtre açıkken de dokunmaz.</summary>
+    [Fact]
+    public void Reconcile_WithoutRecord_WritesNothing()
+    {
+        var rig = new Rig();
+
+        Assert.Null(rig.Filter.Reconcile());
+        Assert.Null(rig.NewFilter().Reconcile());
+        Assert.Empty(rig.Ddc.Writes);
+        Assert.Empty(rig.Store.Sections);
+        Assert.Equal(0, rig.Pipeline.ApplyCalls);
+
+        // Filtre açık: kayıt onun, Reconcile geri yüklemez.
+        rig.Filter.SetKelvin(3000);
+        var writes = rig.Ddc.Writes.Count;
+        var applies = rig.Pipeline.ApplyCalls;
+
+        Assert.Null(rig.Filter.Reconcile());
+        Assert.Equal(writes, rig.Ddc.Writes.Count);
+        Assert.Equal(applies, rig.Pipeline.ApplyCalls);
+    }
+
+    /// <summary>
+    /// Kayıt her başarılı DDC yazmasından hemen sonra güncellenir: ikinci kanalın yazması başarısız olunca (burada
+    /// yazma sırasında çökme) kayıttaki Applied ilk kanalın yeni kodunu içerir; yeni örnek bazı doğru geri yazar.
+    /// </summary>
+    [Fact]
+    public void WriteMonitor_SavesRecordAfterEachWrite_WhenSecondChannelFails()
+    {
+        var rig = new Rig();
+        var gainWrites = 0;
+        rig.Ddc.Override = code => ++gainWrites == 2 ? throw new IOException("çökme") : DdcWriteResult.Written;
+
+        Assert.Throws<IOException>(() => rig.Filter.SetKelvin(3000));
+
+        var first = Assert.Single(rig.Ddc.Writes);
+        Assert.NotEqual(255, first.Value);
+        var record = rig.Store.Read<BlueLightBaseRecord>(Key, BlueLightFilter.BaseSection)!;
+        Assert.Equal(first.Value, record.Applied[(first.Code - 0x16) / 2]);
+        Assert.Equal(new ushort[] { 255, 255, 255 }, record.Base);
+
+        rig.Ddc.Override = null;
+        rig.NewFilter().Reconcile();
+        Assert.Equal((255, 255, 255), (rig.Ddc.Values[0x16], rig.Ddc.Values[0x18], rig.Ddc.Values[0x1A]));
+    }
+
     // ---- Güvenlik ----
 
     /// <summary>Sadece 16/18/1A yazılır (parlaklık 10, ön ayar 14 ve yasak kodlara değil); aynı değer tekrar yazılmaz.</summary>

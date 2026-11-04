@@ -68,6 +68,13 @@ public interface IBlueLightFilter
     /// <summary>Uygulama kapanırken çağrılır: kazançlar eski değerine döner, GPU katmanı kapanır (Suspend gibi).</summary>
     BlueLightState Shutdown();
 
+    /// <summary>
+    /// Kalan kaydı toparlar: filtre kapalıysa (6500) ve askıda değilse, depoda kayıtlı baz varsa geri yazar (Disable'daki
+    /// geri yükleme). Kullanıcı seçimi sayılmaz, akşam geçişini durdurmaz. Açılışta (önceki oturum çöktüyse kayıt kalır)
+    /// ve DDC 14 RGB kazanç ön ayarına (Custom RGB) geçince çağrılır. null: yapılacak bir şey yok, hiçbir şey yazılmadı.
+    /// </summary>
+    BlueLightState? Reconcile();
+
     /// <summary>Monitörün kendi Low Blue Light ön ayarı. Önce filtre kapanır.</summary>
     LowBlueLightResult SelectMonitorLowBlueLight();
 
@@ -156,6 +163,13 @@ public sealed class BlueLightFilter : IBlueLightFilter
     }
 
     public BlueLightState Shutdown() => Suspend();
+
+    public BlueLightState? Reconcile()
+    {
+        if (_kelvin < KelvinCalculator.OffKelvin || _suspended) return null;
+        LoadPersisted();
+        return _baseCodes is null ? null : Restore();
+    }
 
     public IReadOnlyList<ColorConflict> CheckConflicts() => _probe.Detect();
 
@@ -359,11 +373,13 @@ public sealed class BlueLightFilter : IBlueLightFilter
         if (changed) SavePersisted();
     }
 
-    /// <summary>Kodlar bazın oranıdır ve sadece azalır (255 = tam); aynı değer tekrar yazılmaz.</summary>
+    /// <summary>
+    /// Kodlar bazın oranıdır ve sadece azalır (255 = tam); aynı değer tekrar yazılmaz. Kayıt her başarılı yazmadan hemen
+    /// sonra güncellenir: kanallar arasında çökülürse kayıttaki Applied monitördekiyle aynı kalır.
+    /// </summary>
     private void WriteMonitor(RgbGains intended)
     {
         double[] shares = [intended.R, intended.G, intended.B];
-        var wrote = false;
         for (var i = 0; i < GainCodes.Length; i++)
         {
             var code = (ushort)Math.Min(_baseCodes![i],
@@ -372,13 +388,11 @@ public sealed class BlueLightFilter : IBlueLightFilter
             {
                 if (_ddc.Write(GainCodes[i], code) != DdcWriteResult.Written) continue;
                 _currentCodes[i] = code;
-                wrote = true;
+                SavePersisted();
             }
 
             _monitorShare[i] = shares[i];
         }
-
-        if (wrote) SavePersisted();
     }
 
     private bool AllMonitorWritesDone(RgbGains intended) =>
