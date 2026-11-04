@@ -12,6 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Sahte saat (T003): FakeTimeProvider; zamanlayıcılar Advance ile ilerler. -->
+    <PackageReference Include="Microsoft.Extensions.TimeProvider.Testing" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio" />

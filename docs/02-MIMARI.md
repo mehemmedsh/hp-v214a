@@ -102,6 +102,7 @@ Ayrıntılı anlatım: `08-GORUNTU-YONTEMLERI.md`, bölüm 5.
 - **Geri alma noktası:** `RestorePoint` (Hardware.Abstractions) kurucusu `internal`; sadece Safety (ve platformdan bağımsız test projesi) `InternalsVisibleTo` ile görür. Hardware.Abstractions'taki her yazma metodu `RestorePoint` ister; okuma metotları `Read`, `Get`, `List`, `Enumerate` ile başlar. Testler: `tests/MonitorTuner.Tests/Contracts`.
 - Donanım arayüzlerinde mod ekleme/silme, firmware, EDID yazma, güç, saat, voltaj ve fan üyesi yoktur (testli).
 - Ortak sayılar `Core.SafetyLimits`'te (15 sn, %15 beyaz, 60 Hz, yasak DDC kodları). Zaman `TimeProvider` ile; sahte saat T003'te.
+- **Sahte donanım (T003):** `tests/MonitorTuner.Tests/Fakes`. `FakeHardware` kullanıcının sistemini kurar (RTX 3080'in HDMI'ında HP P21b G4, örnek EDID, kaydedilmiş DDC değerleri, sahte saat `FakeTimeProvider`); Hardware.Abstractions'taki her arayüzün bir sahtesi vardır (testli). Sahteler başka hedef için alınmış geri alma noktasıyla yazmayı hata sayar.
 
 ## Profil yapısı
 
