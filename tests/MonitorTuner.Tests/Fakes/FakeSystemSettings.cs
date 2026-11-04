@@ -131,9 +131,16 @@ internal sealed class FakeDisplayModes : IDisplayModes
 
     public event Action<DisplayMode>? ModeChanged;
 
-    public IReadOnlyList<DisplayMode> ListModes(DisplayId display) => display == ownDisplay ? modes.ToList() : [];
+    /// <summary>true: Windows mod listesini okuyamıyor (ekran uykuda, HDMI yeniden el sıkışıyor); liste boş döner.</summary>
+    public bool ListUnavailable { get; set; }
 
-    public DisplayMode? GetCurrentMode(DisplayId display) => display == ownDisplay ? Current : null;
+    /// <summary>true: şu anki mod okunamıyor.</summary>
+    public bool CurrentUnavailable { get; set; }
+
+    public IReadOnlyList<DisplayMode> ListModes(DisplayId display) =>
+        display == ownDisplay && !ListUnavailable ? modes.ToList() : [];
+
+    public DisplayMode? GetCurrentMode(DisplayId display) => display == ownDisplay && !CurrentUnavailable ? Current : null;
 
     public bool SwitchMode(DisplayId display, DisplayMode mode, RestorePoint restorePoint)
     {
@@ -163,4 +170,12 @@ internal sealed class FakeDisplayModes : IDisplayModes
 
     /// <summary>Sürücü güncellemesi kullanıcının eklediği özel modu sildi (T209 uyarısı için).</summary>
     public void SimulateDriverDroppedMode(DisplayMode mode) => modes.Remove(mode);
+
+    /// <summary>Dış bir program (ör. oyun) masaüstünü başka bir moda aldı; mod listede yoksa eklenir.</summary>
+    public void SimulateExternalSwitch(DisplayMode mode)
+    {
+        if (!modes.Contains(mode)) modes.Add(mode);
+        Current = mode;
+        ModeChanged?.Invoke(mode);
+    }
 }

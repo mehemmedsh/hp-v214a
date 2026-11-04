@@ -116,6 +116,42 @@ public class RefreshRatePanelTests
         Assert.Null(rig.Panel.GetNvidiaValues(60));
     }
 
+    /// <summary>Masaüstü başka çözünürlükteyken (ör. oyun 1440p'ye aldı) 1080p'de görülmüş modlar "silinmiş" sayılmaz.</summary>
+    [Fact]
+    public void MissingRates_IgnoreCurrentResolution()
+    {
+        var rig = new Rig();
+        Assert.Empty(rig.Panel.GetMissingRatesHz()); // 76, 75, 72, 60, 50 görüldü
+
+        rig.Hw.Modes.SimulateExternalSwitch(new(2560, 1440, 60));
+        Assert.Empty(rig.Panel.GetMissingRatesHz());
+        Assert.Empty(rig.NewPanel().GetMissingRatesHz());
+
+        rig.Hw.Modes.SimulateDriverDroppedMode(new(1920, 1080, 76)); // gerçek silme yine görülür
+        Assert.Equal([76], rig.Panel.GetMissingRatesHz());
+    }
+
+    /// <summary>Liste ya da şu anki mod okunamıyorsa uyarı verilmez ve görülenler kaydı değişmez.</summary>
+    [Fact]
+    public void MissingRates_WhenListUnreadable_ReturnsEmptyAndKeepsSeen()
+    {
+        var rig = new Rig();
+        Assert.Empty(rig.Panel.GetMissingRatesHz());
+        var seen = rig.Store.Read<RefreshRateSettings>(Key, RefreshRatePanel.SettingsSection)!.SeenRatesHz;
+        Assert.Equal([50, 60, 72, 75, 76], seen);
+
+        rig.Hw.Modes.ListUnavailable = true;
+        Assert.Empty(rig.Panel.GetMissingRatesHz());
+        rig.Hw.Modes.ListUnavailable = false;
+        rig.Hw.Modes.CurrentUnavailable = true;
+        Assert.Empty(rig.Panel.GetMissingRatesHz());
+        rig.Hw.Modes.CurrentUnavailable = false;
+
+        Assert.Same(seen, rig.Store.Read<RefreshRateSettings>(Key, RefreshRatePanel.SettingsSection)!.SeenRatesHz); // yazılmadı
+        rig.Hw.Modes.SimulateDriverDroppedMode(new(1920, 1080, 75));
+        Assert.Equal([75], rig.Panel.GetMissingRatesHz()); // kayıt bozulmadı
+    }
+
     /// <summary>Gerçek Hz monitörden (DDC AE) okunur; okumalar Hz'i değiştirmez.</summary>
     [Fact]
     public void ReadMonitorRefreshHz_UsesDdcAe()

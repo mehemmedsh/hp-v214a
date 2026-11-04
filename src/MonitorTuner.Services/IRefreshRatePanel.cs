@@ -36,7 +36,8 @@ public interface IRefreshRatePanel
 
     /// <summary>
     /// Onaylı olup daha önce Windows listesinde görülen ama artık olmayanlar (sürücü güncellemesi sildi). Hiç eklenmemiş
-    /// mod uyarı vermez. Her çağrı listede görülen onaylı modları ayar deposuna kaydeder.
+    /// mod uyarı vermez. Çözünürlükten bağımsızdır (bütün modlara bakar). Her çağrı listede görülen onaylı modları ayar
+    /// deposuna kaydeder; liste ya da şu anki mod okunamazsa boş döner ve depoya yazmaz.
     /// </summary>
     IReadOnlyList<int> GetMissingRatesHz();
 

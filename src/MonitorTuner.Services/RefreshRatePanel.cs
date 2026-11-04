@@ -64,7 +64,11 @@ public sealed class RefreshRatePanel : IRefreshRatePanel
 
     public IReadOnlyList<int> GetMissingRatesHz()
     {
-        var listed = ListedRates();
+        // Çözünürlükten bağımsız: masaüstü başka çözünürlükteyken (oyun) 1080p modları silinmiş sayılmaz.
+        // Liste ya da şu anki mod okunamıyorsa (ekran uykuda, HDMI el sıkışması) karar verilmez, depoya yazılmaz.
+        var all = modes.ListModes(display);
+        if (all.Count == 0 || modes.GetCurrentMode(display) is null) return [];
+        var listed = all.Select(m => m.RefreshHz).ToHashSet();
         var settings = Settings();
         var seen = settings.SeenRatesHz.Union(ApprovedRatesHz.Where(listed.Contains)).Order().ToArray();
         if (!seen.SequenceEqual(settings.SeenRatesHz)) store.Write(key, SettingsSection, settings with { SeenRatesHz = seen });
