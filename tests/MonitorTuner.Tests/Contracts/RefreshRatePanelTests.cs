@@ -131,6 +131,39 @@ public class RefreshRatePanelTests
         Assert.Equal([76], rig.Panel.GetMissingRatesHz());
     }
 
+    /// <summary>
+    /// Silinme kararı profildeki çözünürlüğe (1080p) göre verilir: başka çözünürlükte aynı Hz'in olması 1080p@75'in
+    /// silindiğini gizlemez; masaüstünün şu anki çözünürlüğü de sonucu değiştirmez.
+    /// </summary>
+    [Fact]
+    public void MissingRates_UseProfileResolution_NotOtherResolutions()
+    {
+        var rig = new Rig();
+        rig.Hw.Modes.SimulateExternalSwitch(new(1680, 1050, 75)); // 1680x1050@75 listeye girer
+        rig.Hw.Modes.SimulateExternalSwitch(new(1920, 1080, 60));
+        Assert.Empty(rig.Panel.GetMissingRatesHz());
+
+        rig.Hw.Modes.SimulateDriverDroppedMode(new(1920, 1080, 75));
+        Assert.Equal([75], rig.Panel.GetMissingRatesHz());
+
+        rig.Hw.Modes.SimulateExternalSwitch(new(2560, 1440, 60));
+        Assert.Equal([75], rig.Panel.GetMissingRatesHz());
+        Assert.Equal([75], rig.NewPanel().GetMissingRatesHz());
+    }
+
+    /// <summary>"Görüldü" kaydı da sadece profildeki çözünürlükten yazılır: 1080p'de hiç eklenmemiş mod uyarı vermez.</summary>
+    [Fact]
+    public void MissingRates_SeenOnlyAtProfileResolution()
+    {
+        var rig = new Rig(76, 75, 50); // 1080p@72 yok
+        rig.Hw.Modes.SimulateExternalSwitch(new(1680, 1050, 72));
+        Assert.Empty(rig.Panel.GetMissingRatesHz());
+        Assert.Equal([50, 60, 75, 76], rig.Store.Read<RefreshRateSettings>(Key, RefreshRatePanel.SettingsSection)!.SeenRatesHz);
+
+        rig.Hw.Modes.SimulateDriverDroppedMode(new(1680, 1050, 72));
+        Assert.Empty(rig.Panel.GetMissingRatesHz());
+    }
+
     /// <summary>Liste ya da şu anki mod okunamıyorsa uyarı verilmez ve görülenler kaydı değişmez.</summary>
     [Fact]
     public void MissingRates_WhenListUnreadable_ReturnsEmptyAndKeepsSeen()
