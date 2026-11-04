@@ -14,6 +14,9 @@ internal sealed class FakeGpuGammaTable(DisplayId ownDisplay) : IGpuGammaTable
     /// <summary>true: Windows tabloyu reddeder (ör. GdiIcmGammaRange yokken derin karartma).</summary>
     public bool RejectWrites { get; set; }
 
+    /// <summary>Sürücünün sakladığı bit sayısı; 16'dan azsa okunan tablo yazılandan biraz farklıdır.</summary>
+    public int StoredBits { get; set; } = 16;
+
     /// <summary>Uygulamanın yazmaları; dış değişiklikler burada yok.</summary>
     public IReadOnlyList<(GammaRamp Table, RestorePoint RestorePoint)> Writes => writes;
 
@@ -24,9 +27,16 @@ internal sealed class FakeGpuGammaTable(DisplayId ownDisplay) : IGpuGammaTable
         FakeRestorePoints.Check(restorePoint, WriteTarget.GpuGammaTable, display);
         ArgumentNullException.ThrowIfNull(newTable);
         if (RejectWrites || display != ownDisplay) return false;
-        table = newTable;
+        table = StoredBits >= 16 ? newTable : Quantize(newTable, StoredBits);
         writes.Add((newTable, restorePoint));
         return true;
+    }
+
+    private static GammaRamp Quantize(GammaRamp ramp, int bits)
+    {
+        var mask = (ushort)~((1 << (16 - bits)) - 1);
+        return new GammaRamp(Cut(ramp.Red), Cut(ramp.Green), Cut(ramp.Blue));
+        ushort[] Cut(IReadOnlyList<ushort> channel) => [.. channel.Select(v => (ushort)(v & mask))];
     }
 
     public void SimulateExternalChange(DisplayId display, GammaRamp newTable)
