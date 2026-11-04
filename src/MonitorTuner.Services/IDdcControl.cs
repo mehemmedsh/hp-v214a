@@ -14,7 +14,10 @@ public interface IDdcControl
 
     IReadOnlySet<byte> WritableCodes { get; }
 
-    /// <summary>AC gibi taşan değerler düzeltilmiş döner. null: okunamadı.</summary>
+    /// <summary>
+    /// Ham değer. AE/AC'nin Hz'e çevrilmesi ve AC'nin taşma düzeltmesi profilde (<c>FrequencyReadoutRules.RefreshHz</c>,
+    /// <c>HorizontalHz</c>): düzeltilmiş AC 16 bite sığmaz. null: DDC yok ya da okunamadı.
+    /// </summary>
     DdcValue? Read(byte code);
 
     DdcWriteResult Write(byte code, ushort value);

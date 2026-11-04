@@ -86,14 +86,33 @@ public sealed record FrequencySample(int RefreshHz, int Ae, int Ac, int Horizont
 /// <summary>
 /// AE/AC okuma kuralları: AE = Hz × <see cref="VerticalDivisor"/>. AC yatay frekansı Hz cinsinden 16 bit taşmalı verir:
 /// gerçek değer, okunan değere <see cref="HorizontalWrapModulus"/> katları eklenerek [<see cref="HorizontalMinHz"/>,
-/// <see cref="HorizontalMaxHz"/>] aralığına düşen tek değerdir. Düzeltmeyi T301 uygular.
+/// <see cref="HorizontalMaxHz"/>] aralığına düşen tek değerdir (T301). Düzeltilmiş değer 16 bite sığmadığı için
+/// <c>IDdcControl.Read</c> ham değeri verir; çeviri buradadır.
 /// </summary>
 public sealed record FrequencyReadoutRules(
     int VerticalDivisor,
     int HorizontalWrapModulus,
     int HorizontalMinHz,
     int HorizontalMaxHz,
-    IReadOnlyList<FrequencySample> Samples);
+    IReadOnlyList<FrequencySample> Samples)
+{
+    /// <summary>AE okumasından gelen dikey frekans, Hz. null: okuma geçersiz (0 ya da negatif).</summary>
+    public double? RefreshHz(int ae) => ae > 0 ? (double)ae / VerticalDivisor : null;
+
+    /// <summary>AC okumasının taşma düzeltmesi: yatay frekans, Hz. null: aralığa düşen değer yok ya da birden fazla.</summary>
+    public int? HorizontalHz(int ac)
+    {
+        if (ac < 0 || ac >= HorizontalWrapModulus) return null;
+        int? found = null;
+        for (long hz = ac; hz <= HorizontalMaxHz; hz += HorizontalWrapModulus)
+        {
+            if (hz < HorizontalMinHz) continue;
+            if (found is not null) return null;
+            found = (int)hz;
+        }
+        return found;
+    }
+}
 
 /// <summary>
 /// Monitör profili (veri dosyası, <c>/profiles</c>), <see cref="IMonitorProfileReader"/> okur ve doğrular.
