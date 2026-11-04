@@ -3,10 +3,13 @@ using MonitorTuner.Core;
 
 namespace MonitorTuner.Services;
 
-/// <summary>Renk profili. null alan: profil o ayara dokunmaz. Hz alanı yok: profiller Hz'e dokunmaz.</summary>
+/// <summary>
+/// Renk profili. Hz alanı yok: profiller Hz'e dokunmaz. null <c>Brightness</c> ve <c>Kelvin</c>: profil o ayara dokunmaz.
+/// null <c>Vibrance</c>: canlılık yok; uygulamanın açtığı canlılık kapanır (kullanıcının kendi değerine dokunulmaz).
+/// </summary>
 /// <param name="Brightness">Tek kaydırıcı (0–1): arka ışık + ek karartma.</param>
 /// <param name="Kelvin">Mavi ışık; 6500 = kapalı.</param>
-/// <param name="Vibrance">NVIDIA canlılık; sadece Film ve Oyun'da açık.</param>
+/// <param name="Vibrance">NVIDIA canlılık (50–100; NVIDIA panelindeki %); hazır profillerde sadece Film ve Oyun'da açık.</param>
 public sealed record ColorProfile(string Name, bool BuiltIn, double? Brightness, int? Kelvin, int? Vibrance);
 
 /// <summary>Renk profilleri (T308): sadece kullanıcı seçince, değerleri bir kez ayarlar.</summary>
@@ -15,10 +18,16 @@ public interface IColorProfiles
     /// <summary>Hazırlar (Gündüz, Akşam, Gece, Kod, Film, Oyun, DaVinci zaman çizelgesi) ve kullanıcınınkiler.</summary>
     IReadOnlyList<ColorProfile> Profiles { get; }
 
-    void Apply(ColorProfile profile);
+    /// <summary>
+    /// Kullanıcı seçince: parlaklık, mavi ışık, canlılık sırayla, her biri bir kez (kendi servisi üzerinden). Hz'e ve
+    /// kalibrasyona dokunmaz. Geçersiz profilde <see cref="ArgumentException"/>, hiçbir şey yazılmadan.
+    /// </summary>
+    ProfileApplyResult Apply(ColorProfile profile);
 
+    /// <summary>Kullanıcı profili ekler ya da aynı adlıyı değiştirir. Hazır adlar kullanılamaz (<see cref="ArgumentException"/>).</summary>
     void Save(ColorProfile profile);
 
+    /// <summary>Kullanıcı profilini siler. Hazır profil silinemez (<see cref="InvalidOperationException"/>); olmayan ad sessizce geçilir.</summary>
     void Delete(string name);
 
     /// <summary>Panik kısayolu (T310): mavi ışık, ek karartma ve canlılık kapanır; kalibrasyon kalır.</summary>
