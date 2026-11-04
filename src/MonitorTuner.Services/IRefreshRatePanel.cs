@@ -36,7 +36,8 @@ public interface IRefreshRatePanel
 
     /// <summary>
     /// Onaylı olup daha önce Windows listesinde görülen ama artık olmayanlar (sürücü güncellemesi sildi). Hiç eklenmemiş
-    /// mod uyarı vermez. Çözünürlükten bağımsızdır (bütün modlara bakar). Her çağrı listede görülen onaylı modları ayar
+    /// mod uyarı vermez. Profildeki modun çözünürlüğüne (1920x1080) bakar; masaüstünün şu anki çözünürlüğünden ve başka
+    /// çözünürlüklerdeki aynı Hz'lerden bağımsızdır. Her çağrı bu çözünürlükte listede görülen onaylı modları ayar
     /// deposuna kaydeder; liste ya da şu anki mod okunamazsa boş döner ve depoya yazmaz.
     /// </summary>
     IReadOnlyList<int> GetMissingRatesHz();
