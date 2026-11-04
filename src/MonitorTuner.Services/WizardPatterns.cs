@@ -1,3 +1,5 @@
+using MonitorTuner.Color;
+
 namespace MonitorTuner.Services;
 
 public readonly record struct Rgb(byte R, byte G, byte B)
@@ -5,10 +7,13 @@ public readonly record struct Rgb(byte R, byte G, byte B)
     public static Rgb Grey(int level) => new((byte)level, (byte)level, (byte)level);
 }
 
-public enum PatternKind { BlackClipping, WhiteClipping, Sharpness, FullRangeSteps, ViewingAngle, DeadPixels, Uniformity, WhiteField }
+public enum PatternKind { BlackClipping, WhiteClipping, Sharpness, FullRangeSteps, ViewingAngle, DeadPixels, Uniformity, WhiteField, Gamma, GreyBalance }
 
-/// <summary>Ekranın yüzdesi olarak (0–1) bir dikdörtgen. <paramref name="Level"/>: gri yamanın seviyesi (0–255), etiket için.</summary>
-public sealed record PatternPatch(double X, double Y, double Width, double Height, Rgb Color, int? Level = null);
+/// <summary>
+/// Ekranın yüzdesi olarak (0–1) bir dikdörtgen. <paramref name="Level"/>: gri yamanın seviyesi (0–255), etiket için.
+/// <paramref name="StripeColor"/> verilirse yama düz değil, satır satır (1 fiziksel piksel) <paramref name="Color"/> ve bu renkle dolar (gamma deseni).
+/// </summary>
+public sealed record PatternPatch(double X, double Y, double Width, double Height, Rgb Color, int? Level = null, Rgb? StripeColor = null);
 
 /// <summary>Örnek yazı: <paramref name="Sizes"/> punto olarak, her biri bir satır.</summary>
 public sealed record PatternText(Rgb Color, IReadOnlyList<int> Sizes);
@@ -22,7 +27,7 @@ public sealed record PatternFrame(Rgb Background, IReadOnlyList<PatternPatch> Pa
 /// </summary>
 public sealed record Pattern(PatternKind Kind, IReadOnlyList<PatternFrame> Frames);
 
-/// <summary>Ayar sihirbazının desenleri (T312). Gamma ve gri dengesi desenleri T313'te eklenir.</summary>
+/// <summary>Ayar sihirbazının desenleri (T312: monitör ayarları; T313: gamma ve gri dengesi).</summary>
 public static class WizardPatterns
 {
     private static readonly Rgb Black = new(0, 0, 0), White = new(255, 255, 255);
@@ -39,8 +44,13 @@ public static class WizardPatterns
             Fields(PatternKind.Uniformity, Rgb.Grey(51), Rgb.Grey(128), Rgb.Grey(204)), // %20, %50, %80
         ],
         WizardStep.WhiteMatch => [Fields(PatternKind.WhiteField, White)],
-        _ => [], // metin adımları (ısınma, konum) ve T313'ün gamma / gri dengesi
+        WizardStep.Gamma => [Gamma()],
+        WizardStep.GreyBalance => [Fields(PatternKind.GreyBalance, Rgb.Grey(CalibrationCurves.DarkLevel), Rgb.Grey(CalibrationCurves.MidLevel), Rgb.Grey(CalibrationCurves.LightLevel))],
+        _ => [], // metin adımları (ısınma, konum)
     };
+
+    /// <summary>Panel gamması adayları (1,8 … 2,8); gamma deseninin her karesi sırayla bir adaydır.</summary>
+    public static IReadOnlyList<double> GammaCandidates { get; } = [.. Enumerable.Range(18, 11).Select(n => n / 10.0)];
 
     private static IEnumerable<int> Range(int start, int count) => Enumerable.Range(start, count);
 
@@ -71,6 +81,23 @@ public static class WizardPatterns
         PatternPatch Band(double y) => new(0.1, y, 0.8, 0.12, grey, 128);
         return new Pattern(PatternKind.ViewingAngle, [new PatternFrame(grey, [Band(0.02), Band(0.44), Band(0.86)])]);
     }
+
+    /// <summary>
+    /// Siyah-beyaz çizgili alan ışığın tam yarısını verir (gamma'dan bağımsız); yanındaki düz gri, aday gamma'da %50 ışığı veren
+    /// seviyedir (255 · 0,5^(1/γ)). Kullanıcı uzaktan çizgili alanla en eşit görünen kareyi seçer: o kare panel gamması.
+    /// </summary>
+    private static Pattern Gamma() => new(PatternKind.Gamma,
+    [
+        .. GammaCandidates.Select(g =>
+        {
+            var level = (int)Math.Round(255 * Math.Pow(0.5, 1 / g));
+            return new PatternFrame(Black,
+            [
+                new PatternPatch(0.1, 0.25, 0.4, 0.5, Black, StripeColor: White),
+                new PatternPatch(0.5, 0.25, 0.4, 0.5, Rgb.Grey(level), level),
+            ]);
+        }),
+    ]);
 
     private static Pattern Fields(PatternKind kind, params Rgb[] colors) =>
         new(kind, [.. colors.Select(c => new PatternFrame(c, []))]);

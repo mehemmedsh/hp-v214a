@@ -62,16 +62,35 @@ public class SetupWizardTests
         public bool Shutdown() => throw new NotSupportedException();
     }
 
-    /// <summary>Dimming katmanının son tablosunu tutar (gerçek <see cref="BrightnessControl"/> ile).</summary>
+    /// <summary>Katmanların son tablosunu ve <see cref="Apply"/> sayısını tutar (gerçek <see cref="BrightnessControl"/> ile).</summary>
     private sealed class RecordingPipeline : IColorPipeline
     {
         public GammaRamp? Dimming { get; private set; }
-        public void SetLayer(ColorLayer layer, GammaRamp? table) { if (layer == ColorLayer.Dimming) Dimming = table; }
-        public bool Apply() => true;
+        public GammaRamp? Calibration { get; private set; }
+        public int Applies { get; private set; }
+        public bool ApplyResult { get; set; } = true;
+        public void SetLayer(ColorLayer layer, GammaRamp? table)
+        {
+            if (layer == ColorLayer.Dimming) Dimming = table;
+            if (layer == ColorLayer.Calibration) Calibration = table;
+        }
+        public bool Apply() { Applies++; return ApplyResult; }
         public bool RestoreIfChangedExternally() => throw new NotSupportedException();
         public bool EnsureFullGammaRange() => throw new NotSupportedException();
         public void Shutdown() => throw new NotSupportedException();
         public void ResetTable() => throw new NotSupportedException();
+    }
+
+    private sealed class StubNvidia : INvidiaControl
+    {
+        public int? Vibrance => null;
+        public int SuspendCalls { get; private set; }
+        public int ResumeCalls { get; private set; }
+        public bool SetVibrance(int percent) => throw new NotSupportedException();
+        public bool ResetVibrance() => throw new NotSupportedException();
+        public void Suspend() => SuspendCalls++;
+        public void Resume() => ResumeCalls++;
+        public void Shutdown() => throw new NotSupportedException();
     }
 
     /// <summary>Gerçek parlaklık servisiyle: başta kaydırıcı ek karartma bölümünde (arka ışık 0, GPU karartıyor).</summary>
@@ -83,7 +102,7 @@ public class SetupWizardTests
             Ddc = new DirectDdcControl(Monitor, Profile);
             Brightness_ = new BrightnessControl(Ddc, Pipeline, new DimmingPlanner());
             var panel = new DdcPanel(Profile, Ddc, BlueLight, Store, Key, ConnectionType.Hdmi, () => Brightness_.DimmingActive);
-            Wizard = new SetupWizard(panel, Brightness_, BlueLight, Store, Key, new FakeTimeProvider());
+            Wizard = new SetupWizard(panel, Brightness_, BlueLight, Nvidia, Pipeline, new CalibrationCurves(), Store, Key, new FakeTimeProvider());
 
             Brightness_.Commit(0.1);
             Assert.True(Brightness_.DimmingActive);
@@ -93,6 +112,7 @@ public class SetupWizardTests
         public FakeDdcMonitor Monitor { get; } = FakeDdcMonitor.HpP21bG4();
         public DirectDdcControl Ddc { get; }
         public RecordingPipeline Pipeline { get; } = new();
+        public StubNvidia Nvidia { get; } = new();
         public BrightnessControl Brightness_ { get; }
         public StubBlueLight BlueLight { get; } = new();
         public FakeStore Store { get; } = new();
@@ -106,14 +126,20 @@ public class SetupWizardTests
             Monitor = monitor ?? FakeDdcMonitor.HpP21bG4();
             if (customRgb) Monitor.SetMonitorValue(Preset, CustomRgb);
             Ddc = new DirectDdcControl(Monitor, Profile);
-            var panel = new DdcPanel(Profile, Ddc, BlueLight, Store, Key, ConnectionType.Hdmi, () => Brightness_.DimmingActive);
-            Wizard = new SetupWizard(panel, Brightness_, BlueLight, Store, Key, Time);
+            Wizard = New();
         }
+
+        /// <summary>Aynı sahte donanım ve depoyla yeni bir sihirbaz (uygulama yeniden açıldı).</summary>
+        public SetupWizard New() => new(
+            new DdcPanel(Profile, Ddc, BlueLight, Store, Key, ConnectionType.Hdmi, () => Brightness_.DimmingActive),
+            Brightness_, BlueLight, Nvidia, Pipeline, new CalibrationCurves(), Store, Key, Time);
 
         public FakeDdcMonitor Monitor { get; }
         public DirectDdcControl Ddc { get; }
         public StubBlueLight BlueLight { get; } = new();
         public StubBrightness Brightness_ { get; } = new();
+        public StubNvidia Nvidia { get; } = new();
+        public RecordingPipeline Pipeline { get; } = new();
         public FakeStore Store { get; } = new();
         public FakeTimeProvider Time { get; } = new();
         public SetupWizard Wizard { get; }
@@ -122,10 +148,11 @@ public class SetupWizardTests
     }
 
     [Fact]
-    public void Steps_AreTheT312Steps_InOrder() =>
+    public void Steps_AreInOrder_GammaAndGreyBalanceAfterWhiteMatch() =>
         Assert.Equal(
             [WizardStep.WarmUpAndPosition, WizardStep.BlackAndWhiteClipping, WizardStep.Sharpness, WizardStep.FullRgbCheck,
-             WizardStep.ViewingAngle, WizardStep.DeadPixelsAndUniformity, WizardStep.WhiteMatch],
+             WizardStep.ViewingAngle, WizardStep.DeadPixelsAndUniformity, WizardStep.WhiteMatch,
+             WizardStep.Gamma, WizardStep.GreyBalance],
             new Rig().Wizard.Steps);
 
     /// <summary>Sihirbaz başlarken efektler kapanır, bitince geri gelir.</summary>
@@ -168,12 +195,10 @@ public class SetupWizardTests
         Assert.Equal(3, baseline.DdcValues[Sharpness]);
         Assert.Equal((250, 255, 245), ((int)baseline.DdcValues[Red], (int)baseline.DdcValues[Green], (int)baseline.DdcValues[Blue]));
         Assert.DoesNotContain(Preset, baseline.DdcValues.Keys); // renk ön ayarı sihirbazın değil
-        Assert.Equal(GammaRamp.Identity, baseline.Calibration); // kalibrasyon T313'te; şimdilik birim tablo
+        Assert.Equal(GammaRamp.Identity, baseline.Calibration); // kalibrasyon seçilmedi: birim tablo
 
         // Yeni örnek (uygulama yeniden açıldı) aynı temel ayarı depodan okur.
-        var reopened = new SetupWizard(
-            new DdcPanel(Profile, rig.Ddc, rig.BlueLight, rig.Store, Key, ConnectionType.Hdmi), rig.Brightness_, rig.BlueLight,
-            rig.Store, Key, rig.Time).LoadBaseline();
+        var reopened = rig.New().LoadBaseline();
         Assert.NotNull(reopened);
         Assert.Equal(baseline.DdcValues, reopened.DdcValues);
         Assert.Equal(GammaRamp.Identity, reopened.Calibration);
@@ -349,14 +374,155 @@ public class SetupWizardTests
         Assert.Equal(TimeSpan.Zero, rig.Wizard.WarmUpRemaining);
     }
 
-    /// <summary>Gamma ve gri dengesi T313'ün işi; T312'de çağrılırsa sessizce yok sayılmaz.</summary>
+    private static CalibrationChoices Choices(RgbGains? white = null) =>
+        new(2.6, RgbGains.Neutral, new RgbGains(0.92, 1, 1), RgbGains.Neutral, white);
+
+    private static GammaRamp Expected(CalibrationChoices choices) => new CalibrationCurves().Build(choices);
+
+    /// <summary>Seçimler anında ekrana (kalibrasyon katmanı) gider, bitince temel ayarda saklanır, yeniden açılışta okunur.</summary>
     [Fact]
-    public void SetCalibration_IsNotPartOfT312()
+    public void SetCalibration_AppliesTheCurveLive_FinishSavesItAsBaseline()
     {
         var rig = new Rig();
         rig.Wizard.Begin();
 
-        Assert.Throws<NotSupportedException>(() => rig.Wizard.SetCalibration(
-            new CalibrationChoices(2.2, RgbGains.Neutral, RgbGains.Neutral, RgbGains.Neutral)));
+        Assert.True(rig.Wizard.SetCalibration(Choices()));
+
+        Assert.Equal(Expected(Choices()), rig.Pipeline.Calibration);
+        Assert.Equal(1, rig.Pipeline.Applies);
+        Assert.Empty(rig.Monitor.Writes); // GPU yolu: monitöre (DDC) dokunmaz
+
+        var baseline = rig.Wizard.Finish();
+
+        Assert.Equal(Expected(Choices()), baseline.Calibration);
+        Assert.Equal(Expected(Choices()), rig.Pipeline.Calibration); // katman yerinde kalır
+        Assert.Equal(Expected(Choices()), rig.New().LoadBaseline()!.Calibration);
+    }
+
+    [Fact]
+    public void SetCalibration_BeforeBegin_Refuses_AndInvalidChoicesApplyNothing()
+    {
+        var rig = new Rig();
+        Assert.Throws<InvalidOperationException>(() => rig.Wizard.SetCalibration(Choices()));
+
+        rig.Wizard.Begin();
+        Assert.Throws<ArgumentOutOfRangeException>(() => rig.Wizard.SetCalibration(Choices() with { PanelGamma = 3.5 }));
+        Assert.Equal(0, rig.Pipeline.Applies);
+        Assert.Null(rig.Pipeline.Calibration);
+    }
+
+    /// <summary>Windows tabloyu reddederse ekrandaki ve kaydedilecek kalibrasyon önceki hâlinde kalır.</summary>
+    [Fact]
+    public void SetCalibration_WhenWindowsRejectsTheTable_ReturnsFalse_AndKeepsThePreviousOne()
+    {
+        var rig = new Rig();
+        rig.Wizard.Begin();
+        Assert.True(rig.Wizard.SetCalibration(Choices()));
+
+        rig.Pipeline.ApplyResult = false;
+        Assert.False(rig.Wizard.SetCalibration(Choices() with { PanelGamma = 2.0 }));
+        rig.Pipeline.ApplyResult = true;
+
+        Assert.Equal(Expected(Choices()), rig.Pipeline.Calibration);
+        Assert.Equal(Expected(Choices()), rig.Wizard.Finish().Calibration);
+    }
+
+    /// <summary>
+    /// Eski kalibrasyon açıkken panelin gammasını ölçmek anlamsız (düzeltilmiş ekrana bakılır): Begin ham panele döner,
+    /// seçim yapılmazsa Finish eskisini geri koyar ve kaydı korur.
+    /// </summary>
+    [Fact]
+    public void Begin_ShowsTheRawPanel_FinishWithoutChoiceBringsTheOldCalibrationBack()
+    {
+        var rig = new Rig();
+        rig.Wizard.Begin();
+        rig.Wizard.SetCalibration(Choices());
+        rig.Wizard.Finish();
+
+        var again = rig.New();
+        again.Begin();
+        Assert.Null(rig.Pipeline.Calibration); // ham panel
+        var baseline = again.Finish();
+
+        Assert.Equal(Expected(Choices()), rig.Pipeline.Calibration);
+        Assert.Equal(Expected(Choices()), baseline.Calibration);
+    }
+
+    [Fact]
+    public void Cancel_RestoresThePreviousCalibration()
+    {
+        var rig = new Rig();
+        rig.Wizard.Begin();
+        rig.Wizard.SetCalibration(Choices());
+        rig.Wizard.Finish();
+
+        var again = rig.New();
+        again.Begin();
+        again.SetCalibration(Choices() with { PanelGamma = 2.0 });
+        Assert.Empty(again.Cancel());
+
+        Assert.Equal(Expected(Choices()), rig.Pipeline.Calibration);
+        Assert.Equal(Expected(Choices()), rig.New().LoadBaseline()!.Calibration); // kayıt değişmedi
+    }
+
+    [Fact]
+    public void Cancel_WithoutAnyPreviousCalibration_ClearsTheLayer()
+    {
+        var rig = new Rig();
+        rig.Wizard.Begin();
+        rig.Wizard.SetCalibration(Choices());
+
+        rig.Wizard.Cancel();
+
+        Assert.Null(rig.Pipeline.Calibration);
+        Assert.Null(rig.Wizard.LoadBaseline());
+    }
+
+    /// <summary>Sihirbaz kalibrasyona hiç dokunmadıysa boru hattına yazmaz.</summary>
+    [Fact]
+    public void WithoutCalibration_PipelineIsNotTouched()
+    {
+        var rig = new Rig();
+        rig.Wizard.Begin();
+        rig.Wizard.Finish();
+        rig.Wizard.Begin();
+        rig.Wizard.Cancel();
+
+        Assert.Equal(0, rig.Pipeline.Applies);
+    }
+
+    /// <summary>DDC yoksa beyaz eşleme GPU'da: kazanç kalibrasyon katmanında beyaz kazancı olarak gider.</summary>
+    [Fact]
+    public void WithoutDdc_WhiteMatchRunsOnTheGpu_ThroughTheCalibrationLayer()
+    {
+        var rig = new Rig(FakeDdcMonitor.WithoutDdc(), customRgb: false);
+        rig.Wizard.Begin();
+        Assert.Equal(PanelSetResult.NoDdc, rig.Wizard.SetDdc(PanelSetting.BlueGain, 240));
+        var white = new RgbGains(1, 0.97, 0.9);
+
+        Assert.True(rig.Wizard.SetCalibration(Choices(white)));
+        var baseline = rig.Wizard.Finish();
+
+        Assert.Equal(GammaRamp.Identity.Red[255], rig.Pipeline.Calibration!.Red[255]);
+        Assert.True(rig.Pipeline.Calibration.Blue[255] < 65535); // mavi kısıldı
+        Assert.Equal(Expected(Choices(white)), baseline.Calibration);
+        Assert.Empty(baseline.DdcValues);
+    }
+
+    /// <summary>Canlılık (T303) sihirbazda kapalı: Begin kapatır, bitince ya da iptalde geri gelir.</summary>
+    [Fact]
+    public void Vibrance_IsSuspendedWhileWizardRuns_AndResumedOnFinishAndCancel()
+    {
+        var rig = new Rig();
+        rig.Wizard.Begin();
+        rig.Wizard.Begin();
+        Assert.Equal((1, 0), (rig.Nvidia.SuspendCalls, rig.Nvidia.ResumeCalls));
+
+        rig.Wizard.Finish();
+        Assert.Equal((1, 1), (rig.Nvidia.SuspendCalls, rig.Nvidia.ResumeCalls));
+
+        rig.Wizard.Begin();
+        rig.Wizard.Cancel();
+        Assert.Equal((2, 2), (rig.Nvidia.SuspendCalls, rig.Nvidia.ResumeCalls));
     }
 }

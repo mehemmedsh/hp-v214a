@@ -171,7 +171,7 @@ Uygulamayı sadece sen açarsın; ajanlar açmaz.
 - 75 Hz (2080×1100) ve 76 Hz (2080×1092): Windows aktif sinyal, DDC AE = 7500 / 7600 ve testufo kare atlama. **T209'dan önce.**
 - DDC 14 kodunun eşlemesi: OSD'de her renk ön ayarını sırayla seç, ControlMyMonitor'da 14'ün değerini oku (12–15 ve tahmin edilen 2, 4, 8, 11). **T004'ten önce.**
 
-**T312 ayar sihirbazı 1** (sihirbaz sayfası T313'te gelir; o zamana kadar bu test yapılamaz):
+**T312 ayar sihirbazı 1** (sihirbaz sayfası T315'te gelir; o zamana kadar bu test yapılamaz):
 1. Monitörü en az 30 dk açık tut (sihirbaz geri sayımı gösterir). OSD'de renk ön ayarı **Custom RGB**, NVIDIA'da çıkış **RGB Full**. Oturma konumu rehberdeki gibi.
 2. Uygulamada mavi ışığı açık, parlaklık kaydırıcısını ek karartma bölümünde (en alt kısım) bırak. Sihirbazı başlat: ekran karartmasız ve sıcak tonsuz olmalı.
 3. Her adımda **Deseni aç**: desen tam ekran açılır, sağ/sol ok ile kareler değişir, kendiliğinden değişmez, yanıp sönmez; Esc kapatır.

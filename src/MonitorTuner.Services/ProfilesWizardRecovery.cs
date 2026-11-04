@@ -43,10 +43,10 @@ public enum WizardStep
 /// <summary>Temel ayar: sihirbazın DDC değerleri (kod → değer) ve kalibrasyon katmanı.</summary>
 public sealed record Baseline(IReadOnlyDictionary<byte, ushort> DdcValues, GammaRamp Calibration);
 
-/// <summary>Ayar sihirbazı (T312, T313). Başlarken efektler geçici kapanır, bitince ya da iptalde geri gelir.</summary>
+/// <summary>Ayar sihirbazı (T312, T313). Başlarken efektler (mavi ışık, ek karartma, canlılık) geçici kapanır, bitince ya da iptalde geri gelir.</summary>
 public interface ISetupWizard
 {
-    /// <summary>Adımlar sırayla. T312: ısınma, kırpma, keskinlik, RGB Full, açı, ölü piksel, beyaz eşleme; Gamma ve GreyBalance T313'te eklenir.</summary>
+    /// <summary>Adımlar sırayla: ısınma, kırpma, keskinlik, RGB Full, açı, ölü piksel, beyaz eşleme, gamma, gri dengesi.</summary>
     IReadOnlyList<WizardStep> Steps { get; }
 
     bool IsActive { get; }
@@ -54,7 +54,10 @@ public interface ISetupWizard
     /// <summary>Isınma için kalan süre (Begin'den 30 dk). Engellemez; kullanıcı atlayabilir.</summary>
     TimeSpan WarmUpRemaining { get; }
 
-    /// <summary>Mavi ışık ve ek karartma kapanır, DDC değerleri iptal için saklanır. Monitöre yazmaz.</summary>
+    /// <summary>
+    /// Mavi ışık, ek karartma ve canlılık kapanır, DDC değerleri iptal için saklanır. Monitöre (DDC) yazmaz. Eski kalibrasyon
+    /// varsa ekran ham panele döner (gamma ve gri dengesi düzeltilmemiş panelde ölçülür); Finish ya da Cancel geri getirir.
+    /// </summary>
     void Begin();
 
     /// <summary>
@@ -63,10 +66,14 @@ public interface ISetupWizard
     /// </summary>
     PanelSetResult SetDdc(PanelSetting setting, int value);
 
-    /// <summary>T313. T312'de desteklenmez.</summary>
-    void SetCalibration(CalibrationChoices choices);
+    /// <summary>
+    /// Seçimlerden kalibrasyon katmanını üretir ve anında ekrana verir (GPU; DDC'ye dokunmaz). DDC yokken beyaz eşleme de
+    /// buradan (<see cref="CalibrationChoices.WhiteGains"/>). Her çağrı bütün kalibrasyonu yeniden kurar. false: Windows tabloyu
+    /// reddetti (ekranda ve kayıtta önceki kalibrasyon kalır). Seçim sınır dışıysa <see cref="ArgumentOutOfRangeException"/>, hiçbir şey yazılmaz.
+    /// </summary>
+    bool SetCalibration(CalibrationChoices choices);
 
-    /// <summary>Temel ayarı kaydeder ve efektleri geri getirir.</summary>
+    /// <summary>Temel ayarı (DDC değerleri ve kalibrasyon) kaydeder ve efektleri geri getirir.</summary>
     Baseline Finish();
 
     /// <summary>Sihirbaz öncesine döner, efektleri geri getirir. Geri yazılamayan ayarları verir (boş: hepsi döndü).</summary>

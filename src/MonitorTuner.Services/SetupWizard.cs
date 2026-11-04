@@ -7,9 +7,10 @@ namespace MonitorTuner.Services;
 public sealed record BaselineRecord(Dictionary<string, int> Ddc, ushort[] Red, ushort[] Green, ushort[] Blue);
 
 /// <summary>
-/// Ayar sihirbazı 1 (T312): desenlerle monitör ayarları (parlaklık, kontrast, keskinlik, beyaz noktası). Başlarken mavi ışık ve
-/// ek karartma geçici kapanır, bitince ya da iptalde geri gelir (02-MIMARI.md → Ayar sahipliği, 4). Yazmalar yalnız
-/// <see cref="IDdcPanel"/> üzerinden gider; sihirbaz Güvenlik katmanını ve DDC koruma kurallarını atlamaz.
+/// Ayar sihirbazı (T312, T313): desenlerle monitör ayarları (parlaklık, kontrast, keskinlik, beyaz noktası) ve gözle
+/// kalibrasyon (gamma, gri dengesi). Başlarken mavi ışık, ek karartma ve canlılık geçici kapanır, bitince ya da iptalde geri gelir
+/// (02-MIMARI.md → Ayar sahipliği, 4). DDC yazmaları yalnız <see cref="IDdcPanel"/> üzerinden gider (sihirbaz Güvenlik katmanını
+/// ve DDC koruma kurallarını atlamaz); kalibrasyon yalnız <see cref="IColorPipeline"/>'ın kalibrasyon katmanına yazılır.
 /// Sihirbaz hiçbir ayarı kendiliğinden değiştirmez: her yazma kullanıcının bir eylemidir. Tek iş parçacığından çağrılır (arayüz).
 /// </summary>
 public sealed class SetupWizard : ISetupWizard
@@ -32,6 +33,9 @@ public sealed class SetupWizard : ISetupWizard
     private readonly IDdcPanel _panel;
     private readonly IBrightnessControl _brightness;
     private readonly IBlueLightFilter _blueLight;
+    private readonly INvidiaControl _nvidia;
+    private readonly IColorPipeline _pipeline;
+    private readonly ICalibrationCurves _curves;
     private readonly ISettingsStore _store;
     private readonly MonitorKey _key;
     private readonly TimeProvider _time;
@@ -40,13 +44,20 @@ public sealed class SetupWizard : ISetupWizard
     private readonly HashSet<PanelSetting> _written = [];
     private DateTimeOffset _started;
 
+    private GammaRamp? _previousCalibration; // Begin'deki kayıtlı kalibrasyon (iptalde ve seçimsiz bitişte geri gelir)
+    private GammaRamp? _chosenCalibration;   // sihirbazda seçilip ekrana verilen son kalibrasyon
+    private bool _calibrationTouched;        // Begin eski kalibrasyonu kapattı ya da bir seçim denendi
+
     public SetupWizard(
-        IDdcPanel panel, IBrightnessControl brightness, IBlueLightFilter blueLight, ISettingsStore store, MonitorKey key,
-        TimeProvider time)
+        IDdcPanel panel, IBrightnessControl brightness, IBlueLightFilter blueLight, INvidiaControl nvidia,
+        IColorPipeline pipeline, ICalibrationCurves curves, ISettingsStore store, MonitorKey key, TimeProvider time)
     {
         _panel = panel;
         _brightness = brightness;
         _blueLight = blueLight;
+        _nvidia = nvidia;
+        _pipeline = pipeline;
+        _curves = curves;
         _store = store;
         _key = key;
         _time = time;
@@ -56,6 +67,7 @@ public sealed class SetupWizard : ISetupWizard
     [
         WizardStep.WarmUpAndPosition, WizardStep.BlackAndWhiteClipping, WizardStep.Sharpness, WizardStep.FullRgbCheck,
         WizardStep.ViewingAngle, WizardStep.DeadPixelsAndUniformity, WizardStep.WhiteMatch,
+        WizardStep.Gamma, WizardStep.GreyBalance,
     ];
 
     public bool IsActive { get; private set; }
@@ -73,11 +85,20 @@ public sealed class SetupWizard : ISetupWizard
         // Değerler bundan sonra okunur ki iptalde döneceğimiz şey kullanıcının gerçek ayarı olsun.
         _blueLight.Suspend();
         _brightness.Suspend();
+        _nvidia.Suspend();
         _initial.Clear();
         _written.Clear();
         foreach (var s in _panel.Refresh().Settings.Where(s => Tunable.Contains(s.Setting)))
             _initial[s.Setting] = s.Current;
         _started = _time.GetUtcNow();
+
+        // Eski kalibrasyon açıkken gamma ve gri dengesi düzeltilmiş ekranda ölçülürdü: ham panele dönülür.
+        _previousCalibration = LoadBaseline()?.Calibration;
+        _chosenCalibration = null;
+        _calibrationTouched = false;
+        if (_previousCalibration is not null && !_previousCalibration.Equals(GammaRamp.Identity))
+            ApplyCalibration(null);
+
         IsActive = true;
     }
 
@@ -91,15 +112,27 @@ public sealed class SetupWizard : ISetupWizard
         return result;
     }
 
-    public void SetCalibration(CalibrationChoices choices) =>
-        throw new NotSupportedException("Gözle kalibrasyon (gamma, gri dengesi) T313'te.");
+    public bool SetCalibration(CalibrationChoices choices)
+    {
+        RequireActive();
+        var table = _curves.Build(choices); // sınır dışı seçim burada atar, hiçbir şey yazılmaz
+        if (ApplyCalibration(table))
+        {
+            _chosenCalibration = table;
+            return true;
+        }
+
+        ApplyCalibrationLayer(_chosenCalibration); // reddedilen tablo katmanda kalmasın; sonraki Apply yine onu denerdi
+        return false;
+    }
 
     public Baseline Finish()
     {
         RequireActive();
 
         var values = Current().ToDictionary(s => DdcPanel.CodeOf(s.Setting), s => (ushort)s.Current);
-        var calibration = LoadBaseline()?.Calibration ?? GammaRamp.Identity; // T313 yazana kadar eski temel ayarın kalibrasyonu
+        var calibration = _chosenCalibration ?? _previousCalibration ?? GammaRamp.Identity;
+        if (_calibrationTouched) ApplyCalibration(calibration); // seçim yoksa Begin'in kapattığı eski kalibrasyon geri gelir
         var baseline = new Baseline(values, calibration);
         _store.Write(_key, Section, new BaselineRecord(
             values.ToDictionary(p => p.Key.ToString("X2"), p => (int)p.Value),
@@ -120,6 +153,7 @@ public sealed class SetupWizard : ISetupWizard
                 failed.Add(setting);
         }
 
+        if (_calibrationTouched) ApplyCalibration(_previousCalibration); // geri dönemezse ekran son Apply'daki hâlinde kalır
         Leave(backlightChanged: false); // eski arka ışığa dönüldü: saklanan kaydırıcı yine doğru
         return failed;
     }
@@ -144,8 +178,22 @@ public sealed class SetupWizard : ISetupWizard
     {
         IsActive = false;
         _blueLight.Resume();
+        _nvidia.Resume();
         if (backlightChanged && _brightness.ReadSlider() is { } slider) _brightness.ResumeAt(slider);
         else _brightness.Resume();
+    }
+
+    /// <summary>Kalibrasyon katmanını verip yazar (null ya da birim tablo: katman kapalı). false: Windows reddetti ya da tablo okunamadı.</summary>
+    private bool ApplyCalibration(GammaRamp? table)
+    {
+        _calibrationTouched = true;
+        return ApplyCalibrationLayer(table);
+    }
+
+    private bool ApplyCalibrationLayer(GammaRamp? table)
+    {
+        _pipeline.SetLayer(ColorLayer.Calibration, table is null || table.Equals(GammaRamp.Identity) ? null : table);
+        return _pipeline.Apply();
     }
 
     private void RequireActive()

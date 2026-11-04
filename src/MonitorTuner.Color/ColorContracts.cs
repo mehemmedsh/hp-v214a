@@ -30,10 +30,16 @@ public interface IDimmingPlanner
     DimmingPlan Plan(double slider);
 }
 
-/// <summary>Kullanıcının desen seçimleri: dama deseninden okunan panel gamması ve üç gri seviyesindeki düzeltme.</summary>
-public sealed record CalibrationChoices(double PanelGamma, RgbGains DarkGrey, RgbGains MidGrey, RgbGains LightGrey)
+/// <summary>
+/// Kullanıcının desen seçimleri: çizgili alandan okunan panel gamması ve üç gri seviyesindeki düzeltme (doğrusal ışık çarpanları).
+/// <paramref name="WhiteGains"/>: monitörün DDC'si yoksa beyaz eşlemenin GPU'daki karşılığı (bütün seviyeleri çarpar; sadece kısar); null: dokunma.
+/// </summary>
+public sealed record CalibrationChoices(
+    double PanelGamma, RgbGains DarkGrey, RgbGains MidGrey, RgbGains LightGrey, RgbGains? WhiteGains = null)
 {
     public const double TargetGamma = 2.2;
+
+    public RgbGains White => WhiteGains ?? RgbGains.Neutral;
 }
 
 /// <summary>Gözle kalibrasyon (T313): seçimlerden kalibrasyon katmanını üretir.</summary>

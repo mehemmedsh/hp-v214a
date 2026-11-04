@@ -1,3 +1,4 @@
+using MonitorTuner.Color;
 using MonitorTuner.Services;
 
 namespace MonitorTuner.Tests.Services;
@@ -24,8 +25,8 @@ public class WizardPatternsTests
         Assert.Equal([PatternKind.ViewingAngle], WizardPatterns.For(WizardStep.ViewingAngle).Select(p => p.Kind));
         Assert.Equal([PatternKind.DeadPixels, PatternKind.Uniformity], WizardPatterns.For(WizardStep.DeadPixelsAndUniformity).Select(p => p.Kind));
         Assert.Equal([PatternKind.WhiteField], WizardPatterns.For(WizardStep.WhiteMatch).Select(p => p.Kind));
-        Assert.Empty(WizardPatterns.For(WizardStep.Gamma)); // T313
-        Assert.Empty(WizardPatterns.For(WizardStep.GreyBalance));
+        Assert.Equal([PatternKind.Gamma], WizardPatterns.For(WizardStep.Gamma).Select(p => p.Kind));
+        Assert.Equal([PatternKind.GreyBalance], WizardPatterns.For(WizardStep.GreyBalance).Select(p => p.Kind));
     }
 
     [Fact]
@@ -102,6 +103,41 @@ public class WizardPatternsTests
     [Fact]
     public void WhiteField_IsPureWhite() =>
         Assert.Equal(new Rgb(255, 255, 255), Single(WizardStep.WhiteMatch, PatternKind.WhiteField).Frames.Single().Background);
+
+    /// <summary>Her kare bir gamma adayı: %50 çizgili alan ile düz gri yan yana; düz gri, o gamma'da %50 ışığı veren seviyedir.</summary>
+    [Fact]
+    public void Gamma_HasOneFramePerCandidate_WithStripedFieldBesideTheMatchingGrey()
+    {
+        var frames = Single(WizardStep.Gamma, PatternKind.Gamma).Frames;
+
+        Assert.Equal(Enumerable.Range(18, 11).Select(n => n / 10.0), WizardPatterns.GammaCandidates); // 1,8 … 2,8
+        Assert.Contains(2.2, WizardPatterns.GammaCandidates);
+        Assert.Equal(WizardPatterns.GammaCandidates.Count, frames.Count);
+        for (var i = 0; i < frames.Count; i++)
+        {
+            var (striped, solid) = (frames[i].Patches[0], frames[i].Patches[1]);
+            var level = (int)Math.Round(255 * Math.Pow(0.5, 1 / WizardPatterns.GammaCandidates[i]));
+            Assert.Equal(new Rgb(0, 0, 0), striped.Color);
+            Assert.Equal(new Rgb(255, 255, 255), striped.StripeColor); // ışığın yarısı: satır satır siyah ve beyaz
+            Assert.Equal((Rgb.Grey(level), level), (solid.Color, solid.Level));
+            Assert.Null(solid.StripeColor);
+            Assert.True(Math.Abs(striped.X + striped.Width - solid.X) < 1e-9); // yan yana, bitişik
+        }
+        Assert.Equal(186, Single(WizardStep.Gamma, PatternKind.Gamma).Frames[4].Patches[1].Level); // 2,2
+        Assert.Equal(frames.Select(f => f.Patches[1].Level).Order(), frames.Select(f => f.Patches[1].Level)); // gamma arttıkça gri açılır
+    }
+
+    [Fact]
+    public void GreyBalance_ShowsTheThreeCalibrationGreys_FullScreen()
+    {
+        var frames = Single(WizardStep.GreyBalance, PatternKind.GreyBalance).Frames;
+
+        Assert.Equal(
+            [CalibrationCurves.DarkLevel, CalibrationCurves.MidLevel, CalibrationCurves.LightLevel],
+            frames.Select(f => (int)f.Background.R));
+        Assert.All(frames, f => Assert.True(f.Background.R == f.Background.G && f.Background.G == f.Background.B));
+        Assert.All(frames, f => Assert.Empty(f.Patches));
+    }
 
     [Fact]
     public void EveryPatch_StaysInsideTheScreen_AndPatchesDoNotOverlap()

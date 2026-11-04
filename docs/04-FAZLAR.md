@@ -1,6 +1,6 @@
 # Fazlar ve Görevler
 
-**Sıradaki: T209 düzeltme (2. tur) incelemesi (Sonnet), T310 incelemesi (Opus); paralel T313 yazma (Sonnet) ve T104 yazma (Opus).** T310 🟨 (yazıldı 2026-11-05; tepsi servisi ve menü testli, tepsi simgesi ve kısayol bağlaması T313'te, o zaman monitörde denenir). T308 ✅ (inceleme ONAY, 2026-11-05). Dalga 4 bitti: T103 ✅, T102 ✅, T307 ✅ (düzeltme yeniden incelemesi ONAY, 2026-11-04). Dalga 5–6: T301 🔧, T305 ✅, T302 ✅; T306 ✅ (düzeltme yeniden incelemesi ONAY, 2026-11-04), T303 🔧 (inceleme ONAY 2026-11-04; gerçek monitörde gradyan testi bekliyor, `RealNvidiaTests`), T312 🔧 (düzeltme yeniden incelemesi ONAY, 2026-11-05; sihirbaz sayfası T313'te gelince monitörde baştan sona test, `05-HANDOFF.md` → 5). Dalga 3 bitti: T003 ✅, T004 🔧 (kod onaylandı; monitörde 14 eşlemesi ve 75/76 Hz AE kontrolü bekliyor, `05-HANDOFF.md` → Monitörde kalan kontroller). T002 ve T311 de onaylandı (2026-11-04). Kapsam 2026-10-30'da 66 görevden 21'e indi (`07-INCELEME.md`, 7. tur; plan dışı kalanlar `06-CIKARILANLAR.md`).
+**Sıradaki: T313 incelemesi (Opus), T209 düzeltme (2. tur) incelemesi (Sonnet), T310 incelemesi (Opus); paralel T104 yazma (Opus); sonra T314 ve T315 yazma (Sonnet; T313 üçe bölündü).** T310 🟨 (yazıldı 2026-11-05; tepsi servisi ve menü testli, tepsi simgesi ve kısayol bağlaması T314'te, o zaman monitörde denenir). T308 ✅ (inceleme ONAY, 2026-11-05). Dalga 4 bitti: T103 ✅, T102 ✅, T307 ✅ (düzeltme yeniden incelemesi ONAY, 2026-11-04). Dalga 5–6: T301 🔧, T305 ✅, T302 ✅; T306 ✅ (düzeltme yeniden incelemesi ONAY, 2026-11-04), T303 🔧 (inceleme ONAY 2026-11-04; gerçek monitörde gradyan testi bekliyor, `RealNvidiaTests`), T312 🔧 (düzeltme yeniden incelemesi ONAY, 2026-11-05; sihirbaz sayfası T315'te gelince monitörde baştan sona test, `05-HANDOFF.md` → 5). Dalga 3 bitti: T003 ✅, T004 🔧 (kod onaylandı; monitörde 14 eşlemesi ve 75/76 Hz AE kontrolü bekliyor, `05-HANDOFF.md` → Monitörde kalan kontroller). T002 ve T311 de onaylandı (2026-11-04). Kapsam 2026-10-30'da 66 görevden 21'e indi (`07-INCELEME.md`, 7. tur; plan dışı kalanlar `06-CIKARILANLAR.md`).
 
 ## Çalışma kuralları
 
@@ -63,7 +63,7 @@ Durum: ⬜ bekliyor · 🟨 yazıldı, incelemede · 🔧 onaylandı, monitör t
 | 4 | T103 | T102 | T307 |
 | 5 | T301 | T305 | T306 |
 | 6 | T302 | T312 | — |
-| 7 | T303 | T313 | — |
+| 7 | T303 | T313, T314, T315 (sırayla) | — |
 | 8 | T209 | T308 | — |
 | 9 | T104 | T310 | — |
 | 10 | — | T502 | — |
@@ -107,8 +107,10 @@ Durum: ⬜ bekliyor · 🟨 yazıldı, incelemede · 🔧 onaylandı, monitör t
 | T308 | Renk profilleri (presetler): Gündüz, Akşam, Gece, Kod, Film, Oyun, DaVinci zaman çizelgesi (nötr, efektsiz) ve kullanıcı profilleri; parlaklık, renk, mavi ışık, ek karartma ve canlılığı bir kez ayarlar; Hz'e dokunmaz; sadece elle | B | Sonnet → Opus | T303, T306, T307 | 8 | Her profil sahte donanımda doğru değerleri yazıyor; Hz değişmiyor | ✅ |
 | T310 | Sistem tepsisi, kısayollar, panik kısayolu (mavi ışık, ek karartma, canlılık kapanır; kalibrasyon kalır) | C | Sonnet → Opus | T308 | 9 | Tepsiden profil seçimi ve panik testleri geçiyor | 🟨 |
 | T311 | Rehber (metin): oturma ve açı (TN), Hz kurulumu (NVIDIA özel çözünürlük değerleri, `00-DONANIM.md`), kare atlama ve stabilite testi (testufo, ışığa duyarlılık uyarısıyla), RTX Video Super Resolution, DLDSR, ClearType, ortam ışığı, 20-20-20 kuralı, Gece ışığı/f.lux kapalı | C | Flash → Sonnet | T001 | 2 | Metinler çeviri dosyasında; uygulamada rehber sayfasında açılıyor | ✅ |
-| T312 | Ayar sihirbazı 1 (desenler ve monitör ayarları): ısınma ve konum hatırlatması; siyah/beyaz kırpma ile kontrast ve parlaklık; keskinlik (yazı kenarında hale yok); RGB Full kontrolü; TN açı deseni; ölü piksel ve homojenlik; Pixel ekranıyla yan yana beyaz eşleme (DDC RGB kazancı); sonucu "temel ayar" olarak kaydeder | B | Sonnet → Opus | T305 | 6 | Desenler açılıyor, adımlar sahte monitörde değer yazıyor; gerçek monitörde sihirbaz baştan sona 🔧 (sihirbaz sayfası T313'te gelir; test adımları `05-HANDOFF.md` → 5, T312) | 🔧 |
-| T313 | Ayar sihirbazı 2 (gözle kalibrasyon): gamma (dama desenleriyle, hedef 2.2) ve gri dengesi (koyu, orta ve açık gride renk kayması kalmayacak şekilde); sonuç renk boru hattının kalibrasyon katmanına; dithering açık. T312'den kalanlar: sihirbaz sayfası (MainWindow sekmesi, servislerin Composition'da bağlanması), DDC yoksa beyaz eşleme GPU'da, sihirbazda canlılık kapalı (`02-MIMARI.md` → T312), tepsinin bağlanması (`TrayHost`, `02-MIMARI.md` → T310) | B | Sonnet → Opus | T302, T312 | 7 | Eğri hesabı testli; gerçek monitörde gri basamaklar nötr, gradyanda bant yok 🔧 | ⬜ |
+| T312 | Ayar sihirbazı 1 (desenler ve monitör ayarları): ısınma ve konum hatırlatması; siyah/beyaz kırpma ile kontrast ve parlaklık; keskinlik (yazı kenarında hale yok); RGB Full kontrolü; TN açı deseni; ölü piksel ve homojenlik; Pixel ekranıyla yan yana beyaz eşleme (DDC RGB kazancı); sonucu "temel ayar" olarak kaydeder | B | Sonnet → Opus | T305 | 6 | Desenler açılıyor, adımlar sahte monitörde değer yazıyor; gerçek monitörde sihirbaz baştan sona 🔧 (sihirbaz sayfası T315'te gelir; test adımları `05-HANDOFF.md` → 5, T312) | 🔧 |
+| T313 | Ayar sihirbazı 2, mantık ve servis (gözle kalibrasyon): gamma (çizgili alan ile düz gri desenleri, hedef 2.2) ve gri dengesi (koyu, orta ve açık gri) eğri hesabı; `SetCalibration` sonucu renk boru hattının kalibrasyon katmanına, dithering açık; DDC yoksa beyaz eşleme GPU'da; sihirbazda canlılık kapalı (`02-MIMARI.md` → T312). Sayfa ve bağlama T314–T315'e bölündü (2026-11-05, kullanıcı onayı: görev ~1000 satır çıkıyordu) | B | Sonnet → Opus | T302, T312 | 7 | Eğri hesabı, desenler ve sihirbaz akışı sahte donanımla testli (kullanıcı testi yok; 🔧 T315'te) | 🟨 |
+| T314 | Bağlama (`MonitorTuner.Composition`) ve uygulama açılışı: gerçek donanımı servislere bağlar (Güvenlik, DDC, renk boru hattı, NVIDIA, parlaklık, mavi ışık, DDC paneli, sihirbaz, ayar deposu, monitör seçimi); açılışta kalibrasyonu uygular, `EnsureFullGammaRange`'i çağırır ve tepsiyi bağlar (`TrayHost`, `02-MIMARI.md` → T310); kapanışta `Shutdown` sırası; `App` sadece arayüz arayüzlerini görür (mimari testler). T310 de Composition'a dokunur: kendi bölümünde tut | B | Sonnet → Opus | T313 | 7 | Bağlama sahte donanımla testli; mimari testler (App `Hardware`'i görmez) geçiyor | ⬜ |
+| T315 | Ayar sihirbazı sayfası (`MainWindow` sekmesi): adımlar, `PatternWindow` ile desenler (çizgili yama dahil), DDC değerleri ve kalibrasyon seçimleri, iptal ve bitiş; T312'nin bekleyen monitör testi bu sayfayla yapılır | C | Sonnet → Opus | T314 | 7 | Sayfa ViewModel testli; gerçek monitörde sihirbaz baştan sona, gri basamaklar nötr, gradyanda bant yok 🔧 | ⬜ |
 
 ## Faz 5 — Tamamlama
 
@@ -116,7 +118,7 @@ Durum: ⬜ bekliyor · 🟨 yazıldı, incelemede · 🔧 onaylandı, monitör t
 
 | No | Görev | Sınıf | Yazan → İnceleyen | Bağımlı | Dalga | Bitti sayılır | Durum |
 |---|---|---|---|---|---|---|---|
-| T502 | Çeviriler: Azerbaycanca ve İngilizce (Türkçe ana dil) | C | Sonnet → Opus | T209, T305–T313 | 10 | Tüm ekranlar üç dilde | ⬜ |
+| T502 | Çeviriler: Azerbaycanca ve İngilizce (Türkçe ana dil) | C | Sonnet → Opus | T209, T305–T315 | 10 | Tüm ekranlar üç dilde | ⬜ |
 | T503 | **Son kontrol noktası:** uçtan uca test, `LESSONS.md`, plan dışı fikirler için karar | K | Kullanıcı → Claude app Opus | hepsi | 11 | Kullanıcı onayı | ⬜ |
 
 ## Özet
