@@ -90,7 +90,7 @@ Ayrıntılı anlatım: `08-GORUNTU-YONTEMLERI.md`, bölüm 5.
 | Monitör tanıma | `IMonitorIdentifier`; donanım yarısı `IDisplayEnumerator` | Services; Hardware.Abstractions |
 | Monitör profili | `IMonitorProfileReader` → `MonitorProfile` | Core |
 | Ayar deposu | `ISettingsStore` (özellik başına bölüm) | Services |
-| Güvenlik katmanı | `ISafetyLayer`; GPU tablosu geri yüklemesi için `IGpuTableOwner` | Safety |
+| Güvenlik katmanı | `ISafetyLayer` / `SafetyLayer`; GPU tablosu geri yüklemesi için `IGpuTableOwner`; ilk açılış yedeğinin kalıcı yeri `IFactoryBackupStore` (dosyası T102'nin yedek klasöründe) | Safety |
 | DDC katmanı | `IDdcControl` (izin listesi, yazma sınırı); ham `IDdcMonitor` | Services; Hardware.Abstractions |
 | Windows ekran katmanı | `IDisplayModes` | Hardware.Abstractions |
 | Hz paneli | `IRefreshRatePanel` | Services |
@@ -102,6 +102,7 @@ Ayrıntılı anlatım: `08-GORUNTU-YONTEMLERI.md`, bölüm 5.
 - **Geri alma noktası:** `RestorePoint` (Hardware.Abstractions) kurucusu `internal`; sadece Safety (ve platformdan bağımsız test projesi) `InternalsVisibleTo` ile görür. Hardware.Abstractions'taki her yazma metodu `RestorePoint` ister; okuma metotları `Read`, `Get`, `List`, `Enumerate` ile başlar. Testler: `tests/MonitorTuner.Tests/Contracts`.
 - Donanım arayüzlerinde mod ekleme/silme, firmware, EDID yazma, güç, saat, voltaj ve fan üyesi yoktur (testli).
 - Ortak sayılar `Core.SafetyLimits`'te (15 sn, %15 beyaz, 60 Hz, yasak DDC kodları). Zaman `TimeProvider` ile; sahte saat T003'te.
+- **Güvenlik katmanı (T103):** Geri alma noktası hedefin şu anki değerini yedekler; okunamıyorsa, yasak DDC kodu ya da başka ekran istenirse nokta verilmez. İlk noktadan önce ilk açılış yedeği alınır (profildeki yazılabilir DDC kodları, GPU tablosu, dithering ve canlılık, `GdiIcmGammaRange`); o an okunamayan bir hedef, ilk yazmasından önceki değeriyle eklenir. Geri alma değeri zaten yerindeyse yazmaz. Onay gelmezse 15 sn'de geri alır; geri dönemezse `RollBackFailed` olayı. "Fabrika ayarına dön" ve kaldırma Hz'e dokunmaz; `GdiIcmGammaRange` sadece kaldırmada döner. En fazla 100 nokta saklanır, onay bekleyen atılmaz.
 - **Sahte donanım (T003):** `tests/MonitorTuner.Tests/Fakes`. `FakeHardware` kullanıcının sistemini kurar (RTX 3080'in HDMI'ında HP P21b G4, örnek EDID, kaydedilmiş DDC değerleri, sahte saat `FakeTimeProvider`); Hardware.Abstractions'taki her arayüzün bir sahtesi vardır (testli). Sahteler başka hedef için alınmış geri alma noktasıyla yazmayı hata sayar.
 
 ## Profil yapısı

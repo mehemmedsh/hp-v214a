@@ -15,7 +15,7 @@ public class ModuleContractMapTests
         ["Monitör tanıma"] = [typeof(IMonitorIdentifier), typeof(IDisplayEnumerator)],
         ["Monitör profili"] = [typeof(IMonitorProfileReader)],
         ["Ayar deposu"] = [typeof(ISettingsStore)],
-        ["Güvenlik katmanı"] = [typeof(ISafetyLayer), typeof(IGpuTableOwner)],
+        ["Güvenlik katmanı"] = [typeof(ISafetyLayer), typeof(IGpuTableOwner), typeof(IFactoryBackupStore)],
         ["DDC katmanı"] = [typeof(IDdcControl), typeof(IDdcMonitor)],
         ["Windows ekran katmanı"] = [typeof(IDisplayModes)],
         ["Hz paneli"] = [typeof(IRefreshRatePanel)],
