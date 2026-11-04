@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "model": "HP P21b G4",
+  "edidName": "HPN36A2",
+  "panel": { "technology": "TN", "colorBits": 6, "usesFrc": true, "hasPwm": false },
+  "edidLimits": {
+    "verticalMinHz": 50, "verticalMaxHz": 60,
+    "horizontalMinKhz": 30, "horizontalMaxKhz": 80,
+    "maxPixelClockMhz": 170
+  },
+  "specMaxRefreshHz": 72,
+  "measured": {
+    "maxRefreshHz": 76,
+    "highestAcceptedHorizontalKhz": 83.0,
+    "lowestRejectedHorizontalKhz": 83.9,
+    "note": "Belirleyici sınır yatay frekans (83.0 ile 83.9 kHz arası); pixel clock en az 172.6 MHz'e kadar sorun değil, dikey 60 Hz sınırı uygulanmıyor. 2026-10-30, RTX 3080 HDMI."
+  },
+  "modes": [
+    {
+      "refreshHz": 50, "status": "untested", "source": "edid",
+      "timing": { "hActive": 1920, "hFrontPorch": 528, "hSync": 44, "hBackPorch": 148, "vActive": 1080, "vFrontPorch": 4, "vSync": 5, "vBackPorch": 36 },
+      "note": "EDID'de hazır (1080p50); NVIDIA'ya girilmez. Henüz denenmedi."
+    },
+    {
+      "refreshHz": 60, "status": "verified", "source": "edid",
+      "timing": { "hActive": 1920, "hFrontPorch": 88, "hSync": 44, "hBackPorch": 148, "vActive": 1080, "vFrontPorch": 4, "vSync": 5, "vBackPorch": 36 },
+      "note": "Orijinal ve native mod; silinmez, değiştirilmez."
+    },
+    {
+      "refreshHz": 72, "status": "untested", "source": "customResolution",
+      "timing": { "hActive": 1920, "hFrontPorch": 48, "hSync": 32, "hBackPorch": 80, "vActive": 1080, "vFrontPorch": 3, "vSync": 5, "vBackPorch": 12 },
+      "note": "Yatay frekans ve pixel clock EDID sınırları içinde (en yüksek tam spec içi mod). Denenmedi. Alternatif: 2080x1092 (dikey 3/5/4). Yatay boşluk 48/32/80 varsayımdır (CVT-RB, 76 Hz ile aynı); dokümanda sadece toplam yazılı."
+    },
+    {
+      "refreshHz": 74, "status": "verified", "source": "customResolution",
+      "timing": { "hActive": 1920, "hFrontPorch": 48, "hSync": 32, "hBackPorch": 80, "vActive": 1080, "vFrontPorch": 3, "vSync": 5, "vBackPorch": 31 },
+      "note": "CVT-RB. Windows 74 Hz, AE = 7400, testufo frameskipping 1/10 s'de 8 ardışık kare. Dikey 3/5/31 CVT-RB kuralından (toplam 1119)."
+    },
+    {
+      "refreshHz": 75, "status": "nvidiaPassed", "source": "customResolution",
+      "timing": { "hActive": 1920, "hFrontPorch": 48, "hSync": 32, "hBackPorch": 80, "vActive": 1080, "vFrontPorch": 3, "vSync": 5, "vBackPorch": 12 },
+      "note": "Sıkı dikey. NVIDIA testi geçti; AE = 7500 ve kare atlama doğrulaması bekliyor. Yatay boşluk 48/32/80 varsayımdır; dokümanda sadece toplam ve dikey yazılı."
+    },
+    {
+      "refreshHz": 76, "status": "nvidiaPassed", "source": "customResolution",
+      "timing": { "hActive": 1920, "hFrontPorch": 48, "hSync": 32, "hBackPorch": 80, "vActive": 1080, "vFrontPorch": 3, "vSync": 5, "vBackPorch": 4 },
+      "note": "Tavan. Çok sıkı dikey. NVIDIA testi geçti, Windows 76 Hz; AE = 7600 ve kare atlama doğrulaması bekliyor. Kenar kayması, siyah seviyesi, hoparlör cızırtısı ve kararma günlük kullanımda gözlenir."
+    }
+  ],
+  "rejectedModes": [
+    {
+      "refreshHz": 75, "status": "rejected", "source": "customResolution",
+      "timing": { "hActive": 1920, "hFrontPorch": 48, "hSync": 32, "hBackPorch": 80, "vActive": 1080, "vFrontPorch": 3, "vSync": 5, "vBackPorch": 31 },
+      "note": "CVT-RB 2080x1119, 83.9 kHz, 174.6 MHz: monitör 'Input Signal Out of Range' verdi."
+    },
+    {
+      "refreshHz": 77, "status": "rejected", "source": "customResolution",
+      "timing": { "hActive": 1920, "hFrontPorch": 48, "hSync": 32, "hBackPorch": 0, "vActive": 1080, "vFrontPorch": 3, "vSync": 5, "vBackPorch": 4 },
+      "note": "2000x1092, 84.08 kHz, 168.17 MHz: 'Out of Range'. Pixel clock 76 Hz'den düşük olduğu halde reddedildi; sınır yatay frekans. 77 Hz bu monitörde yok."
+    }
+  ],
+  "osd": {
+    "hasOverdrive": false,
+    "showsIncomingRefreshRate": true,
+    "overscanMustBeOff": true,
+    "colorPresets": ["warm", "neutral", "cool", "night", "native", "lowBlueLight", "reading", "hpEnhancePlus", "customRgb"],
+    "factoryColorPreset": "neutral",
+    "rgbGainPreset": "customRgb"
+  },
+  "ddcCodes": [
+    {"code": "02", "name": "New Control Value", "access": "readWrite", "maximum": 2, "possibleValues": [], "appMayWrite": false},
+    {"code": "04", "name": "Restore Factory Defaults", "access": "writeOnly", "maximum": 1, "possibleValues": [], "appMayWrite": false, "note": "Fabrika sıfırlaması; asla yazılmaz"},
+    {"code": "05", "name": "Restore Factory Luminance/ Contrast", "access": "writeOnly", "maximum": 1, "possibleValues": [], "appMayWrite": false, "note": "Fabrika sıfırlaması; asla yazılmaz"},
+    {"code": "08", "name": "Restore Factory Color Defaults", "access": "writeOnly", "maximum": 1, "possibleValues": [], "appMayWrite": false, "note": "Fabrika sıfırlaması; asla yazılmaz"},
+    {"code": "0B", "name": "Color Temperature Increment", "access": "readOnly", "maximum": null, "possibleValues": [], "appMayWrite": false},
+    {"code": "0C", "name": "Color Temperature Request", "access": "readWrite", "maximum": 126, "possibleValues": [], "appMayWrite": false, "note": "Çalışıp çalışmadığı T301 yetenek testinde bakılır; o zamana kadar yazılmaz"},
+    {"code": "10", "name": "Brightness", "access": "readWrite", "maximum": 100, "possibleValues": [], "appMayWrite": true},
+    {"code": "12", "name": "Contrast", "access": "readWrite", "maximum": 100, "possibleValues": [], "appMayWrite": true},
+    {"code": "14", "name": "Select Color Preset", "access": "readWrite", "maximum": 15, "possibleValues": [2, 4, 5, 8, 11, 12, 13, 14, 15], "appMayWrite": true, "note": "Renk ön ayarı; eşleme colorPresetMap içinde"},
+    {"code": "16", "name": "Video Gain (Drive): Red", "access": "readWrite", "maximum": 255, "possibleValues": [], "appMayWrite": true, "note": "Sadece azaltılabilir (255 = tam)"},
+    {"code": "18", "name": "Video Gain (Drive): Green", "access": "readWrite", "maximum": 255, "possibleValues": [], "appMayWrite": true, "note": "Sadece azaltılabilir (255 = tam)"},
+    {"code": "1A", "name": "Video Gain (Drive): Blue", "access": "readWrite", "maximum": 255, "possibleValues": [], "appMayWrite": true, "note": "Sadece azaltılabilir (255 = tam)"},
+    {"code": "2E", "name": "Gray Scale Expansion", "access": "readWrite", "maximum": 3, "possibleValues": [0, 1, 2, 3], "appMayWrite": false, "note": "Anlamı bilinmiyor; dokunulmaz"},
+    {"code": "52", "name": "Active Control", "access": "readOnly", "maximum": null, "possibleValues": [], "appMayWrite": false},
+    {"code": "60", "name": "Input Select", "access": "readWrite", "maximum": 3, "possibleValues": [1, 17], "appMayWrite": true, "note": "Giriş: 17 = HDMI, 1 = VGA"},
+    {"code": "62", "name": "Audio: Speaker Volume", "access": "readWrite", "maximum": 100, "possibleValues": [], "appMayWrite": true},
+    {"code": "6C", "name": "Video Black Level: Red", "access": "readWrite", "maximum": 255, "possibleValues": [], "appMayWrite": false, "note": "Kamerasız ayarda gerek yok; kullanılmıyor"},
+    {"code": "6E", "name": "Video Black Level: Green", "access": "readWrite", "maximum": 255, "possibleValues": [], "appMayWrite": false, "note": "Kullanılmıyor"},
+    {"code": "70", "name": "Video Black Level: Blue", "access": "readWrite", "maximum": 255, "possibleValues": [], "appMayWrite": false, "note": "Kullanılmıyor"},
+    {"code": "86", "name": "Display Scaling", "access": "readWrite", "maximum": 2, "possibleValues": [2, 5], "appMayWrite": false, "note": "Ölçekleme; OSD’de Fill to Screen kalmalı; uygulama kullanmaz"},
+    {"code": "87", "name": "Sharpness", "access": "readWrite", "maximum": 7, "possibleValues": [1, 2, 3, 4, 5, 6, 7], "appMayWrite": true, "note": "Keskinlik, fabrika 4"},
+    {"code": "8D", "name": "Audio Mute / Screen Blank", "access": "readWrite", "maximum": 2, "possibleValues": [1, 2], "appMayWrite": false, "note": "Uygulama kullanmaz"},
+    {"code": "AC", "name": "Horizontal Frequency", "access": "readOnly", "maximum": null, "possibleValues": [], "appMayWrite": false, "note": "Gelen yatay frekans, Hz, 16 bit taşmalı (frequencyReadout)"},
+    {"code": "AE", "name": "Vertical Frequency", "access": "readOnly", "maximum": null, "possibleValues": [], "appMayWrite": false, "note": "Gelen dikey frekans × 100"},
+    {"code": "B2", "name": "Flat Panel Sub-Pixel Layout", "access": "readOnly", "maximum": null, "possibleValues": [], "appMayWrite": false},
+    {"code": "B6", "name": "Display Technology Type", "access": "readOnly", "maximum": null, "possibleValues": [], "appMayWrite": false},
+    {"code": "C0", "name": "Display Usage Time", "access": "readOnly", "maximum": null, "possibleValues": [], "appMayWrite": false, "note": "Arka ışık süresi, saat"},
+    {"code": "C6", "name": "Application Enable Key", "access": "readOnly", "maximum": null, "possibleValues": [], "appMayWrite": false},
+    {"code": "C8", "name": "Display Controller ID", "access": "readOnly", "maximum": null, "possibleValues": [], "appMayWrite": false, "note": "Scaler (muhtemelen MStar). Döküm R+W gösteriyor, 00-DONANIM.md salt okunur sayıyor; profil dokümanı izler"},
+    {"code": "C9", "name": "Display Firmware Level", "access": "readOnly", "maximum": null, "possibleValues": [], "appMayWrite": false, "note": "Firmware 1.0 (CTM121)"},
+    {"code": "CA", "name": "OSD", "access": "readWrite", "maximum": 514, "possibleValues": [1, 2], "appMayWrite": false, "note": "OSD; uygulama kullanmaz"},
+    {"code": "CC", "name": "OSD Language", "access": "readWrite", "maximum": 20, "possibleValues": [1, 2, 3, 4, 5, 6, 8, 10, 13, 20], "appMayWrite": false, "note": "OSD dili; uygulama kullanmaz"},
+    {"code": "D6", "name": "Power Mode", "access": "readWrite", "maximum": 5, "possibleValues": [1, 2, 3, 4, 5], "appMayWrite": false, "note": "Güç; uygulama kullanmaz"},
+    {"code": "DA", "name": "Scan Mode", "access": "readWrite", "maximum": 2, "possibleValues": [0, 2], "appMayWrite": false, "note": "Tarama; uygulama kullanmaz"},
+    {"code": "DF", "name": "VCP Version", "access": "readOnly", "maximum": null, "possibleValues": [], "appMayWrite": false, "note": "MCCS 2.2"}
+  ],
+  "colorPresetMap": [
+    { "ddcValue": 2, "preset": "native", "confidence": "estimated" },
+    { "ddcValue": 4, "preset": "warm", "confidence": "estimated" },
+    { "ddcValue": 5, "preset": "neutral", "confidence": "confirmed" },
+    { "ddcValue": 8, "preset": "cool", "confidence": "estimated" },
+    { "ddcValue": 11, "preset": "customRgb", "confidence": "estimated" },
+    { "ddcValue": 12, "preset": "night", "confidence": "estimated" },
+    { "ddcValue": 13, "preset": "lowBlueLight", "confidence": "estimated" },
+    { "ddcValue": 14, "preset": "reading", "confidence": "estimated" },
+    { "ddcValue": 15, "preset": "hpEnhancePlus", "confidence": "estimated" }
+  ],
+  "frequencyReadout": {
+    "verticalDivisor": 100,
+    "horizontalWrapModulus": 65536,
+    "horizontalMinHz": 30000,
+    "horizontalMaxHz": 90000,
+    "samples": [
+      { "refreshHz": 60, "ae": 6000, "ac": 1964, "horizontalHz": 67500 },
+      { "refreshHz": 74, "ae": 7400, "ac": 17264, "horizontalHz": 82800 }
+    ]
+  }
+}

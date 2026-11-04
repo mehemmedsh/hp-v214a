@@ -108,6 +108,8 @@ Ayrıntılı anlatım: `08-GORUNTU-YONTEMLERI.md`, bölüm 5.
 
 **Monitör profili** (veri dosyası, monitör başına): Hz modları ve timing'leri (test durumlarıyla), spec ve ölçülen sınır, OSD yetenekleri (renk ön ayarları, overdrive yok), çalışan DDC kodları ve 14 kodunun eşlemesi, AE/AC okuma kuralları, PWM durumu (yok).
 
+Dosya: `profiles/hp-p21b-g4.json` (şema sürümü 1); `MonitorProfileReader` (Core) okur ve doğrular. Şema sıkıdır (bilinmeyen ya da eksik alan hata). Kurallar: orijinal 60 Hz doğrulanmış olarak durur; kullanılabilir modlar ölçülen yatay frekans sınırının altında, reddedilenler üstünde; `specMaxRefreshHz` ve ölçülen tavan modlardan türetilenle aynı; 04/05/08 ve E6–FF yazılabilir işaretlenemez. Reddedilen timing'ler `rejectedModes`'ta; kullanılabilir modlarda Hz başına tek mod var. `colorPresetMap`'te yalnızca `confirmed` değer yazılmalı; `estimated` olanlar monitörde doğrulanana kadar sadece okunur.
+
 **Kullanıcı ayarları** (anahtar: monitör + seri numarası + port + kart):
 - DDC değerlerinin ve GPU tablosunun yedek konumu
 - Onaylı Hz modları
