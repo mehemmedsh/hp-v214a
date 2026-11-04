@@ -85,7 +85,7 @@ public class QuickControlsTests
         public TimeSpan WarmUpRemaining => throw new NotSupportedException();
         public void Begin() => throw new NotSupportedException();
         public PanelSetResult SetDdc(PanelSetting setting, int value) => throw new NotSupportedException();
-        public void SetCalibration(CalibrationChoices choices) => throw new NotSupportedException();
+        public bool SetCalibration(CalibrationChoices choices) => throw new NotSupportedException();
         public Baseline Finish() => throw new NotSupportedException();
         public IReadOnlyList<PanelSetting> Cancel() => throw new NotSupportedException();
         public Baseline? LoadBaseline() => throw new NotSupportedException();
