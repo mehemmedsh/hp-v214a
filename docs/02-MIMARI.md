@@ -97,6 +97,7 @@ Ayrıntılı anlatım: `08-GORUNTU-YONTEMLERI.md`, bölüm 5.
 | Renk boru hattı | `IColorPipeline` / `ColorPipeline` (iskelet); `IGpuGammaTable`, `IGdiIcmGammaRange`; `IGammaTableCombiner` | Services; Hardware.Abstractions; Color |
 | NVIDIA katmanı | `INvidiaSettings` | Hardware.Abstractions |
 | Kelvin hesaplayıcı · Karartma planlayıcı · Gözle kalibrasyon | `IKelvinCalculator` · `IDimmingPlanner` · `ICalibrationCurves` | Color |
+| Mavi ışık filtresi | `IBlueLightFilter` / `BlueLightFilter` (baz kazançlar ayar deposunda, "BlueLightBase"); Gece ışığı / f.lux tespiti `IColorConflictProbe` | Services |
 | Renk profilleri · Ayar sihirbazı · Kurtarma | `IColorProfiles` · `ISetupWizard` · `IRecovery` | Services |
 
 - **Geri alma noktası:** `RestorePoint` (Hardware.Abstractions) kurucusu `internal`; sadece Safety (ve platformdan bağımsız test projesi) `InternalsVisibleTo` ile görür. Hardware.Abstractions'taki her yazma metodu `RestorePoint` ister; okuma metotları `Read`, `Get`, `List`, `Enumerate` ile başlar. Testler: `tests/MonitorTuner.Tests/Contracts`.

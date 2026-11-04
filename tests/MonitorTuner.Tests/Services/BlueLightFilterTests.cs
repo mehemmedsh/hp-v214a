@@ -67,15 +67,31 @@ public class BlueLightFilterTests
         public IReadOnlyList<ColorConflict> Detect() => found;
     }
 
+    private sealed class FakeStore : ISettingsStore
+    {
+        public Dictionary<string, object> Sections { get; } = [];
+        public string BackupFolder => "";
+        public T? Read<T>(MonitorKey monitor, string section) =>
+            Sections.TryGetValue(section, out var v) && v is T t ? t : default;
+        public void Write<T>(MonitorKey monitor, string section, T value) => Sections[section] = value!;
+    }
+
+    private static readonly MonitorKey Key = new("HP P21b G4", "SN1", "HDMI", "RTX 3080");
+
     private sealed class Rig
     {
+        public FakeStore Store { get; } = new();
         public FakeDdc Ddc { get; } = new();
         public FakePipeline Pipeline { get; } = new();
         public FakeTimeProvider Clock { get; } = new(Evening21 - TimeSpan.FromHours(2));
         public BlueLightFilter Filter { get; }
 
         public Rig(MonitorProfile? profile = null, IColorConflictProbe? probe = null) =>
-            Filter = new BlueLightFilter(profile ?? Profile, Ddc, Pipeline, Calculator, probe ?? new FakeProbe(), Clock);
+            Filter = NewFilter(profile, probe);
+
+        /// <summary>Aynı monitör, depo ve boru hattıyla yeni örnek: uygulama yeniden açıldı.</summary>
+        public BlueLightFilter NewFilter(MonitorProfile? profile = null, IColorConflictProbe? probe = null) =>
+            new(profile ?? Profile, Ddc, Pipeline, Calculator, probe ?? new FakeProbe(), Clock, Store, Key);
     }
 
     private static RgbGains Target(int kelvin)
@@ -256,6 +272,113 @@ public class BlueLightFilterTests
         Assert.Equal(240, rig.Ddc.Values[0x16]);
         Assert.Equal(Code(target.G, 200), rig.Ddc.Values[0x18]);
         Assert.Equal(Code(target.B, 220), rig.Ddc.Values[0x1A]);
+    }
+
+    // ---- Kalıcı baz: çökme / kapanış ----
+
+    /// <summary>Filtre açıkken uygulama kapandı; yeni örnek düşük kodları baz saymaz, kayıtlı bazı geri yazar.</summary>
+    [Fact]
+    public void NewInstance_AfterCrash_DisableRestoresOriginalGains()
+    {
+        var rig = new Rig();
+        rig.Ddc.Values[0x16] = 240;
+        rig.Ddc.Values[0x18] = 250;
+        rig.Ddc.Values[0x1A] = 255;
+        rig.Filter.SetKelvin(3000);
+        Assert.NotEqual(255, rig.Ddc.Values[0x1A]);
+
+        var second = rig.NewFilter();
+        second.Disable();
+
+        Assert.Equal((240, 250, 255), (rig.Ddc.Values[0x16], rig.Ddc.Values[0x18], rig.Ddc.Values[0x1A]));
+    }
+
+    /// <summary>Çökmeden sonra filtre yeniden açılırsa baz yine ilk değerdir (her seferinde ısınmaz).</summary>
+    [Fact]
+    public void NewInstance_AfterCrash_SetKelvinKeepsOriginalBase()
+    {
+        var rig = new Rig();
+        rig.Filter.SetKelvin(4000);
+        var first = (rig.Ddc.Values[0x18], rig.Ddc.Values[0x1A]);
+
+        var second = rig.NewFilter();
+        second.SetKelvin(4000);
+
+        Assert.Equal(first, (rig.Ddc.Values[0x18], rig.Ddc.Values[0x1A]));
+        second.Disable();
+        Assert.Equal((255, 255), (rig.Ddc.Values[0x18], rig.Ddc.Values[0x1A]));
+    }
+
+    [Fact]
+    public void Restore_ClearsStoredBase()
+    {
+        var rig = new Rig();
+        rig.Filter.SetKelvin(4000);
+        Assert.NotNull(rig.Store.Read<BlueLightBaseRecord>(Key, BlueLightFilter.BaseSection));
+
+        rig.Filter.Disable();
+        var second = rig.NewFilter();
+        rig.Ddc.Writes.Clear();
+        second.Disable();
+
+        Assert.Empty(rig.Store.Read<BlueLightBaseRecord>(Key, BlueLightFilter.BaseSection)!.Base);
+        Assert.Empty(rig.Ddc.Writes);
+    }
+
+    [Fact]
+    public void Shutdown_RestoresGainsAndClearsLayer()
+    {
+        var rig = new Rig();
+        rig.Filter.SetKelvin(1900);
+
+        rig.Filter.Shutdown();
+
+        Assert.Equal((255, 255, 255), (rig.Ddc.Values[0x16], rig.Ddc.Values[0x18], rig.Ddc.Values[0x1A]));
+        Assert.Null(rig.Pipeline.Layer);
+        Assert.Equal(1900, rig.Filter.Kelvin);
+    }
+
+    // ---- Dışarıdan değişiklik (OSD, T305): kullanıcının değeri geçerli ----
+
+    [Fact]
+    public void ExternalChange_WhileOn_IsKeptOnDisable()
+    {
+        var rig = new Rig();
+        rig.Filter.SetKelvin(4000);
+        rig.Ddc.Values[0x16] = 230; // kullanıcı OSD'den kırmızıyı değiştirdi
+
+        rig.Filter.Disable();
+
+        Assert.Equal(230, rig.Ddc.Values[0x16]);
+        Assert.Equal((255, 255), (rig.Ddc.Values[0x18], rig.Ddc.Values[0x1A]));
+    }
+
+    /// <summary>Dış değişiklik yeni baz olur: sonraki uygulama onun üstüne fark ekler, geri yükleme onu verir.</summary>
+    [Fact]
+    public void ExternalChange_BecomesNewBase_ForNextApply()
+    {
+        var rig = new Rig();
+        rig.Filter.SetKelvin(5000);
+        rig.Ddc.Values[0x1A] = 200;
+
+        rig.Filter.SetKelvin(4500);
+        var target = Target(4500);
+        Assert.Equal(Code(target.B, 200), rig.Ddc.Values[0x1A]);
+
+        rig.Filter.Disable();
+        Assert.Equal(200, rig.Ddc.Values[0x1A]);
+    }
+
+    [Fact]
+    public void ExternalChange_AfterCrash_IsKeptToo()
+    {
+        var rig = new Rig();
+        rig.Filter.SetKelvin(4000);
+        rig.Ddc.Values[0x18] = 210;
+
+        rig.NewFilter().Disable();
+
+        Assert.Equal(210, rig.Ddc.Values[0x18]);
     }
 
     // ---- Güvenlik ----

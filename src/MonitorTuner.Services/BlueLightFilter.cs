@@ -13,6 +13,12 @@ public interface IColorConflictProbe
     IReadOnlyList<ColorConflict> Detect();
 }
 
+/// <summary>
+/// Filtre açıkken kaydedilen baz ve son yazılan kazanç kodları (ayar deposu, "BlueLightBase" bölümü). Uygulama çökerse
+/// ya da kapanırsa sonraki açılış düşük kodları baz saymaz, kayıtlı baza döner. Boş diziler: kayıt yok.
+/// </summary>
+public sealed record BlueLightBaseRecord(ushort[] Base, ushort[] Applied);
+
 public enum LowBlueLightResult { Selected, NotInProfile, NoDdc, NotWritable, NotConfirmed, Failed }
 
 /// <summary>İsteğe bağlı akşam geçişi. Varsayılan kapalı; sadece renk değişir, arka ışık değişmez.</summary>
@@ -59,6 +65,9 @@ public interface IBlueLightFilter
 
     BlueLightState Resume();
 
+    /// <summary>Uygulama kapanırken çağrılır: kazançlar eski değerine döner, GPU katmanı kapanır (Suspend gibi).</summary>
+    BlueLightState Shutdown();
+
     /// <summary>Monitörün kendi Low Blue Light ön ayarı. Önce filtre kapanır.</summary>
     LowBlueLightResult SelectMonitorLowBlueLight();
 
@@ -86,20 +95,27 @@ public sealed class BlueLightFilter : IBlueLightFilter
     private readonly IKelvinCalculator _calculator;
     private readonly IColorConflictProbe _probe;
     private readonly TimeProvider _time;
+    private readonly ISettingsStore _store;
+    private readonly MonitorKey _key;
 
     private EveningSettings _evening = EveningSettings.Default;
     private int _kelvin = KelvinCalculator.OffKelvin;
     private bool _suspended;
     private bool _layerActive;
-    private ushort[]? _baseCodes;               // filtre açılmadan önceki kazançlar (kalibre değerler)
+    public const string BaseSection = "BlueLightBase";
+
+    private bool _persistedLoaded;
+    private ushort[]? _baseCodes;               // filtre açılmadan önceki kazançlar (kalibre değerler); depoda da tutulur
     private ushort[] _currentCodes = [];        // monitörde şu an bizim yazdığımız kodlar
     private readonly double[] _monitorShare = [1, 1, 1]; // monitörde etkili pay (doğrusal ışık)
     private DateTime? _manualEpisode;
 
     public BlueLightFilter(
         MonitorProfile profile, IDdcControl ddc, IColorPipeline pipeline, IKelvinCalculator calculator,
-        IColorConflictProbe probe, TimeProvider time)
+        IColorConflictProbe probe, TimeProvider time, ISettingsStore store, MonitorKey key)
     {
+        _store = store;
+        _key = key;
         _profile = profile;
         _ddc = ddc;
         _pipeline = pipeline;
@@ -138,6 +154,8 @@ public sealed class BlueLightFilter : IBlueLightFilter
         _suspended = false;
         return Apply();
     }
+
+    public BlueLightState Shutdown() => Suspend();
 
     public IReadOnlyList<ColorConflict> CheckConflicts() => _probe.Detect();
 
@@ -210,6 +228,8 @@ public sealed class BlueLightFilter : IBlueLightFilter
     private BlueLightState Restore()
     {
         var restored = true;
+        LoadPersisted();
+        SyncExternal();
         if (_baseCodes is not null)
         {
             for (var i = 0; i < GainCodes.Length; i++)
@@ -225,7 +245,12 @@ public sealed class BlueLightFilter : IBlueLightFilter
                 _monitorShare[i] = 1;
             }
 
-            if (restored) _baseCodes = null;
+            if (restored)
+            {
+                _baseCodes = null;
+                _store.Write(_key, BaseSection, new BlueLightBaseRecord([], []));
+            }
+            else SavePersisted();
         }
 
         var applied = restored;
@@ -254,20 +279,65 @@ public sealed class BlueLightFilter : IBlueLightFilter
         var mapping = _profile.ColorPresetMap.FirstOrDefault(m => m.DdcValue == preset.Current);
         if (mapping?.Preset != _profile.Osd.RgbGainPreset) return false;
 
-        if (_baseCodes is not null) return true;
+        LoadPersisted();
+        if (_baseCodes is not null)
+        {
+            SyncExternal();
+            return true;
+        }
 
         var values = GainCodes.Select(c => _ddc.Read(c)).ToArray();
         if (values.Any(v => v is null or { Current: 0 })) return false;
         _baseCodes = [.. values.Select(v => v!.Value.Current)];
         _currentCodes = [.. _baseCodes];
         Array.Fill(_monitorShare, 1.0);
+        SavePersisted();
         return true;
+    }
+
+    /// <summary>Önceki oturumdan (çökme, kapanış) kalan baz varsa onu alır; bir kez bakar.</summary>
+    private void LoadPersisted()
+    {
+        if (_persistedLoaded) return;
+        _persistedLoaded = true;
+        if (_store.Read<BlueLightBaseRecord>(_key, BaseSection) is not { Base.Length: 3, Applied.Length: 3 } p
+            || p.Base.Contains((ushort)0)) return;
+
+        _baseCodes = [.. p.Base];
+        _currentCodes = [.. p.Applied];
+    }
+
+    private void SavePersisted()
+    {
+        if (_baseCodes is not null)
+            _store.Write(_key, BaseSection, new BlueLightBaseRecord([.. _baseCodes], [.. _currentCodes]));
+    }
+
+    /// <summary>
+    /// 16/18/1A bizim yazdığımızdan farklıysa kullanıcı (OSD, T305) değiştirmiştir: o kanalda yeni baz odur
+    /// (02-MIMARI.md → Ayar sahipliği 1), geri yükleme onu ezmez.
+    /// </summary>
+    private void SyncExternal()
+    {
+        if (_baseCodes is null) return;
+        var changed = false;
+        for (var i = 0; i < GainCodes.Length; i++)
+        {
+            if (_ddc.Read(GainCodes[i]) is not { Current: > 0 } actual || actual.Current == _currentCodes[i]) continue;
+            _baseCodes[i] = actual.Current;
+            _currentCodes[i] = actual.Current;
+            _monitorShare[i] = 1;
+            changed = true;
+        }
+
+        if (changed) SavePersisted();
     }
 
     /// <summary>Kodlar bazın oranıdır ve sadece azalır (255 = tam); aynı değer tekrar yazılmaz.</summary>
     private void WriteMonitor(RgbGains intended)
     {
         double[] shares = [intended.R, intended.G, intended.B];
+        var wrote = false;
         for (var i = 0; i < GainCodes.Length; i++)
         {
             var code = (ushort)Math.Min(_baseCodes![i],
@@ -276,10 +346,13 @@ public sealed class BlueLightFilter : IBlueLightFilter
             {
                 if (_ddc.Write(GainCodes[i], code) != DdcWriteResult.Written) continue;
                 _currentCodes[i] = code;
+                wrote = true;
             }
 
             _monitorShare[i] = shares[i];
         }
+
+        if (wrote) SavePersisted();
     }
 
     private bool AllMonitorWritesDone(RgbGains intended) =>
