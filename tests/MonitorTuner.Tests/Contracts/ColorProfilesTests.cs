@@ -117,8 +117,55 @@ public class ColorProfilesTests
     }
 
     /// <summary>Panik kısayolu (T310 bağlar): bütün efektler kapanır.</summary>
-    [Pending("T310")]
-    public void PanicOff_TurnsOffEffects_KeepsCalibration() => Assert.Fail("T310");
+    [Fact]
+    public void PanicOff_TurnsOffEffects_KeepsCalibration()
+    {
+        var rig = new Rig();
+        rig.UserChoosesMode76();
+        var hz = rig.HzSnapshot();
+        var calibration = GammaRamps.Scale(new RgbGains(0.95, 1.0, 1.05));
+        rig.Pipeline.SetLayer(ColorLayer.Calibration, calibration);
+        Assert.True(rig.Pipeline.Apply());
+        var calibrationOnly = rig.Hw.Gpu.Read(Display);
+
+        // Kullanıcı üç efekti de açtı: ek karartma (0,1 < 0,2), mavi ışık ve canlılık.
+        rig.Hw.Clock.Advance(TimeSpan.FromMinutes(2));
+        Assert.True(rig.Profiles.Apply(new ColorProfile("Hepsi", false, 0.1, 3400, 70)).Success);
+        Assert.True(rig.Brightness.DimmingActive);
+        Assert.Equal(3400, rig.BlueLight.Kelvin);
+        Assert.Equal(70, rig.Hw.Nvidia.Read(Display)!.Value.Vibrance);
+        Assert.NotEqual(calibrationOnly, rig.Hw.Gpu.Read(Display));
+        var backlight = rig.Hw.Monitor.Read(Display, Backlight);
+
+        rig.Hw.Clock.Advance(TimeSpan.FromMinutes(2));
+        rig.Profiles.PanicOff();
+
+        Assert.False(rig.Brightness.DimmingActive);
+        Assert.Equal(KelvinCalculator.OffKelvin, rig.BlueLight.Kelvin);
+        Assert.Equal(FakeNvidiaSettings.DriverDefault.Vibrance, rig.Hw.Nvidia.Read(Display)!.Value.Vibrance);
+        Assert.Equal(calibrationOnly, rig.Hw.Gpu.Read(Display)); // tabloda yalnız kalibrasyon kaldı
+        Assert.NotEqual(GammaRamp.Identity, rig.Hw.Gpu.Read(Display)); // kalibrasyon silinmedi
+        Assert.Equal(backlight, rig.Hw.Monitor.Read(Display, Backlight)); // arka ışığa dokunulmadı
+        Assert.Equal(hz, rig.HzSnapshot()); // Hz aynı, ekran modu geçişi yok
+        Assert.Single(rig.Hw.Modes.Switches);
+    }
+
+    /// <summary>Panikten sonra hiçbir şey kendiliğinden geri gelmez; yalnız kullanıcı yeniden seçince.</summary>
+    [Fact]
+    public void PanicOff_EffectsStayOff_UntilTheUserSelectsAgain()
+    {
+        var rig = new Rig();
+        Assert.True(rig.Profiles.Apply(new ColorProfile("Hepsi", false, 0.1, 3400, 70)).Success);
+        rig.Profiles.PanicOff();
+        var writes = (rig.Hw.Monitor.Writes.Count, rig.Hw.Gpu.Writes.Count, rig.Hw.Nvidia.WriteCount);
+
+        rig.Hw.Clock.Advance(TimeSpan.FromDays(1));
+        rig.BlueLight.Tick();
+
+        Assert.Equal(writes, (rig.Hw.Monitor.Writes.Count, rig.Hw.Gpu.Writes.Count, rig.Hw.Nvidia.WriteCount));
+        Assert.False(rig.Brightness.DimmingActive);
+        Assert.Equal(KelvinCalculator.OffKelvin, rig.BlueLight.Kelvin);
+    }
 
     // ---- Doğrulama ----
 
