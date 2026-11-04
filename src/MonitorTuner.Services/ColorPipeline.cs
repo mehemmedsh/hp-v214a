@@ -46,7 +46,8 @@ public sealed class ColorPipeline(
     IGpuGammaTable gpuTable,
     IGdiIcmGammaRange gammaRange,
     IGammaTableCombiner combiner,
-    ISafetyLayer safety) : IColorPipeline, IGpuTableOwner
+    ISafetyLayer safety,
+    IDitheringPolicy? dithering = null) : IColorPipeline, IGpuTableOwner
 {
     /// <summary>Windows'un derin karartma ve çok sıcak renk tablolarını reddetmediği <c>GdiIcmGammaRange</c> değeri.</summary>
     public const int FullGammaRange = 256;
@@ -56,6 +57,7 @@ public sealed class ColorPipeline(
     private readonly IGdiIcmGammaRange _gammaRange = gammaRange;
     private readonly IGammaTableCombiner _combiner = combiner;
     private readonly ISafetyLayer _safety = safety;
+    private readonly IDitheringPolicy? _dithering = dithering;
 
     private readonly Lock _gate = new();
     private readonly SortedDictionary<ColorLayer, GammaRamp> _layers = [];
@@ -138,10 +140,27 @@ public sealed class ColorPipeline(
         var now = _gpuTable.Read(_display);
         if (now is not null && (now.Equals(table) || (table.Equals(_userTable) && now.Equals(_observed))))
         {
-            (_userTable, _observed) = (table, now);
+            Own(table, now);
             return true;
         }
         return Write(table);
+    }
+
+    /// <summary>Tablo kullanıcının tablosu olur; seviye kaybettiriyorsa dithering açık tutulur (T303).</summary>
+    private void Own(GammaRamp table, GammaRamp observed)
+    {
+        (_userTable, _observed) = (table, observed);
+        _dithering?.TableInUse(!IsNeutral(table));
+    }
+
+    /// <summary>Her 8 bit seviye kendine gidiyor mu, üst 8 bite göre (birim i×257 ve Windows'un i×256 tablosu nötrdür).</summary>
+    private static bool IsNeutral(GammaRamp table)
+    {
+        for (var i = 0; i < GammaRamp.Size; i++)
+        {
+            if (table.Red[i] >> 8 != i || table.Green[i] >> 8 != i || table.Blue[i] >> 8 != i) return false;
+        }
+        return true;
     }
 
     private bool Write(GammaRamp table)
@@ -156,8 +175,7 @@ public sealed class ColorPipeline(
             return false; // tablo okunamadı: yedeksiz yazılmaz
         }
         if (!_gpuTable.Write(_display, table, point)) return false;
-        _userTable = table;
-        _observed = _gpuTable.Read(_display) ?? table;
+        Own(table, _gpuTable.Read(_display) ?? table);
         return true;
     }
 }
