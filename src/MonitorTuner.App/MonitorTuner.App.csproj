@@ -5,10 +5,17 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net10.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
+    <!-- Sadece sistem tepsisi simgesi (NotifyIcon) için; WPF ile ad çakışması olmasın diye örtük using'ler aşağıda kaldırılır. -->
+    <UseWindowsForms>true</UseWindowsForms>
     <!-- Nötr dil Türkçe: Resources/Strings/*.resx Türkçedir; az ve en T502'de *.az.resx / *.en.resx. -->
     <NeutralLanguage>tr</NeutralLanguage>
     <AssemblyTitle>MonitorTuner</AssemblyTitle>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Using Remove="System.Windows.Forms" />
+    <Using Remove="System.Drawing" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\MonitorTuner.Services\MonitorTuner.Services.csproj" />
