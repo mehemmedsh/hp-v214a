@@ -1,6 +1,6 @@
 # Fazlar ve Görevler
 
-**Sıradaki: T307 düzeltmesinin yeniden incelemesi (Opus), paralel Dalga 5 (T301 Opus, T305 Sonnet, T306 Sonnet).** Dalga 4'ten T103 ✅ ve T102 ✅ bitti; T307 🟨 (inceleme DÜZELT verdi, düzeltme `12997b3`'te). Dalga 3 bitti: T003 ✅, T004 🔧 (kod onaylandı; monitörde 14 eşlemesi ve 75/76 Hz AE kontrolü bekliyor, `05-HANDOFF.md` → Monitörde kalan kontroller). T002 ve T311 de onaylandı (2026-11-04). Kapsam 2026-10-30'da 66 görevden 21'e indi (`07-INCELEME.md`, 7. tur; plan dışı kalanlar `06-CIKARILANLAR.md`).
+**Sıradaki: T307 düzeltmesinin yeniden incelemesi (Opus), paralel Dalga 5 (T301 🔧: kod onaylandı, gerçek monitörde okuma ve tek parlaklık yazması bekliyor, 🔧 adımları T301 commit mesajında; T305 ve T306 incelemede).** Dalga 4'ten T103 ✅ ve T102 ✅ bitti; T307 🟨 (inceleme DÜZELT verdi, düzeltme `12997b3`'te). Dalga 3 bitti: T003 ✅, T004 🔧 (kod onaylandı; monitörde 14 eşlemesi ve 75/76 Hz AE kontrolü bekliyor, `05-HANDOFF.md` → Monitörde kalan kontroller). T002 ve T311 de onaylandı (2026-11-04). Kapsam 2026-10-30'da 66 görevden 21'e indi (`07-INCELEME.md`, 7. tur; plan dışı kalanlar `06-CIKARILANLAR.md`).
 
 ## Çalışma kuralları
 
@@ -98,7 +98,7 @@ Durum: ⬜ bekliyor · 🟨 yazıldı, incelemede · 🔧 onaylandı, monitör t
 
 | No | Görev | Sınıf | Yazan → İnceleyen | Bağımlı | Dalga | Bitti sayılır | Durum |
 |---|---|---|---|---|---|---|---|
-| T301 | DDC katmanı: yetenek testi (DDC var mı, hangi kodlar), okuma/yazma, yazma izin listesi (04/05/08 ve E6–FF asla), yazma sınırı (bırakınca tek yazma, tekrar engeli), AC değerinin taşma düzeltmesi | A | Opus → Sonnet | T004, T103 | 5 | Sahte monitörde sınırlar çalışıyor; gerçek monitörde okuma ve tek bir parlaklık yazması 🔧 | 🟨 |
+| T301 | DDC katmanı: yetenek testi (DDC var mı, hangi kodlar), okuma/yazma, yazma izin listesi (04/05/08 ve E6–FF asla), yazma sınırı (bırakınca tek yazma, tekrar engeli), AC değerinin taşma düzeltmesi | A | Opus → Sonnet | T004, T103 | 5 | Sahte monitörde sınırlar çalışıyor; gerçek monitörde okuma ve tek bir parlaklık yazması 🔧 | 🔧 |
 | T302 | Renk boru hattı: GPU tablosunun tek sahibi; katman sırası kalibrasyon → mavi ışık (GPU kısmı) → ek karartma; `GdiIcmGammaRange` (tek seferlik yönetici onayı, eski değer yedeklenir); dış değişiklik tespiti, geri yükleme ve uyarı; kapanışta tabloda sadece kalibrasyon kalır | A | Opus → Sonnet | T103 | 6 | Sahte tabloda birleştirme, geri yükleme ve kapanış testleri geçiyor; gerçek PC'de tablo yazılıp geri alındı 🔧 | ⬜ |
 | T303 | NVIDIA ayarları: dithering (GPU tablosu kullanılırken açık) ve canlılık (sadece Film ve Oyun profillerinde); kapanışta ikisi de varsayılana döner | A | Opus → Sonnet | T302 | 7 | Sahte sürücüyle aç/kapa ve geri dönüş testleri geçiyor; gerçek monitörde gradyanda bant yok 🔧 | ⬜ |
 | T305 | DDC paneli: parlaklık, kontrast, renk ön ayarı, RGB kazancı, keskinlik, giriş, hoparlör sesi; dijital parlaklık koruması; DDC yoksa OSD talimatı | C | Sonnet → Opus | T102 | 5 | Sahte monitörle panel çalışıyor | 🟨 |
