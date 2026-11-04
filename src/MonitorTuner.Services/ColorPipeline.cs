@@ -154,7 +154,7 @@ public sealed class ColorPipeline(
     }
 
     /// <summary>Her 8 bit seviye kendine gidiyor mu, üst 8 bite göre (birim i×257 ve Windows'un i×256 tablosu nötrdür).</summary>
-    private static bool IsNeutral(GammaRamp table)
+    internal static bool IsNeutral(GammaRamp table)
     {
         for (var i = 0; i < GammaRamp.Size; i++)
         {

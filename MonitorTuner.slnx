@@ -9,6 +9,9 @@
     <Project Path="src/MonitorTuner.Safety/MonitorTuner.Safety.csproj" />
     <Project Path="src/MonitorTuner.Services/MonitorTuner.Services.csproj" />
   </Folder>
+  <Folder Name="/tools/">
+    <Project Path="tools/recovery/MonitorTuner.Recovery.csproj" />
+  </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/MonitorTuner.ArchitectureFixtures/MonitorTuner.ArchitectureFixtures.csproj" />
     <Project Path="tests/MonitorTuner.Tests/MonitorTuner.Tests.csproj" />

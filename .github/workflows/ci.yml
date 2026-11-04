@@ -39,6 +39,9 @@ jobs:
       - name: Self-contained win-x64 paket
         shell: pwsh
         run: dotnet publish src/MonitorTuner.App/MonitorTuner.App.csproj -c Release -r win-x64 --self-contained true -o artifacts/MonitorTuner-win-x64 -nologo -v q -tl:off
+      - name: Kurtarma dosyası (tek dosya, pakette kurtarma klasörü)
+        shell: pwsh
+        run: dotnet publish tools/recovery/MonitorTuner.Recovery.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o artifacts/MonitorTuner-win-x64/kurtarma -nologo -v q -tl:off
       - uses: actions/upload-artifact@v5
         with:
           name: MonitorTuner-win-x64

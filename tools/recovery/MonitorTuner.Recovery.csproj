@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Kurtarma dosyası (T104): uygulama açılmadan GPU renk tablosunu sıfırlar, dithering ve canlılığı sürücü varsayılanına,
+    GdiIcmGammaRange'i eski hâline döndürür. Donanıma bağlama kökü (Composition) üzerinden ulaşır; kendisi P/Invoke yapmaz.
+    Tek dosya paket: dotnet publish tools/recovery/MonitorTuner.Recovery.csproj -c Release -r win-x64 -self-contained -p:PublishSingleFile=true -o <klasör>
+  -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <AssemblyName>MonitorTuner-Kurtarma</AssemblyName>
+    <RootNamespace>MonitorTuner.Recovery</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\MonitorTuner.Composition\MonitorTuner.Composition.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="OKU.md" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>
