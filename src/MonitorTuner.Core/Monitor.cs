@@ -11,6 +11,16 @@ public sealed record MonitorInfo(
 {
     /// <summary>Kullanıcı ayarlarının anahtarı: monitör + seri no + port + kart (02-MIMARI.md → Profil yapısı).</summary>
     public MonitorKey Key => new(Model, SerialNumber, Port, AdapterName);
+
+    /// <summary>VGA'da görüntü bu kartlarda analog; arayüz "HDMI'a geç" uyarısı verir.</summary>
+    public bool IsVga => Connection == ConnectionType.Vga;
+
+    /// <summary>Tanınan monitör bu profilin monitörü mü (büyük/küçük harf farkı sayılmaz). Model okunamadıysa hayır.</summary>
+    public bool Matches(Profiles.MonitorProfile profile)
+    {
+        ArgumentNullException.ThrowIfNull(profile);
+        return Model.Length > 0 && string.Equals(Model, profile.Model, StringComparison.OrdinalIgnoreCase);
+    }
 }
 
 public readonly record struct MonitorKey(string Model, string SerialNumber, string Port, string AdapterName);

@@ -114,7 +114,7 @@ Durum: ⬜ bekliyor · 🟨 yazıldı, incelemede · 🔧 onaylandı, monitör t
 
 | No | Görev | Sınıf | Yazan → İnceleyen | Bağımlı | Dalga | Bitti sayılır | Durum |
 |---|---|---|---|---|---|---|---|
-| T102 | Monitör tanıma (model, seri no, bağlantı tipi, bağlı olduğu kart; VGA'daysa uyarı) ve ayar deposu (`%AppData%` altında JSON, yedekler ayrı klasörde) | B | Sonnet → Opus | T003 | 4 | Sahte sistemle tanıma ve depo testleri geçiyor | ⬜ |
+| T102 | Monitör tanıma (model, seri no, bağlantı tipi, bağlı olduğu kart; VGA'daysa uyarı) ve ayar deposu (`%AppData%` altında JSON, yedekler ayrı klasörde) | B | Sonnet → Opus | T003 | 4 | Sahte sistemle tanıma ve depo testleri geçiyor | 🟨 |
 | T103 | Güvenlik katmanı: DDC ve GPU tablosu yedeği, geri alma noktaları, 15 sn onay zamanlayıcısı, "fabrika ayarına dön", kaldırma temizliği | A | Opus → Sonnet | T003 | 4 | Sahte donanımla her yazma geri alınabiliyor; onaylanmayan değişiklik 15 sn'de dönüyor | ✅ |
 | T104 | Kurtarma dosyası (GPU tablosunu sıfırlar, `GdiIcmGammaRange`'i eski haline döndürür, dithering ve canlılığı varsayılana alır) ve "görüntü gelmezse" talimatı (başka port, güvenli mod, NVIDIA özel çözünürlüğünü silme) | A | Opus → Sonnet | T103, T302, T303 | 9 | Kurtarma dosyası sahte sistemde her şeyi varsayılana döndürüyor; gerçek PC'de bir kez çalıştırıldı 🔧 | ⬜ |
 
