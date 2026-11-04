@@ -1,6 +1,6 @@
 # Fazlar ve Görevler
 
-**Sıradaki: T313 incelemesi (Opus), T209 düzeltme (2. tur) incelemesi (Sonnet), T310 incelemesi (Opus); paralel T104 yazma (Opus); sonra T314 ve T315 yazma (Sonnet; T313 üçe bölündü).** T310 🟨 (yazıldı 2026-11-05; tepsi servisi ve menü testli, tepsi simgesi ve kısayol bağlaması T314'te, o zaman monitörde denenir). T308 ✅ (inceleme ONAY, 2026-11-05). Dalga 4 bitti: T103 ✅, T102 ✅, T307 ✅ (düzeltme yeniden incelemesi ONAY, 2026-11-04). Dalga 5–6: T301 🔧, T305 ✅, T302 ✅; T306 ✅ (düzeltme yeniden incelemesi ONAY, 2026-11-04), T303 🔧 (inceleme ONAY 2026-11-04; gerçek monitörde gradyan testi bekliyor, `RealNvidiaTests`), T312 🔧 (düzeltme yeniden incelemesi ONAY, 2026-11-05; sihirbaz sayfası T315'te gelince monitörde baştan sona test, `05-HANDOFF.md` → 5). Dalga 3 bitti: T003 ✅, T004 🔧 (kod onaylandı; monitörde 14 eşlemesi ve 75/76 Hz AE kontrolü bekliyor, `05-HANDOFF.md` → Monitörde kalan kontroller). T002 ve T311 de onaylandı (2026-11-04). Kapsam 2026-10-30'da 66 görevden 21'e indi (`07-INCELEME.md`, 7. tur; plan dışı kalanlar `06-CIKARILANLAR.md`).
+**Sıradaki: T313 incelemesi (Opus), T310 incelemesi (Opus); paralel T104 yazma (Opus); sonra T314 ve T315 yazma (Sonnet; T313 üçe bölündü).** T209 🔧 (düzeltme 2. tur incelemesi ONAY, 2026-11-05; gerçek monitörde 60 ↔ 76 geçişi bekliyor). T310 🟨 (yazıldı 2026-11-05; tepsi servisi ve menü testli, tepsi simgesi ve kısayol bağlaması T314'te, o zaman monitörde denenir). T308 ✅ (inceleme ONAY, 2026-11-05). Dalga 4 bitti: T103 ✅, T102 ✅, T307 ✅ (düzeltme yeniden incelemesi ONAY, 2026-11-04). Dalga 5–6: T301 🔧, T305 ✅, T302 ✅; T306 ✅ (düzeltme yeniden incelemesi ONAY, 2026-11-04), T303 🔧 (inceleme ONAY 2026-11-04; gerçek monitörde gradyan testi bekliyor, `RealNvidiaTests`), T312 🔧 (düzeltme yeniden incelemesi ONAY, 2026-11-05; sihirbaz sayfası T315'te gelince monitörde baştan sona test, `05-HANDOFF.md` → 5). Dalga 3 bitti: T003 ✅, T004 🔧 (kod onaylandı; monitörde 14 eşlemesi ve 75/76 Hz AE kontrolü bekliyor, `05-HANDOFF.md` → Monitörde kalan kontroller). T002 ve T311 de onaylandı (2026-11-04). Kapsam 2026-10-30'da 66 görevden 21'e indi (`07-INCELEME.md`, 7. tur; plan dışı kalanlar `06-CIKARILANLAR.md`).
 
 ## Çalışma kuralları
 
@@ -92,7 +92,7 @@ Durum: ⬜ bekliyor · 🟨 yazıldı, incelemede · 🔧 onaylandı, monitör t
 
 | No | Görev | Sınıf | Yazan → İnceleyen | Bağımlı | Dalga | Bitti sayılır | Durum |
 |---|---|---|---|---|---|---|---|
-| T209 | Hz paneli: Windows mod listesi; onaylı modlar (76, 75, 72, 60, 50) arasında elle geçiş; 15 sn onay; monitörden (DDC AE) gerçek Hz doğrulaması; sürücü güncellemesi modu silerse uyarı ve NVIDIA'ya girilecek değerler (profilden); spec dışı moda ilk geçişte uyarı | A | Opus → Sonnet | T004, T103, T301 | 8 | Sahte sistemde geçiş, geri dönüş ve doğrulama testleri geçiyor; gerçek monitörde 60 ↔ 76 geçişi ve geri dönüş 🔧 | 🟨 |
+| T209 | Hz paneli: Windows mod listesi; onaylı modlar (76, 75, 72, 60, 50) arasında elle geçiş; 15 sn onay; monitörden (DDC AE) gerçek Hz doğrulaması; sürücü güncellemesi modu silerse uyarı ve NVIDIA'ya girilecek değerler (profilden); spec dışı moda ilk geçişte uyarı | A | Opus → Sonnet | T004, T103, T301 | 8 | Sahte sistemde geçiş, geri dönüş ve doğrulama testleri geçiyor; gerçek monitörde 60 ↔ 76 geçişi ve geri dönüş 🔧 | 🔧 |
 
 ## Faz 3 — Görüntü, renk ve göz konforu
 
