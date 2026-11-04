@@ -1,6 +1,6 @@
 # Fazlar ve Görevler
 
-**Sıradaki: T307 düzeltmesinin yeniden incelemesi (Opus), paralel Dalga 5 (T301 Opus, T305 Sonnet, T306 Sonnet).** Dalga 4'ten T103 ✅ ve T102 ✅ bitti; T307 🟨 (inceleme DÜZELT verdi, düzeltme `12997b3`'te). Dalga 3 bitti: T003 ✅, T004 ✅ (14 eşlemesi monitörde doğrulandı 2026-11-04; 76 Hz AE = 7600 okundu; 75 Hz AE ve iki modun kare atlama kontrolü T209'dan önce bekliyor, `05-HANDOFF.md` → Monitörde kalan kontroller). T002 ve T311 de onaylandı (2026-11-04). Kapsam 2026-10-30'da 66 görevden 21'e indi (`07-INCELEME.md`, 7. tur; plan dışı kalanlar `06-CIKARILANLAR.md`).
+**Sıradaki: T307 düzeltmesinin yeniden incelemesi (Opus), paralel Dalga 5 (T301 Opus, T305 Sonnet, T306 Sonnet).** Dalga 4'ten T103 ✅ ve T102 ✅ bitti; T307 🟨 (inceleme DÜZELT verdi, düzeltme `12997b3`'te). Dalga 3 bitti: T003 ✅, T004 ✅ (14 eşlemesi monitörde doğrulandı 2026-11-04; 75 ve 76 Hz AE okundu (7500, 7600); iki modun kare atlama kontrolü T209'dan önce bekliyor, `05-HANDOFF.md` → Monitörde kalan kontroller). T002 ve T311 de onaylandı (2026-11-04). Kapsam 2026-10-30'da 66 görevden 21'e indi (`07-INCELEME.md`, 7. tur; plan dışı kalanlar `06-CIKARILANLAR.md`).
 
 ## Çalışma kuralları
 

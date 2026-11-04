@@ -168,7 +168,7 @@ ONAY ise docs/04-FAZLAR.md'de durumu ✅ yap (🔧 görevse 🔧), commit ve pus
 Uygulamayı sadece sen açarsın; ajanlar açmaz.
 
 **Monitörde kalan kontroller** (kod beklemez):
-- 75 Hz (2080×1100): DDC AE = 7500 ve testufo kare atlama (sonuç henüz bildirilmedi). 76 Hz (2080×1092): testufo kare atlama (AE = 7600 okundu, 2026-11-04). **T209'dan önce.**
+- 75 Hz (2080×1100) ve 76 Hz (2080×1092): testufo kare atlama. (AE = 7500 / 7600 okundu, 2026-11-04.) **T209'dan önce.**
 - ~~DDC 14 kodunun eşlemesi~~ yapıldı (2026-11-04, T004 ✅).
 
 **Sonucu bildirme** (`hp-inceleme`, Sonnet · Medium yeterli):

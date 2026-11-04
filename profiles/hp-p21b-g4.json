@@ -39,7 +39,7 @@
     {
       "refreshHz": 75, "status": "nvidiaPassed", "source": "customResolution",
       "timing": { "hActive": 1920, "hFrontPorch": 48, "hSync": 32, "hBackPorch": 80, "vActive": 1080, "vFrontPorch": 3, "vSync": 5, "vBackPorch": 12 },
-      "note": "Sıkı dikey. NVIDIA testi geçti; AE = 7500 ve kare atlama doğrulaması bekliyor. Yatay boşluk 48/32/80 varsayımdır; dokümanda sadece toplam ve dikey yazılı."
+      "note": "Sıkı dikey. NVIDIA testi geçti; DDC AE = 7500 doğrulandı (AC = 16964, taşmalı: 16964 + 65536 = 82500 Hz); kare atlama doğrulaması bekliyor. Yatay boşluk 48/32/80 varsayımdır; dokümanda sadece toplam ve dikey yazılı."
     },
     {
       "refreshHz": 76, "status": "nvidiaPassed", "source": "customResolution",
@@ -123,6 +123,7 @@
     "samples": [
       { "refreshHz": 60, "ae": 6000, "ac": 1964, "horizontalHz": 67500 },
       { "refreshHz": 74, "ae": 7400, "ac": 17264, "horizontalHz": 82800 },
+      { "refreshHz": 75, "ae": 7500, "ac": 16964, "horizontalHz": 82500 },
       { "refreshHz": 76, "ae": 7600, "ac": 17564, "horizontalHz": 83100 }
     ]
   }

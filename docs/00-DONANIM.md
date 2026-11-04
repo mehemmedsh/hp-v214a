@@ -52,8 +52,8 @@ Ham döküm: `donanim/hp-p21b-g4/ddc-vcp-60hz.txt`.
 | 60 | Giriş | R/W | 17 | 17 = HDMI, 1 = VGA |
 | 62 | Ses | R/W | 50 | Hoparlör |
 | 86, 87, 8D | Ölçekleme, keskinlik (1–7), sessize alma | R/W | 2, 4, 2 | — |
-| **AE** | Dikey frekans | R | 6000 | **Gerçek gelen Hz × 100.** 74 Hz'de 7400, 76 Hz'de 7600 okundu |
-| **AC** | Yatay frekans | R | 1964 | **Hz cinsinden, 16 bit taşmalı:** 60 Hz'de 1964 + 65536 = 67 500; 74 Hz'de 17264 + 65536 = 82 800; 76 Hz'de 17564 + 65536 = 83 100 (hesap 82 992; monitörün ölçümü birkaç yüz Hz oynar) |
+| **AE** | Dikey frekans | R | 6000 | **Gerçek gelen Hz × 100.** 74, 75 ve 76 Hz'de 7400, 7500, 7600 okundu |
+| **AC** | Yatay frekans | R | 1964 | **Hz cinsinden, 16 bit taşmalı:** 60 Hz'de 1964 + 65536 = 67 500; 74 Hz'de 17264 + 65536 = 82 800; 75 Hz'de 16964 + 65536 = 82 500; 76 Hz'de 17564 + 65536 = 83 100 (hesap 82 992; monitörün ölçümü birkaç yüz Hz oynar) |
 | C0 | Kullanım süresi | R | 2167 | Saat; OSD ile aynı |
 | C8 | Scaler | R | 22021 (0x5605) | Muhtemelen MStar |
 | C9 / DF | Firmware / VCP sürümü | R | 256 / 514 | 1.0 / MCCS 2.2 |
@@ -90,7 +90,7 @@ Her hücre: **pixel clock (MHz) / yatay frekans (kHz).** EDID sınırları 170 M
 **Ünitede ölçülenler (2026-10-30, RTX 3080 HDMI):**
 - **74 Hz, CVT-RB (2080×1119, 82.81 kHz, 172.24 MHz):** çalışıyor. Windows aktif sinyal 74 Hz, DDC AE = 7400, testufo frameskipping'de 1/10 s'de 8 ardışık kare, atlama yok.
 - **75 Hz, CVT-RB (2080×1119, 83.9 kHz, 174.6 MHz):** monitör "Input Signal Out of Range, H = 83.9 kHz V = 75 Hz" gösterdi. Reddetme net; kare atlamıyor, görüntü vermiyor.
-- **75 Hz, sıkı dikey (2080×1100; dikey 3/5/12; 82.5 kHz, 171.6 MHz):** NVIDIA testi geçti. AE = 7500 ve kare atlama doğrulaması bekleniyor.
+- **75 Hz, sıkı dikey (2080×1100; dikey 3/5/12; 82.5 kHz, 171.6 MHz):** NVIDIA testi geçti, **DDC AE = 7500, AC = 16964 (+65536 = 82 500) (2026-11-04)**. Kare atlama doğrulaması bekleniyor.
 - **76 Hz, çok sıkı dikey (2080×1092; yatay 48/32/80, dikey 3/5/4; 82.99 kHz, 172.62 MHz):** NVIDIA testi geçti, Windows aktif sinyal 76 Hz. AE = 7600 ve kare atlama doğrulaması bekleniyor.
 - **77 Hz (2000×1092; yatay 48/32/0, dikey 3/5/4; 84.08 kHz, 168.17 MHz):** "Out of Range". Pixel clock çalışan 76 Hz'den **düşük** olduğu halde reddedildi; demek ki belirleyici sınır **yatay frekans**. (Yatay back porch 0'dı; ama monitörün verdiği mesaj senkron kaybı değil "Out of Range", yani frekans kontrolü.)
 - Not: NVIDIA'nın özel çözünürlük penceresindeki kHz değeri Hz değiştirildikten sonra güncellenmiyor (75 Hz'de 81.40, 76 Hz'de 81.90, 77 Hz'de 82.99 gösterdi). Doğru değer: Hz × dikey toplam.

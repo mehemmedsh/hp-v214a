@@ -224,7 +224,7 @@ public class MonitorProfileReaderTests
 
         Assert.Equal(100, rules.VerticalDivisor);
         Assert.Equal(65536, rules.HorizontalWrapModulus);
-        Assert.Equal(3, rules.Samples.Count);
+        Assert.Equal(4, rules.Samples.Count);
         foreach (var s in rules.Samples)
         {
             Assert.Equal(s.RefreshHz, s.Ae / (double)rules.VerticalDivisor);
