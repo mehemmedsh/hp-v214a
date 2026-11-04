@@ -229,10 +229,18 @@ public sealed class BlueLightFilter : IBlueLightFilter
     {
         var restored = true;
         LoadPersisted();
-        if (_baseCodes is not null && !IsRgbGainPresetActive())
+        var presetState = _baseCodes is null ? GainPresetState.RgbGain : ReadGainPresetState();
+        if (presetState == GainPresetState.Other)
         {
             // Başka renk ön ayarı seçili: 16/18/1A o ön ayarın değerleri, ne yazılır ne "kullanıcı değişikliği" sayılır.
             // Kayıtlı baz durur; ön ayar Custom RGB'ye dönünce sonraki Restore/Apply geri yazar. Monitör payı etkisiz.
+            Array.Fill(_monitorShare, 1.0);
+        }
+        else if (presetState == GainPresetState.Unknown)
+        {
+            // Ön ayar okunamadı (DDC hatası): hangi ön ayarda olduğumuz bilinmiyor, kazanç yazılmaz, kayıt durur.
+            // Monitör sıcak kalmış olabilir; bunu başarı diye bildirme (Applied=false), GPU katmanı yine kapanır.
+            restored = false;
             Array.Fill(_monitorShare, 1.0);
         }
         else if (_baseCodes is not null)
@@ -300,11 +308,16 @@ public sealed class BlueLightFilter : IBlueLightFilter
     }
 
     /// <summary>Monitörün renk ön ayarı RGB kazancının etkili olduğu ön ayar mı (profil: Custom RGB). Okunamazsa false.</summary>
-    private bool IsRgbGainPresetActive()
+    private bool IsRgbGainPresetActive() => ReadGainPresetState() == GainPresetState.RgbGain;
+
+    private enum GainPresetState { RgbGain, Other, Unknown }
+
+    /// <summary>Renk ön ayarı (14): Custom RGB, başka bir ön ayar ya da okunamadı (DDC hatası).</summary>
+    private GainPresetState ReadGainPresetState()
     {
-        if (_ddc.Read(ColorPresetCode) is not { } preset) return false;
+        if (_ddc.Read(ColorPresetCode) is not { } preset) return GainPresetState.Unknown;
         var mapping = _profile.ColorPresetMap.FirstOrDefault(m => m.DdcValue == preset.Current);
-        return mapping?.Preset == _profile.Osd.RgbGainPreset;
+        return mapping?.Preset == _profile.Osd.RgbGainPreset ? GainPresetState.RgbGain : GainPresetState.Other;
     }
 
     /// <summary>Önceki oturumdan (çökme, kapanış) kalan baz varsa onu alır; bir kez bakar.</summary>

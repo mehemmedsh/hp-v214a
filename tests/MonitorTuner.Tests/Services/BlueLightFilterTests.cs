@@ -455,6 +455,39 @@ public class BlueLightFilterTests
         Assert.Equal(RgbGains.Neutral, state.Gpu);
     }
 
+    /// <summary>
+    /// Renk ön ayarı (14) okunamıyor (DDC hatası): "başka ön ayar" değildir, bilinmiyor. Kazanç yazılmaz, kayıt durur,
+    /// GPU katmanı kapanır ama Applied=false döner; 14 tekrar Custom RGB olunca Disable bazı geri yazar (Applied=true).
+    /// </summary>
+    [Fact]
+    public void Disable_WhenColorPresetUnreadable_WritesNothingKeepsBaseAndReportsNotApplied()
+    {
+        var rig = new Rig();
+        rig.Filter.SetKelvin(3000);
+        var low = (rig.Ddc.Values[0x16], rig.Ddc.Values[0x18], rig.Ddc.Values[0x1A]);
+        Assert.NotEqual((255, 255, 255), low);
+        Assert.NotNull(rig.Pipeline.Layer);
+
+        rig.Ddc.Values.Remove(0x14); // okunamaz
+        rig.Ddc.Writes.Clear();
+
+        var state = rig.Filter.Disable();
+
+        Assert.False(state.Applied);
+        Assert.Empty(rig.Ddc.Writes);
+        Assert.Equal(low, (rig.Ddc.Values[0x16], rig.Ddc.Values[0x18], rig.Ddc.Values[0x1A]));
+        Assert.Equal(3, rig.Store.Read<BlueLightBaseRecord>(Key, BlueLightFilter.BaseSection)!.Base.Length);
+        Assert.Null(rig.Pipeline.Layer);
+
+        rig.Ddc.Values[0x14] = 11;
+
+        state = rig.Filter.Disable();
+
+        Assert.True(state.Applied);
+        Assert.Equal((255, 255, 255), (rig.Ddc.Values[0x16], rig.Ddc.Values[0x18], rig.Ddc.Values[0x1A]));
+        Assert.Empty(rig.Store.Read<BlueLightBaseRecord>(Key, BlueLightFilter.BaseSection)!.Base);
+    }
+
     // ---- Güvenlik ----
 
     /// <summary>Sadece 16/18/1A yazılır (parlaklık 10, ön ayar 14 ve yasak kodlara değil); aynı değer tekrar yazılmaz.</summary>
