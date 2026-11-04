@@ -21,7 +21,7 @@ public interface IBrightnessControl
     /// <summary>Sürüklerken: planı hesaplar, donanıma hiç dokunmaz.</summary>
     DimmingPlan Preview(double slider);
 
-    /// <summary>Kaydırıcı bırakılınca: arka ışığa tek yazma, gerekiyorsa GPU katmanı. Aynı değer tekrar yazılmaz.</summary>
+    /// <summary>Kaydırıcı bırakılınca: arka ışığa tek yazma, gerekiyorsa GPU katmanı. Değer monitörde zaten oradaysa bellek yazılmaz (DdcControl).</summary>
     BrightnessState Commit(double slider);
 
     /// <summary>Açılışta kaydırıcının yeri (arka ışığı okur, yazmaz). null: DDC yok ya da okunamadı.</summary>
@@ -49,7 +49,6 @@ public sealed class BrightnessControl(IDdcControl ddc, IColorPipeline pipeline, 
     private const int DefaultMaximum = 100;
 
     private double? _slider;
-    private int? _writtenBacklight; // monitörde bizim son yazdığımız (0–100); null: henüz yazmadık / son yazma olmadı
     private double _layerScale = 1; // GPU Dimming katmanında şu an olan beyaz seviyesi; 1 = katman kapalı
     private bool _suspended;
     private bool _panicOff;
@@ -70,11 +69,10 @@ public sealed class BrightnessControl(IDdcControl ddc, IColorPipeline pipeline, 
         DdcWriteResult? backlight = null;
 
         if (gpuFirst) applied &= SetLayer(wantedScale);
-        if (_writtenBacklight != plan.Backlight)
-        {
-            backlight = WriteBacklight(plan.Backlight);
-            applied &= backlight == DdcWriteResult.Written;
-        }
+        // Her Commit'te yazılır: önbellek OSD / DdcPanel / sihirbazın değiştirdiği değeri göremez. Değer yerindeyse
+        // DdcControl.Write belleğe yazmadan döner.
+        backlight = WriteBacklight(plan.Backlight);
+        applied &= backlight == DdcWriteResult.Written;
 
         // Geçici DDC hatasında (sınır, başarısız) GPU katmanı kalkmaz: kullanıcı karanlıkta kalır, parlak anlık görmez.
         if (!gpuFirst && backlight is not (DdcWriteResult.Throttled or DdcWriteResult.Failed))
@@ -129,12 +127,20 @@ public sealed class BrightnessControl(IDdcControl ddc, IColorPipeline pipeline, 
     {
         if (scale == _layerScale) return true;
 
-        pipeline.SetLayer(ColorLayer.Dimming, scale >= 1 ? null : GammaRamps.Scale(new RgbGains(scale, scale, scale)));
-        if (!pipeline.Apply()) return false;
+        pipeline.SetLayer(ColorLayer.Dimming, LayerTable(scale));
+        if (!pipeline.Apply())
+        {
+            // Reddedilen tablo boru hattında kalmasın: sonraki Apply (ör. mavi ışık) onu yazmaya çalışmasın.
+            pipeline.SetLayer(ColorLayer.Dimming, LayerTable(_layerScale));
+            return false;
+        }
 
         _layerScale = scale;
         return true;
     }
+
+    private static GammaRamp? LayerTable(double scale) =>
+        scale >= 1 ? null : GammaRamps.Scale(new RgbGains(scale, scale, scale));
 
     private DdcWriteResult WriteBacklight(int percent)
     {
@@ -143,8 +149,6 @@ public sealed class BrightnessControl(IDdcControl ddc, IColorPipeline pipeline, 
 
         var maximum = ddc.Read(BacklightCode) is { Maximum: > 0 } v ? v.Maximum : DefaultMaximum;
         var code = (ushort)Math.Round((double)percent / DimmingPlanner.MaxBacklight * maximum, MidpointRounding.AwayFromZero);
-        var result = ddc.Write(BacklightCode, code);
-        if (result == DdcWriteResult.Written) _writtenBacklight = percent;
-        return result;
+        return ddc.Write(BacklightCode, code);
     }
 }

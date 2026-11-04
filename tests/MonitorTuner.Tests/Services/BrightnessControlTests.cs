@@ -34,6 +34,9 @@ public class BrightnessControlTests
 
         public DdcWriteResult Write(byte code, ushort value)
         {
+            // Gerçek DdcControl gibi: değer zaten yerindeyse belleğe yazma yok.
+            if (code == 0x10 && IsAvailable && Current == value) return DdcWriteResult.Written;
+
             Writes.Add((code, value));
             log.Add($"ddc:{code:X2}={value}");
             if (Result == DdcWriteResult.Written) Current = value;
@@ -222,6 +225,20 @@ public class BrightnessControlTests
     }
 
     [Fact]
+    public void Commit_AfterExternalBacklightChange_WritesAgain()
+    {
+        var rig = new Rig();
+        rig.Control.Commit(Mid);
+        rig.Ddc.Current = 30; // OSD / DdcPanel / sihirbaz değiştirdi
+
+        var state = rig.Control.Commit(Mid);
+
+        Assert.Equal(50, rig.Ddc.Current);
+        Assert.Equal(2, rig.Ddc.Writes.Count);
+        Assert.True(state.Applied);
+    }
+
+    [Fact]
     public void Commit_WithinDimmingRange_DoesNotRewriteBacklight()
     {
         var rig = new Rig();
@@ -399,6 +416,34 @@ public class BrightnessControlTests
         Assert.Equal(2, rig.Pipeline.ApplyCalls);
     }
 
+    [Fact]
+    public void Commit_ApplyFails_DoesNotLeaveRejectedLayerInPipeline()
+    {
+        var rig = new Rig();
+        rig.Control.Commit(Dim);                 // 0.575 uygulandı
+        rig.Pipeline.ApplyResult = false;
+        var rejected = rig.Control.Commit(Dimmer); // 0.15 reddedildi
+        rig.Pipeline.ApplyResult = true;
+
+        rig.Control.Commit(Dim);                 // önceki ölçeğe dönüş: "aynı ölçek", yazma yok
+
+        Assert.False(rejected.Applied);
+        Assert.Equal(Top(0.575), rig.Pipeline.Layer!.Red[255]);
+        Assert.True(rig.Control.DimmingActive);
+    }
+
+    [Fact]
+    public void Commit_ApplyFailsWhenLayerWasOff_RestoresNullLayer()
+    {
+        var rig = new Rig();
+        rig.Pipeline.ApplyResult = false;
+
+        rig.Control.Commit(Dimmer);
+
+        Assert.Null(rig.Pipeline.Layer);
+        Assert.False(rig.Control.DimmingActive);
+    }
+
     // ---- Taban savunması ----
 
     [Fact]
@@ -473,6 +518,8 @@ public class BrightnessControlTests
         rig.Pipeline.ApplyResult = false;
 
         Assert.False(rig.Control.DisableDimming());
+        Assert.Equal(Top(0.15), rig.Pipeline.Layer!.Red[255]); // reddedilen "kapalı" değil, önceki katman kalır
+        Assert.True(rig.Control.DimmingActive);
     }
 
     [Fact]
