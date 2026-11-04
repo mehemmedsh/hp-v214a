@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Sistem tepsisi ve panik kısayolu (T310). Nötr dil Türkçe. -->
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Tooltip" xml:space="preserve">
+    <value>Monitör Ayarı</value>
+  </data>
+  <data name="WizardActive" xml:space="preserve">
+    <value>Ayar sihirbazı açık: profil, parlaklık ve mavi ışık kapalı (panik açık)</value>
+  </data>
+  <data name="Profiles" xml:space="preserve">
+    <value>Renk profilleri</value>
+  </data>
+  <data name="Brightness" xml:space="preserve">
+    <value>Parlaklık</value>
+  </data>
+  <data name="Dimming" xml:space="preserve">
+    <value>Ek karartma</value>
+  </data>
+  <data name="BlueLight" xml:space="preserve">
+    <value>Mavi ışık</value>
+  </data>
+  <data name="BrightnessLevel" xml:space="preserve">
+    <value>Parlaklık %{0}</value>
+  </data>
+  <data name="Dimming_Light" xml:space="preserve">
+    <value>Hafif</value>
+  </data>
+  <data name="Dimming_Medium" xml:space="preserve">
+    <value>Orta</value>
+  </data>
+  <data name="Dimming_Strong" xml:space="preserve">
+    <value>Güçlü</value>
+  </data>
+  <data name="Dimming_Darkest" xml:space="preserve">
+    <value>En karanlık (beyaz %15)</value>
+  </data>
+  <data name="BlueLightOff" xml:space="preserve">
+    <value>Kapalı</value>
+  </data>
+  <data name="BlueLightKelvin" xml:space="preserve">
+    <value>{0} K</value>
+  </data>
+  <data name="Panic" xml:space="preserve">
+    <value>Panik: efektleri kapat ({0})</value>
+  </data>
+  <data name="Open" xml:space="preserve">
+    <value>Ana pencereyi aç</value>
+  </data>
+  <data name="Exit" xml:space="preserve">
+    <value>Çık</value>
+  </data>
+  <data name="Step_Brightness" xml:space="preserve">
+    <value>parlaklık</value>
+  </data>
+  <data name="Step_BlueLight" xml:space="preserve">
+    <value>mavi ışık</value>
+  </data>
+  <data name="Step_Vibrance" xml:space="preserve">
+    <value>canlılık</value>
+  </data>
+  <data name="Done_Profile" xml:space="preserve">
+    <value>{0} profili uygulandı.</value>
+  </data>
+  <data name="Partial_Profile" xml:space="preserve">
+    <value>{0} profili tam uygulanamadı. Uygulanmayan: {1}.</value>
+  </data>
+  <data name="Done_Brightness" xml:space="preserve">
+    <value>Parlaklık %{0} yapıldı.</value>
+  </data>
+  <data name="Done_Dimming" xml:space="preserve">
+    <value>Ek karartma: {0}.</value>
+  </data>
+  <data name="Done_BlueLight" xml:space="preserve">
+    <value>Mavi ışık {0} K yapıldı.</value>
+  </data>
+  <data name="Done_BlueLightOff" xml:space="preserve">
+    <value>Mavi ışık kapatıldı.</value>
+  </data>
+  <data name="Failed" xml:space="preserve">
+    <value>Ayar uygulanamadı. Monitör DDC komutuna cevap vermiyor ya da yazma sınırına takıldı; biraz bekleyip yeniden deneyin.</value>
+  </data>
+  <data name="Blocked" xml:space="preserve">
+    <value>Ayar sihirbazı açıkken bu ayar kapalı. Sihirbazı bitirin ya da iptal edin.</value>
+  </data>
+  <data name="NotFound" xml:space="preserve">
+    <value>Profil bulunamadı.</value>
+  </data>
+  <data name="Unexpected" xml:space="preserve">
+    <value>Beklenmeyen hata: {0}</value>
+  </data>
+  <data name="PanicDone" xml:space="preserve">
+    <value>Panik: mavi ışık, ek karartma ve canlılık kapatıldı. Kalibrasyon kaldı.</value>
+  </data>
+  <data name="PanicFailed" xml:space="preserve">
+    <value>Panik tamamlanamadı ({0}). Bazı efektler kapanmamış olabilir; kısayola ya da menüye yeniden basın.</value>
+  </data>
+  <data name="HotKeyFailed" xml:space="preserve">
+    <value>Panik kısayolu ({0}) kaydedilemedi, başka bir program kullanıyor olabilir. Panik tepsi menüsünde.</value>
+  </data>
+</root>
