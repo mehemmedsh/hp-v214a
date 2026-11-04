@@ -171,6 +171,17 @@ Uygulamayı sadece sen açarsın; ajanlar açmaz.
 - 75 Hz (2080×1100) ve 76 Hz (2080×1092): Windows aktif sinyal, DDC AE = 7500 / 7600 ve testufo kare atlama. **T209'dan önce.**
 - DDC 14 kodunun eşlemesi: OSD'de her renk ön ayarını sırayla seç, ControlMyMonitor'da 14'ün değerini oku (12–15 ve tahmin edilen 2, 4, 8, 11). **T004'ten önce.**
 
+**T312 ayar sihirbazı 1** (sihirbaz sayfası T313'te gelir; o zamana kadar bu test yapılamaz):
+1. Monitörü en az 30 dk açık tut (sihirbaz geri sayımı gösterir). OSD'de renk ön ayarı **Custom RGB**, NVIDIA'da çıkış **RGB Full**. Oturma konumu rehberdeki gibi.
+2. Uygulamada mavi ışığı açık, parlaklık kaydırıcısını ek karartma bölümünde (en alt kısım) bırak. Sihirbazı başlat: ekran karartmasız ve sıcak tonsuz olmalı.
+3. Her adımda **Deseni aç**: desen tam ekran açılır, sağ/sol ok ile kareler değişir, kendiliğinden değişmez, yanıp sönmez; Esc kapatır.
+4. Kırpma: kontrast ve parlaklığı değiştir; siyahta 1–25, beyazda 230–254 yamalarının çoğu ayrı görünsün. OSD'de değerler sihirbazdakiyle aynı olmalı.
+5. Keskinlik: yazı kenarında beyaz hale çıkmayan en yüksek değer. RGB Full: 1–16 yamaları ayrı görünüyor.
+6. Açı: üç gri şerit eşit; ölü piksel ve homojenlik: siyah, beyaz, R, G, B ve griler temiz.
+7. Beyaz eşleme: Pixel "Doğal" modda beyaz sayfa, yan yana; R/G/B kazançlarıyla iki beyaz eşlenir.
+8. **Bitir:** mavi ışık geri gelir; arka ışığı sihirbazda değiştirdiysen ek karartma geri **gelmez** (ekran koyulaşmaz), parlaklık kaydırıcısı yeni arka ışık değerinde durur. Uygulamayı kapatıp aç: temel ayar aynı.
+9. Sihirbazı yeniden başlat, birkaç değer değiştir, **İptal**: OSD'deki değerler eskiye döner, ek karartma ve mavi ışık eskisi gibi geri gelir.
+
 **Sonucu bildirme** (`hp-inceleme`, Sonnet · Medium yeterli):
 
 ```text

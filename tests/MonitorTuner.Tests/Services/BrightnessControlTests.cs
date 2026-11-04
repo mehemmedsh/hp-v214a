@@ -556,6 +556,25 @@ public class BrightnessControlTests
         Assert.Equal(Top(0.15), rig.Pipeline.Layer!.Red[255]);
     }
 
+    /// <summary>Sihirbaz arka ışığı değiştirdiyse (T312): eski kaydırıcı unutulur, yeni yerin katmanı kurulur, arka ışığa yazılmaz.</summary>
+    [Fact]
+    public void ResumeAt_ReplacesSavedSlider_WithoutWritingBacklight()
+    {
+        var rig = new Rig();
+        rig.Control.Commit(Dim);
+        rig.Control.Suspend();
+        rig.Ddc.Writes.Clear();
+
+        Assert.True(rig.Control.ResumeAt(Mid));
+        Assert.Null(rig.Pipeline.Layer);
+        Assert.False(rig.Control.DimmingActive);
+        Assert.Empty(rig.Ddc.Writes);
+
+        rig.Control.Suspend();
+        Assert.True(rig.Control.ResumeAt(Dimmer)); // ek karartma bölümündeki bir yer katmanı açar
+        Assert.Equal(Top(0.15), rig.Pipeline.Layer!.Red[255]);
+    }
+
     [Fact]
     public void Resume_BeforeAnySliderUse_TouchesNothing()
     {

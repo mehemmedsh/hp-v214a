@@ -47,15 +47,19 @@ public sealed class PatternWindow : Window
         Render();
     }
 
-    private void OnKeyDown(object sender, KeyEventArgs e)
+    /// <summary>Tuş eşlemesi: sağ/aşağı ok ve Boşluk sonraki kare, sol/yukarı ok önceki kare, Esc kapatır. true: tuş kullanıldı.</summary>
+    public bool HandleKey(Key key)
     {
-        switch (e.Key)
+        switch (key)
         {
-            case Key.Right or Key.Space or Key.Down: Move(1); break;
-            case Key.Left or Key.Up: Move(-1); break;
-            case Key.Escape: Close(); break;
+            case Key.Right or Key.Space or Key.Down: Move(1); return true;
+            case Key.Left or Key.Up: Move(-1); return true;
+            case Key.Escape: Close(); return true;
+            default: return false;
         }
     }
+
+    private void OnKeyDown(object sender, KeyEventArgs e) => e.Handled = HandleKey(e.Key);
 
     private void Render()
     {

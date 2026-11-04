@@ -51,13 +51,52 @@ public class SetupWizardTests
         public bool DimmingActive { get; private set; } = true; // ek karartma açık: arka ışık normalde kilitli
         public int SuspendCalls { get; private set; }
         public int ResumeCalls { get; private set; }
+        public List<double> ResumeAtCalls { get; } = [];
         public bool Suspend() { SuspendCalls++; DimmingActive = false; return true; }
         public bool Resume() { ResumeCalls++; DimmingActive = true; return true; }
+        public bool ResumeAt(double slider) { ResumeAtCalls.Add(slider); return true; }
         public DimmingPlan Preview(double slider) => throw new NotSupportedException();
         public BrightnessState Commit(double slider) => throw new NotSupportedException();
-        public double? ReadSlider() => throw new NotSupportedException();
+        public double? ReadSlider() => 0.5;
         public bool DisableDimming() => throw new NotSupportedException();
         public bool Shutdown() => throw new NotSupportedException();
+    }
+
+    /// <summary>Dimming katmanının son tablosunu tutar (gerçek <see cref="BrightnessControl"/> ile).</summary>
+    private sealed class RecordingPipeline : IColorPipeline
+    {
+        public GammaRamp? Dimming { get; private set; }
+        public void SetLayer(ColorLayer layer, GammaRamp? table) { if (layer == ColorLayer.Dimming) Dimming = table; }
+        public bool Apply() => true;
+        public bool RestoreIfChangedExternally() => throw new NotSupportedException();
+        public bool EnsureFullGammaRange() => throw new NotSupportedException();
+        public void Shutdown() => throw new NotSupportedException();
+        public void ResetTable() => throw new NotSupportedException();
+    }
+
+    /// <summary>Gerçek parlaklık servisiyle: başta kaydırıcı ek karartma bölümünde (arka ışık 0, GPU karartıyor).</summary>
+    private sealed class DimmedRig
+    {
+        public DimmedRig()
+        {
+            Monitor.SetMonitorValue(Preset, CustomRgb);
+            Ddc = new DirectDdcControl(Monitor, Profile);
+            Brightness_ = new BrightnessControl(Ddc, Pipeline, new DimmingPlanner());
+            var panel = new DdcPanel(Profile, Ddc, BlueLight, Store, Key, ConnectionType.Hdmi, () => Brightness_.DimmingActive);
+            Wizard = new SetupWizard(panel, Brightness_, BlueLight, Store, Key, new FakeTimeProvider());
+
+            Brightness_.Commit(0.1);
+            Assert.True(Brightness_.DimmingActive);
+            Assert.Equal(0, Monitor.Read(FakeHardware.Display, Brightness)!.Value.Current);
+        }
+
+        public FakeDdcMonitor Monitor { get; } = FakeDdcMonitor.HpP21bG4();
+        public DirectDdcControl Ddc { get; }
+        public RecordingPipeline Pipeline { get; } = new();
+        public BrightnessControl Brightness_ { get; }
+        public StubBlueLight BlueLight { get; } = new();
+        public FakeStore Store { get; } = new();
+        public SetupWizard Wizard { get; }
     }
 
     private sealed class Rig
@@ -138,6 +177,57 @@ public class SetupWizardTests
         Assert.NotNull(reopened);
         Assert.Equal(baseline.DdcValues, reopened.DdcValues);
         Assert.Equal(GammaRamp.Identity, reopened.Calibration);
+    }
+
+    /// <summary>
+    /// Başta ek karartma açıktı (arka ışık 0). Sihirbaz arka ışığı 40 yaptıysa eski kaydırıcının GPU karartması geri
+    /// gelmez: ikisi üst üste binip ekranı koyulaştırırdı. Kaydırıcı yeni arka ışıktan kurulur, arka ışık kilitlenmez.
+    /// </summary>
+    [Fact]
+    public void Finish_AfterBacklightChange_DoesNotBringBackOldDimming()
+    {
+        var rig = new DimmedRig();
+        rig.Wizard.Begin();
+        Assert.Equal(PanelSetResult.Written, rig.Wizard.SetDdc(PanelSetting.Brightness, 40));
+
+        rig.Wizard.Finish();
+
+        Assert.False(rig.Brightness_.DimmingActive);
+        Assert.Null(rig.Pipeline.Dimming); // GPU ölçeği 1: katman kapalı
+        Assert.Equal(40, rig.Monitor.Read(FakeHardware.Display, Brightness)!.Value.Current);
+        Assert.Equal(DimmingPlanner.SliderForBacklight(40), rig.Brightness_.ReadSlider());
+    }
+
+    /// <summary>Sihirbaz arka ışığa dokunmadıysa kullanıcının ek karartması geri gelir.</summary>
+    [Fact]
+    public void Finish_WithoutBacklightChange_BringsBackDimming()
+    {
+        var rig = new DimmedRig();
+        var before = rig.Pipeline.Dimming;
+        rig.Wizard.Begin();
+        Assert.Null(rig.Pipeline.Dimming);
+        rig.Wizard.SetDdc(PanelSetting.Contrast, 70);
+
+        rig.Wizard.Finish();
+
+        Assert.True(rig.Brightness_.DimmingActive);
+        Assert.Equal(before, rig.Pipeline.Dimming);
+    }
+
+    /// <summary>İptal arka ışığı 0'a döndürür; ek karartma da eski kaydırıcıyla geri gelir.</summary>
+    [Fact]
+    public void Cancel_AfterBacklightChange_RestoresBacklightAndDimming()
+    {
+        var rig = new DimmedRig();
+        var before = rig.Pipeline.Dimming;
+        rig.Wizard.Begin();
+        rig.Wizard.SetDdc(PanelSetting.Brightness, 40);
+
+        Assert.Empty(rig.Wizard.Cancel());
+
+        Assert.Equal(0, rig.Monitor.Read(FakeHardware.Display, Brightness)!.Value.Current);
+        Assert.True(rig.Brightness_.DimmingActive);
+        Assert.Equal(before, rig.Pipeline.Dimming);
     }
 
     [Fact]

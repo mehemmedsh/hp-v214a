@@ -105,7 +105,7 @@ public sealed class SetupWizard : ISetupWizard
             values.ToDictionary(p => p.Key.ToString("X2"), p => (int)p.Value),
             [.. calibration.Red], [.. calibration.Green], [.. calibration.Blue]));
 
-        Leave();
+        Leave(backlightChanged: _written.Contains(PanelSetting.Brightness));
         return baseline;
     }
 
@@ -120,7 +120,7 @@ public sealed class SetupWizard : ISetupWizard
                 failed.Add(setting);
         }
 
-        Leave();
+        Leave(backlightChanged: false); // eski arka ışığa dönüldü: saklanan kaydırıcı yine doğru
         return failed;
     }
 
@@ -135,12 +135,17 @@ public sealed class SetupWizard : ISetupWizard
     private IEnumerable<PanelSettingState> Current() =>
         _panel.Refresh().Settings.Where(s => Tunable.Contains(s.Setting));
 
-    /// <summary>Efektler geri gelir: önce DDC yazıldı, mavi ışık yeni kazançları taban alır.</summary>
-    private void Leave()
+    /// <summary>
+    /// Efektler geri gelir: önce DDC yazıldı, mavi ışık yeni kazançları taban alır. Sihirbaz arka ışığı değiştirdiyse
+    /// eski kaydırıcının ek karartması geri gelmez (yeni arka ışıkla üst üste biner, ekran koyulaşır): kaydırıcı yeni
+    /// arka ışıktan kurulur. Katman askıda olduğundan <see cref="IBrightnessControl.ReadSlider"/> arka ışığın yerini verir.
+    /// </summary>
+    private void Leave(bool backlightChanged)
     {
         IsActive = false;
         _blueLight.Resume();
-        _brightness.Resume();
+        if (backlightChanged && _brightness.ReadSlider() is { } slider) _brightness.ResumeAt(slider);
+        else _brightness.Resume();
     }
 
     private void RequireActive()

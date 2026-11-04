@@ -41,6 +41,7 @@ public class ColorProfilesServiceTests
 
         public bool Suspend() => throw new NotSupportedException();
         public bool Resume() => throw new NotSupportedException();
+        public bool ResumeAt(double slider) => throw new NotSupportedException();
         public bool Shutdown() => throw new NotSupportedException();
     }
 
@@ -523,6 +524,7 @@ public class ColorProfilesServiceTests
         public bool DisableDimming() => throw new InvalidOperationException("GPU tablosu yazılamadı");
         public bool Suspend() => throw new NotSupportedException();
         public bool Resume() => throw new NotSupportedException();
+        public bool ResumeAt(double slider) => throw new NotSupportedException();
         public bool Shutdown() => throw new NotSupportedException();
     }
 }

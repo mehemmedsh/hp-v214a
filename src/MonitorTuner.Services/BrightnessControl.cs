@@ -39,6 +39,12 @@ public interface IBrightnessControl
     /// <summary>Askıdan dönüş: saklanan kaydırıcının katmanı geri gelir (panikle kapatıldıysa gelmez).</summary>
     bool Resume();
 
+    /// <summary>
+    /// Askıdan dönüş, kaydırıcı yeni yerinden (sihirbaz arka ışığı değiştirdiyse, T312): saklanan kaydırıcı unutulur,
+    /// <paramref name="slider"/>'ın katmanı kurulur (arka ışık 0'ın üstündeyse katman kapalı kalır). Arka ışığa yazmaz.
+    /// </summary>
+    bool ResumeAt(double slider);
+
     /// <summary>Uygulama kapanırken: katman kapanır (<see cref="Suspend"/> gibi), arka ışığa dokunulmaz.</summary>
     bool Shutdown();
 }
@@ -108,6 +114,12 @@ public sealed class BrightnessControl(IDdcControl ddc, IColorPipeline pipeline, 
     {
         _suspended = false;
         return _slider is { } s ? SetLayer(WantedScale(Safe(planner.Plan(s)))) : true;
+    }
+
+    public bool ResumeAt(double slider)
+    {
+        _slider = Math.Clamp(slider, 0.0, 1.0);
+        return Resume();
     }
 
     public bool Shutdown() => Suspend();
