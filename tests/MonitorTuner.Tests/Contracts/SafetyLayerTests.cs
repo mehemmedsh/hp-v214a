@@ -83,7 +83,8 @@ public class SafetyLayerTests
         var confirmed = rig.SwitchTo(76);
         rig.Safety.RequireConfirmation(confirmed);
         rig.Hw.Clock.Advance(TimeSpan.FromSeconds(5));
-        rig.Safety.Confirm(confirmed);
+        Assert.True(rig.Safety.Confirm(confirmed)); // süre içinde: değişiklik kalır (T209 bunu görüp kalıcı kaydeder)
+        Assert.False(rig.Safety.Confirm(confirmed)); // ikinci onay bir şey değiştirmez
         rig.Hw.Clock.Advance(TimeSpan.FromMinutes(1));
 
         Assert.Equal(76, rig.Hw.Modes.Current.RefreshHz);
@@ -99,7 +100,7 @@ public class SafetyLayerTests
 
         rig.Safety.RollBack(point);
         rig.Hw.Clock.Advance(TimeSpan.FromMinutes(1));
-        rig.Safety.Confirm(point);
+        Assert.False(rig.Safety.Confirm(point)); // geç onay: geri alınmış, false
 
         Assert.Equal([76, 60], rig.Hw.Modes.Switches.Select(s => s.Mode.RefreshHz));
         Assert.Equal([point], rig.RolledBack);

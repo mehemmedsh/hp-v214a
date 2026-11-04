@@ -99,11 +99,15 @@ public sealed class SafetyLayer(
         }
     }
 
-    public void Confirm(RestorePoint restorePoint)
+    public bool Confirm(RestorePoint restorePoint)
     {
         ArgumentNullException.ThrowIfNull(restorePoint);
         lock (gate)
-            if (timers.Remove(restorePoint.Id, out var timer)) timer.Dispose();
+        {
+            if (!timers.Remove(restorePoint.Id, out var timer)) return false;
+            timer.Dispose();
+            return true;
+        }
     }
 
     public void RestoreFactoryDefaults() => ReturnToFactory(uninstall: false);

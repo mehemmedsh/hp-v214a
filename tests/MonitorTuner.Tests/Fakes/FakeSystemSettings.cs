@@ -114,10 +114,15 @@ internal sealed class FakeDisplayModes : IDisplayModes
     {
         this.ownDisplay = display;
         this.modes = [.. modes];
-        Current = this.modes.FirstOrDefault(m => m.RefreshHz == SafetyLimits.OriginalRefreshHz, this.modes[0]);
+        Current = Persisted = this.modes.FirstOrDefault(m => m.RefreshHz == SafetyLimits.OriginalRefreshHz, this.modes[0]);
     }
 
     public DisplayMode Current { get; private set; }
+
+    /// <summary>Windows'a kayıtlı mod: yeniden başlatmada (<see cref="SimulateRestart"/>) bu gelir.</summary>
+    public DisplayMode Persisted { get; private set; }
+
+    public int PersistCount { get; private set; }
 
     /// <summary>true: Windows geçişi reddeder.</summary>
     public bool RejectSwitches { get; set; }
@@ -138,6 +143,22 @@ internal sealed class FakeDisplayModes : IDisplayModes
         switches.Add((mode, restorePoint));
         ModeChanged?.Invoke(mode);
         return true;
+    }
+
+    public bool PersistMode(DisplayId display, DisplayMode mode, RestorePoint restorePoint)
+    {
+        FakeRestorePoints.Check(restorePoint, WriteTarget.DisplayMode, display);
+        if (RejectSwitches || display != ownDisplay || mode != Current) return false;
+        Persisted = mode;
+        PersistCount++;
+        return true;
+    }
+
+    /// <summary>Yeniden başlatma ya da uygulama çökmesi sonrası açılış: Windows kayıtlı modu kurar.</summary>
+    public void SimulateRestart()
+    {
+        Current = Persisted;
+        ModeChanged?.Invoke(Current);
     }
 
     /// <summary>Sürücü güncellemesi kullanıcının eklediği özel modu sildi (T209 uyarısı için).</summary>

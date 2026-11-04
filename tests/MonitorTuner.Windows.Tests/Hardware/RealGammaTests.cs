@@ -75,6 +75,7 @@ public class RealGammaTests(ITestOutputHelper output)
         public IReadOnlyList<DisplayMode> ListModes(DisplayId display) => [];
         public DisplayMode? GetCurrentMode(DisplayId display) => null;
         public bool SwitchMode(DisplayId display, DisplayMode mode, RestorePoint restorePoint) => false;
+        public bool PersistMode(DisplayId display, DisplayMode mode, RestorePoint restorePoint) => false;
     }
 
     private sealed class NoNvidia : INvidiaSettings

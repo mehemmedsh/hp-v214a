@@ -27,7 +27,8 @@ public interface ISafetyLayer
     void RequireConfirmation(RestorePoint restorePoint);
 
     /// <summary>Değişiklik kalır. Süre dolduktan ya da elle geri alındıktan sonra gelen onay etkisizdir.</summary>
-    void Confirm(RestorePoint restorePoint);
+    /// <returns>true: onay bekleyen nokta süresi içinde onaylandı, artık geri alınmayacak. false: bekleyen yoktu (geç onay).</returns>
+    bool Confirm(RestorePoint restorePoint);
 
     /// <summary>Onay gelmediği için ya da elle geri alındığında.</summary>
     event Action<RestorePoint>? RolledBack;
