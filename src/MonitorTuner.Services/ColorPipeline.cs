@@ -32,8 +32,8 @@ public interface IColorPipeline
     /// <summary>Normal kapanış: tabloda sadece kalibrasyon kalır.</summary>
     void Shutdown();
 
-    /// <summary>Kurtarma ve kaldırma: birim tablo.</summary>
-    void ResetTable();
+    /// <summary>Kurtarma ve kaldırma: birim tablo, bütün katmanlar silinir. false: tablo okunamadı ya da reddedildi.</summary>
+    bool ResetTable();
 }
 
 /// <summary>
@@ -115,12 +115,12 @@ public sealed class ColorPipeline(
         }
     }
 
-    public void ResetTable()
+    public bool ResetTable()
     {
         lock (_gate)
         {
             _layers.Clear();
-            WriteUserTable(GammaRamp.Identity);
+            return WriteUserTable(GammaRamp.Identity);
         }
     }
 

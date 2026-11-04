@@ -83,9 +83,12 @@ public interface ISetupWizard
     Baseline? LoadBaseline();
 }
 
+/// <summary>Kurtarmanın sonucu; her alan: true = o ayar varsayılanda (yazıldı ya da zaten oradaydı), false = yapılamadı.</summary>
+/// <param name="GammaRangeRestored">İlk açılış yedeği yoksa uygulama hiç yazmamıştır; değere dokunulmaz, true.</param>
+/// <param name="DitheringReset">Güvenli modda NVIDIA sürücüsü yüklü olmadığı için false olabilir.</param>
 public sealed record RecoveryReport(bool GpuTableReset, bool GammaRangeRestored, bool DitheringReset, bool VibranceReset);
 
-/// <summary>Kurtarma (T104): GPU tablosu, GdiIcmGammaRange, dithering ve canlılığı varsayılana döndürür.</summary>
+/// <summary>Kurtarma (T104): GPU tablosu, GdiIcmGammaRange, dithering ve canlılığı varsayılana döndürür. DDC'ye ve Hz'e dokunmaz.</summary>
 public interface IRecovery
 {
     RecoveryReport ResetToDefaults();

@@ -59,7 +59,7 @@ public class BlueLightFilterTests
         public bool RestoreIfChangedExternally() => throw new NotSupportedException();
         public bool EnsureFullGammaRange() => throw new NotSupportedException();
         public void Shutdown() => throw new NotSupportedException();
-        public void ResetTable() => throw new NotSupportedException();
+        public bool ResetTable() => throw new NotSupportedException();
     }
 
     private sealed class FakeProbe(params ColorConflict[] found) : IColorConflictProbe

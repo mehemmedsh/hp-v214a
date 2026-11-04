@@ -137,7 +137,7 @@ public sealed class NvidiaControl(DisplayId display, INvidiaSettings nvidia, ISa
     }
 
     /// <summary>NVIDIA panelindeki varsayılan canlılık (%50); kullanıcının değeri hiç okunamadıysa.</summary>
-    private const int DriverDefaultVibrance = 50;
+    public const int DriverDefaultVibrance = 50;
 
     private bool Set(Func<NvidiaState, bool> done, Func<RestorePoint, bool> write)
     {

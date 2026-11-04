@@ -1,5 +1,5 @@
 <Application x:Class="MonitorTuner.App.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             StartupUri="MainWindow.xaml">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Pencere OnStartup'ta açılır: kurtarma kipinde (T104) ana pencere hiç açılmaz. -->
 </Application>

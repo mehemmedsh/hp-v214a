@@ -23,7 +23,8 @@ Bu uygulama monitörün, ekran kartının ve Windows'un ekran ayarlarına yazıy
 
 1. **15 saniye bekle.** Onay gelmezse uygulama kendisi geri döner. NVIDIA panelindeki test de kendi kendine geri döner.
 2. **HDMI kablosunu başka bir çıkışa tak:** 3090'ın HDMI'ı ya da 3080'in bir DP çıkışı (DP→HDMI kabloyla). Özel çözünürlük çıkışa bağlı olduğu için orada 60 Hz gelir. Sonra NVIDIA panelinden sorunlu modu sil.
-3. **Güvenli mod + kurtarma dosyası.** Güvenli modda Windows temel ekran sürücüsünü kullanır ve görüntü gelir. `tools/recovery` içindeki kurtarma dosyası GPU renk tablosunu sıfırlar, `GdiIcmGammaRange`'i eski haline, dithering ve canlılığı varsayılana döndürür (T104).
+3. **Güvenli mod + kurtarma dosyası.** Güvenli modda Windows temel ekran sürücüsünü kullanır ve görüntü gelir. Paketteki `Kurtarma.cmd` (`tools/recovery`) GPU renk tablosunu sıfırlar, `GdiIcmGammaRange`'i eski haline, dithering ve canlılığı varsayılana döndürür (T104); Hz'e, DDC'ye ve özel çözünürlüklere dokunmaz. Güvenli modda NVIDIA sürücüsü yüklü olmadığından dithering ve canlılık, normal açılışta ikinci çalıştırmada döner. Adım adım talimat: `tools/recovery/GORUNTU-GELMEZSE.txt` (pakette exe'nin yanında).
+4. **NVIDIA özel çözünürlüğünü sil:** NVIDIA Denetim Masası → Ekran → Çözünürlüğü değiştir → Özelleştir → sorunlu mod → Kaldır. Orijinal 60 Hz mod silinmez.
 
 ## 3. DDC güvenliği (monitör belleğini koruma)
 

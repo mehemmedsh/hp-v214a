@@ -1,0 +1,64 @@
+GÖRÜNTÜ GELMEZSE — MonitorTuner kurtarma talimatı (T104)
+==========================================================
+
+HP P21b G4, RTX 3080'in HDMI çıkışında. Adımları kolaydan zora sırayla dene;
+görüntü düzelince dur.
+
+
+1) 15 saniye bekle
+------------------
+Hz değişikliğini onaylamazsan uygulama 15 saniye sonra önceki moda kendisi döner.
+NVIDIA panelindeki "Test" de kendi kendine geri döner. Hiçbir tuşa basma, bekle.
+
+
+2) Kabloyu başka bir çıkışa tak
+-------------------------------
+HDMI kablosunu 3090'ın HDMI çıkışına ya da 3080'in bir DisplayPort çıkışına
+(DP→HDMI kabloyla) tak. Özel çözünürlük çıkışa bağlı olduğu için orada 60 Hz gelir.
+
+Görüntü gelince:
+  a) Sorunlu özel çözünürlüğü sil (adım 4).
+  b) Uygulama açılıyorsa "Fabrika ayarına dön".
+  c) Kabloyu 3080'in HDMI çıkışına geri tak.
+
+
+3) Güvenli mod + kurtarma dosyası
+---------------------------------
+Güvenli modda Windows NVIDIA sürücüsü yerine temel ekran sürücüsünü kullanır;
+görüntü gelir.
+
+Güvenli moda girme:
+  - Görüntü varsa (ör. başka çıkışta): Başlat → Güç simgesi → Shift tuşu basılıyken
+    "Yeniden başlat".
+  - Hiç görüntü yoksa: bilgisayarı aç, Windows logosu gelince güç düğmesine basılı
+    tutup kapat. Bunu iki kez yap; üçüncü açılışta Windows "Otomatik Onarım" ekranını
+    açar (bu ekran sürücüsüz çalışır, görüntü gelir) → "Gelişmiş seçenekler".
+  Sonra: Sorun gider → Gelişmiş seçenekler → Başlangıç Ayarları → Yeniden başlat →
+  klavyede 4 (Güvenli modu etkinleştir).
+
+Güvenli modda:
+  a) MonitorTuner klasöründeki Kurtarma.cmd dosyasını çift tıkla.
+  b) Yönetici onayı sorulursa "Evet" de (GdiIcmGammaRange kayıt defteri değeri için).
+     Sorulmazsa o değer zaten eski hâlindedir.
+  c) Sonuç penceresini oku. Kurtarma dosyası:
+       - GPU renk tablosunu sıfırlar,
+       - GdiIcmGammaRange'i uygulamadan önceki hâline döndürür,
+       - NVIDIA dithering ve canlılığı varsayılana alır.
+     Güvenli modda NVIDIA sürücüsü yüklü olmadığı için dithering ve canlılık
+     "yapılamadı" görünebilir; bu normaldir.
+  d) Bilgisayarı normal yeniden başlat. Görüntü gelince Kurtarma.cmd'yi bir kez daha
+     çalıştır (bu sefer dithering ve canlılık da varsayılana döner).
+
+Kurtarma dosyası Hz'e, monitör ayarlarına (DDC) ve NVIDIA'daki özel çözünürlüklere
+dokunmaz. Görüntü hâlâ gelmiyorsa sorun büyük olasılıkla Hz modudur: adım 2 ve 4.
+
+
+4) NVIDIA özel çözünürlüğünü silme
+----------------------------------
+  a) Masaüstüne sağ tık → NVIDIA Denetim Masası.
+  b) Ekran → Çözünürlüğü değiştir → "Özelleştir..." düğmesi.
+  c) Listede sorunlu özel çözünürlüğü seç (ör. 1920 × 1080, 76 Hz) → "Kaldır".
+  d) Orijinal 60 Hz moduna dokunma; o özel çözünürlük değildir ve silinmez.
+
+Modu tekrar eklemek istersen değerler uygulamanın rehberinde (Hz modları) yazar.
+Önce bir alt Hz'i (ör. 75 ya da 72) dene.

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Kurtarma dosyasının sonucu (T104). Nötr dil Türkçe. -->
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Title" xml:space="preserve">
+    <value>MonitorTuner — Kurtarma</value>
+  </data>
+  <data name="GpuTable_Done" xml:space="preserve">
+    <value>✓ GPU renk tablosu sıfırlandı.</value>
+  </data>
+  <data name="GpuTable_Failed" xml:space="preserve">
+    <value>✗ GPU renk tablosu sıfırlanamadı (Windows tabloyu okuyamadı ya da reddetti). Bilgisayarı yeniden başlatmak tabloyu da sıfırlar.</value>
+  </data>
+  <data name="GammaRange_Done" xml:space="preserve">
+    <value>✓ GdiIcmGammaRange eski hâlinde.</value>
+  </data>
+  <data name="GammaRange_Failed" xml:space="preserve">
+    <value>✗ GdiIcmGammaRange eski hâline döndürülemedi. Yönetici onayı penceresinde "Evet" dedin mi? Kurtarma dosyasını tekrar çalıştır.</value>
+  </data>
+  <data name="Dithering_Done" xml:space="preserve">
+    <value>✓ Dithering NVIDIA varsayılanında.</value>
+  </data>
+  <data name="Dithering_Failed" xml:space="preserve">
+    <value>✗ Dithering varsayılana alınamadı. Güvenli modda NVIDIA sürücüsü yüklü olmadığı için bu normaldir: normal açılışta görüntü gelince kurtarma dosyasını bir kez daha çalıştır.</value>
+  </data>
+  <data name="Vibrance_Done" xml:space="preserve">
+    <value>✓ Canlılık NVIDIA varsayılanında (%50).</value>
+  </data>
+  <data name="Vibrance_Failed" xml:space="preserve">
+    <value>✗ Canlılık varsayılana alınamadı. Güvenli modda NVIDIA sürücüsü yüklü olmadığı için bu normaldir: normal açılışta kurtarma dosyasını bir kez daha çalıştır.</value>
+  </data>
+  <data name="AllDone" xml:space="preserve">
+    <value>Kurtarma bitti. Hz'e, monitör ayarlarına (DDC) ve NVIDIA'daki özel çözünürlüklere dokunulmadı.</value>
+  </data>
+  <data name="SomeFailed" xml:space="preserve">
+    <value>Bazı adımlar yapılamadı. Görüntü hâlâ sorunluysa aynı klasördeki GORUNTU-GELMEZSE.txt dosyasındaki adımları sırayla uygula.</value>
+  </data>
+  <data name="NoDisplay" xml:space="preserve">
+    <value>Etkin ekran bulunamadı; hiçbir şey değiştirilmedi. GORUNTU-GELMEZSE.txt dosyasındaki adımları uygula.</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Kurtarma beklenmedik bir hatayla durdu. GORUNTU-GELMEZSE.txt dosyasındaki adımları uygula. Hata:</value>
+  </data>
+</root>

@@ -142,8 +142,8 @@ Her hücre: **pixel clock (MHz) / yatay frekans (kHz).** EDID sınırları 170 M
 ### Görüntü gelmezse (kurtarma)
 
 1. 15 saniye bekle; uygulama kendisi geri döner. (NVIDIA'nın kendi testi de aynı şekilde geri dönüyor; 75 Hz CVT-RB testinde görüldü.)
-2. HDMI kablosunu **3090'ın HDMI çıkışına** ya da 3080'in bir DP çıkışına (DP→HDMI kabloyla) tak. Windows override'ı bağlantı başına tuttuğu için başka çıkışta görüntü gelir. Sonra "Fabrika ayarına dön".
-3. Güvenli mod + kurtarma dosyası. Kurtarma dosyası EDID override'larını siler ve GPU renk tablosunu da sıfırlar.
+2. HDMI kablosunu **3090'ın HDMI çıkışına** ya da 3080'in bir DP çıkışına (DP→HDMI kabloyla) tak. Özel çözünürlük bağlantı başına tutulduğu için başka çıkışta görüntü gelir. Sonra NVIDIA panelinden sorunlu özel çözünürlüğü sil ve "Fabrika ayarına dön".
+3. Güvenli mod + kurtarma dosyası (`Kurtarma.cmd`, T104): GPU renk tablosunu sıfırlar, `GdiIcmGammaRange`'i eski hâline, dithering ve canlılığı varsayılana alır. EDID'ye yazılmadığı için silinecek EDID override'ı yoktur. Talimat: `tools/recovery/GORUNTU-GELMEZSE.txt`.
 
 ## Oturma konumu (TN)
 

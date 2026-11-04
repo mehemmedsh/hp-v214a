@@ -5,3 +5,5 @@
 *.jpg binary
 *.ico binary
 *.zip binary
+# cmd.exe LF satır sonlu .cmd dosyalarında etiket ve satır hatası yapar (T104).
+*.cmd text eol=crlf

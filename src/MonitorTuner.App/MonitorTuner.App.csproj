@@ -18,6 +18,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Kurtarma dosyası ve "görüntü gelmezse" talimatı (T104) exe'nin yanına: Kurtarma.cmd uygulamayı yanında arar. -->
+    <None Include="..\..\tools\recovery\*" Link="%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\MonitorTuner.Services\MonitorTuner.Services.csproj" />
     <ProjectReference Include="..\MonitorTuner.Composition\MonitorTuner.Composition.csproj" />
   </ItemGroup>

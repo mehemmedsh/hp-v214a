@@ -182,6 +182,14 @@ Uygulamayı sadece sen açarsın; ajanlar açmaz.
 8. **Bitir:** mavi ışık geri gelir; arka ışığı sihirbazda değiştirdiysen ek karartma geri **gelmez** (ekran koyulaşmaz), parlaklık kaydırıcısı yeni arka ışık değerinde durur. Uygulamayı kapatıp aç: temel ayar aynı.
 9. Sihirbazı yeniden başlat, birkaç değer değiştir, **İptal**: OSD'deki değerler eskiye döner, ek karartma ve mavi ışık eskisi gibi geri gelir.
 
+**T104 kurtarma dosyası** (normal açılışta; güvenli mod isteğe bağlı):
+1. CI paketini aç (yukarıdaki A yolu). Klasörde `Kurtarma.cmd` ve `GORUNTU-GELMEZSE.txt` var; txt'yi Not Defteri'nde aç: Türkçe harfler düzgün.
+2. `Kurtarma.cmd`'yi çift tıkla. Yönetici onayı sorulmamalı. Sonuç penceresinde dört satır ✓ ve "Kurtarma bitti" (ilk açılış yedeği bu an alınır).
+3. NVIDIA Denetim Masası → Ekran → Masaüstü renk ayarlarını yap → **Dijital titreşim**'i %60 yap, Uygula.
+4. `Kurtarma.cmd`'yi tekrar çalıştır: dört satır ✓. NVIDIA panelini kapatıp aç: Dijital titreşim %50.
+5. Değişmeyenler: Windows ekran ayarlarında Hz aynı; OSD'de parlaklık ve kontrast aynı.
+6. İsteğe bağlı: talimattaki adım 3 ile güvenli moda gir, `Kurtarma.cmd`: GPU tablosu ve GdiIcmGammaRange ✓, dithering ve canlılık ✗ ("güvenli modda normal"). Normal yeniden başlat.
+
 **Sonucu bildirme** (`hp-inceleme`, Sonnet · Medium yeterli):
 
 ```text
