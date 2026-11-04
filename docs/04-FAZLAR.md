@@ -1,69 +1,39 @@
 # Fazlar ve Görevler
 
-**Sıradaki: Dalga 4 (T103 Opus, T102 Sonnet, T307 Sonnet)**. Dalga 3 bitti: T003 ✅, T004 🔧 (kod onaylandı; monitörde 14 eşlemesi ve 75/76 Hz AE kontrolü bekliyor, `05-HANDOFF.md` → Monitörde kalan kontroller). T002 ve T311 de onaylandı (2026-11-04). Bu arada Qwen kalibrasyonu (`05-HANDOFF.md` → 9.4). Kapsam 2026-10-30'da 66 görevden 21'e indi (`07-INCELEME.md`, 7. tur; plan dışı kalanlar `06-CIKARILANLAR.md`).
+**Sıradaki: T307 düzeltmesinin yeniden incelemesi (Opus), paralel Dalga 5 (T301 Opus, T305 Sonnet, T306 Sonnet).** Dalga 4'ten T103 ✅ ve T102 ✅ bitti; T307 🟨 (inceleme DÜZELT verdi, düzeltme `12997b3`'te). Dalga 3 bitti: T003 ✅, T004 🔧 (kod onaylandı; monitörde 14 eşlemesi ve 75/76 Hz AE kontrolü bekliyor, `05-HANDOFF.md` → Monitörde kalan kontroller). T002 ve T311 de onaylandı (2026-11-04). Kapsam 2026-10-30'da 66 görevden 21'e indi (`07-INCELEME.md`, 7. tur; plan dışı kalanlar `06-CIKARILANLAR.md`).
 
 ## Çalışma kuralları
 
 ### Araçlar, modeller ve kota sırası
 
-Düzen 2026-11-03'ten beri: **Opus, Sonnet ve Qwen.** Antigravity (Gemini, Flash) kullanılmıyor.
+Düzen 2026-11-03'ten beri: **Opus ve Sonnet** (Qwen 2026-11-04'te çıkarıldı). Antigravity (Gemini, Flash) kullanılmıyor.
 
 | Kısaltma | Nerede | Model | Düşünme seviyesi (effort) | Kota |
 |---|---|---|---|---|
 | **Opus** | Claude Code, PC (masaüstü uygulaması, Windows) | Claude Opus 5.5 | **High**; sadece metin işinde **Medium** | Claude aboneliği (Opus, Sonnet'ten hızlı tüketir) |
 | **Sonnet** | Claude Code, PC (masaüstü uygulaması, Windows) | Claude Sonnet 5.5 | **High**; sadece metin işinde (T311, T502, sonuç bildirme) **Medium** | Claude aboneliği |
-| **Qwen** | Kullanıcının PC'si: Ollama (`tools/dev/qwen-review.ps1` ve Ollama uygulaması) | Qwen 3.8 27B (`qwen3.8:27b`, 4-bit, sadece RTX 3090) | düşünme açık (varsayılan) | Yerel, kota yok; ~47 token/sn, bir ön inceleme birkaç dakika |
 
 - **Kısa kural:** kod işi **High**, sadece metin işi **Medium**; hiçbir işte Low yok.
-- **Yedek:** Claude Code bulut oturumu (claude.ai/code, Linux), PC'ye ulaşılamadığında. Orada Windows'a özel testler çalışmaz (CI'da) ve Qwen yoktur; ajan Qwen adımını atlar, nedenini commit gövdesine yazar.
+- **Yedek:** Claude Code bulut oturumu (claude.ai/code, Linux), PC'ye ulaşılamadığında. Orada Windows'a özel testler çalışmaz (CI'da).
 - **Kota sırası** (önce ucuz olan):
-  1. **Qwen** (yerel, sınırsız): ön inceleme, düzeltme kontrolü, hata ve log açıklama; sadece "Qwen rolleri"nde ✅ olanlar.
-  2. **Sonnet:** B ve C yazma, A inceleme, metin işleri, monitör testi ve kalibrasyon sonucunu bildirme, Claude Code'un ekranı ve ayarlarıyla ilgili sorular.
-  3. **Opus:** A yazma (ve T003), B ve C inceleme, karar gerektiren yardım soruları (`05-HANDOFF.md` → 7), T503.
+  1. **Sonnet:** B ve C yazma, A inceleme, metin işleri, monitör testi ve kalibrasyon sonucunu bildirme, Claude Code'un ekranı ve ayarlarıyla ilgili sorular.
+  2. **Opus:** A yazma (ve T003), B ve C inceleme, karar gerektiren yardım soruları (`05-HANDOFF.md` → 7), T503.
 - **Kullanım sınırı dolarsa** (`/usage` ne zaman yenileneceğini gösterir): yenilenene kadar bekle. Sadece Opus'un sınırı dolduysa o arada Sonnet hattındaki işlere geç (Sonnet yazma ve düzeltme, Sonnet incelemesi). Bir görevin modeli kota yüzünden değiştirilmez: Opus işi Sonnet'e, Sonnet işi Opus'a kaydırılmaz.
 - Görevin ortasında sınır dolarsa model değiştirilmez: yenilenince aynı oturumda "devam et" yazılır.
 
 ### Görev sınıfları
 
-| Sınıf | Ne tür iş | Yazan | Ön inceleme | İnceleyen |
-|---|---|---|---|---|
-| **A** | Donanıma veya sistem ayarına yazan, güvenlikle ilgili ya da her şeyin temeli olan iş | Opus | Qwen | Sonnet, `03-GUVENLIK.md` kontrol listesiyle |
-| **B** | Mantık, algoritma, akış | Sonnet (T003'ü temel olduğu için Opus yazar) | Qwen | Opus (T003'ü Sonnet) |
-| **C** | Arayüz, metin | Sonnet (metin ve çeviride Medium) | Qwen | Opus (metinde Medium) |
-| **K** | Son kontrol noktası | Kullanıcı (monitör başında) | — | Claude app, Opus (yeni sohbet) |
+| Sınıf | Ne tür iş | Yazan | İnceleyen |
+|---|---|---|---|
+| **A** | Donanıma veya sistem ayarına yazan, güvenlikle ilgili ya da her şeyin temeli olan iş | Opus | Sonnet, `03-GUVENLIK.md` kontrol listesiyle |
+| **B** | Mantık, algoritma, akış | Sonnet (T003'ü temel olduğu için Opus yazar) | Opus (T003'ü Sonnet) |
+| **C** | Arayüz, metin | Sonnet (metin ve çeviride Medium) | Opus (metinde Medium) |
+| **K** | Son kontrol noktası | Kullanıcı (monitör başında) | Claude app, Opus (yeni sohbet) |
 
 - Yazan ve inceleyen her zaman farklı model. İnceleme hiçbir görevde atlanmaz.
 - T001, T002 ve T311 eski düzende yazıldı (T001, T002: Opus → Gemini; T311: Flash → Sonnet); satırlarında o kayıt duruyor. T311'in incelemesi Sonnet'te kalır.
 - Eski düzende yazılmış bir görevin düzeltmesini yazan model (Flash, Gemini) yapamaz: düzeltmeyi inceleyenden farklı olan model yapar. T311: Opus düzeltir, Sonnet yeniden inceler.
-- **Qwen ön incelemesi ek bir kontroldür:** incelemenin yerine geçmez, ONAY vermez; bulgularını yazan model doğrular (`AGENTS.md` → "Yerel model (Qwen)"). Rol ✅ değilse bu adım yapılmaz.
 - Yazma, inceleme ve düzeltme ayrı konuşmalardır. Düzeltmeyi yazan model yapar (`05-HANDOFF.md` → 4).
-
-### Qwen rolleri
-
-Qwen'e bir rol, önce geçmiş bir işte denenip geçerse verilir (kalibrasyon: `05-HANDOFF.md` → 9.4). Model, 4-bit sürüm ya da bağlam değişirse kalibrasyon tekrarlanır.
-
-| Rol | Ne yapar | Kim çalıştırır | Durum |
-|---|---|---|---|
-| Ön inceleme | Farkı görev satırı ve okuma haritasındaki dokümanlarla karşılaştırır; alıntılı bulgu listesi verir | Yazan ajan, commit'ten önce | ⬜ kalibrasyon bekliyor |
-| Düzeltme kontrolü | DÜZELT listesindeki her madde için düzeldi / düzelmedi / emin değilim | Düzelten ajan, commit'ten önce | ⬜ kalibrasyon bekliyor |
-| Hata ve log açıklama | Hata mesajını, CI logunu, komut çıktısını açıklar | Kullanıcı, Ollama uygulaması (`05-HANDOFF.md` → 9.3) | ⬜ kalibrasyon bekliyor |
-
-Durum: ⬜ kalibrasyon bekliyor · ✅ açık · ⛔ kapalı (geçemedi ya da sorun çıktı)
-
-- **Ön inceleme.**
-  - Güvence: asıl inceleme aynen yapılır. Betik her bulgunun alıntısını farkta ve dokümanda arar, bulamazsa "uydurma olabilir" diye işaretler; yazan her bulguyu kendisi doğrular.
-  - Kim yakalar: Qwen'in uydurduğunu yazan; yazanın haksız reddettiğini inceleyen (Qwen satırını en son okur); Qwen'in kaçırdığını inceleyen.
-  - Ne zaman güvenilmez: kalibrasyondan önce; fark parçalara bölündüğünde dosyalar arası sorunlarda. "Bulgu yok" demesi hiçbir şey kanıtlamaz.
-- **Düzeltme kontrolü.**
-  - Güvence: yeniden inceleme aynen yapılır.
-  - Kim yakalar: yanlış "düzelmedi"yi düzelten, yanlış "düzeldi"yi yeniden inceleyen.
-  - Ne zaman güvenilmez: düzeltmenin açtığı yeni sorunlara bakmaz; bu ona sorulmaz.
-- **Hata ve log açıklama.**
-  - Güvence: sadece açıklar. `AGENTS.md`'deki serbest komutlar dışında önerdiği komutu (kayıt defteri, NVIDIA, sürücü, `git reset --hard`, `git push --force`, silme) kullanıcı çalıştırmaz; Sonnet'e sorar (`05-HANDOFF.md` → 7).
-  - Ne zaman güvenilmez: Claude Code'un ekranı ve ayarları (bilgisi eski olabilir → Sonnet) ve proje kararları (→ Opus).
-- **Qwen'e verilmeyenler:** A sınıfı yazma, tek başına inceleme, ONAY, Azerbaycanca çeviri, C taslağı, commit mesajı.
-  - Kalan C işleri T305 (DDC), T310 (panik kısayolu) ve T502 (çeviri). Zayıf taslak DÜZELT turu açar; her tur bir Sonnet düzeltme ve bir Opus yeniden inceleme oturumu demek.
-  - Commit mesajını işi yapan ajan zaten bildiği için yazar.
 
 ### Görev kuralları
 
@@ -160,11 +130,10 @@ Durum: ⬜ bekliyor · 🟨 yazıldı, incelemede · 🔧 onaylandı, monitör t
 | 5 | 2 | 0 | 1 | T503 |
 | **Toplam** | **21** | **9** | **11** | **1** |
 
-**Tahmini kullanım (2026-11-03, Opus + Sonnet + Qwen düzeni, kalan iş):**
+**Tahmini kullanım (2026-11-03, Opus + Sonnet düzeni, kalan iş; Qwen çıkarılmadan önceki tahmin):**
 
 - **Opus:** yaklaşık 18 oturum (7 yazma: T003, T103, T104, T209, T301, T302, T303; 10 inceleme: Sonnet'in yazdığı görevler; T503).
 - **Sonnet:** yaklaşık 18 oturum (10 yazma: T004, T102, T305, T306, T307, T308, T310, T312, T313, T502; 7 inceleme: Opus'un yazdığı görevler; T311 yeniden incelemesi).
-- **Düzeltmeler:** her DÜZELT turu bir yazan + bir yeniden inceleme oturumu. Şimdiye kadar %20–40 ekliyordu; Qwen ön incelemesi ve düzeltme kontrolü açıksa tahminen %10–20 ekler.
-- **Yardım ve sonuç bildirme:** Sonnet · Medium, kısa oturumlar; önce Qwen.
+- **Düzeltmeler:** her DÜZELT turu bir yazan + bir yeniden inceleme oturumu. Şimdiye kadar %20–40 ekliyordu.
+- **Yardım ve sonuç bildirme:** Sonnet · Medium, kısa oturumlar.
 - Eski düzendeki Gemini işleri artık Claude kotasından gider. Bu yüzden Opus'un işi az tutuldu: Opus sadece A yazar ve B, C inceler; daha çok iş Sonnet'te.
-- **Kalibrasyona bağlı:** ön inceleme ⛔ kalırsa düzeltme payı eski hâline döner.

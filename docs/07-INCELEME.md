@@ -197,3 +197,13 @@ Kullanıcının kararı: Antigravity (Gemini, Flash) sistemden çıkar; iş Clau
 | 8.4 | Flash'ın işleri (sonuç bildirme, kalibrasyon değerlendirmesi, araç soruları) Sonnet · Medium'a geçti; Qwen rolleri aynı |
 | 8.5 | Kota: Qwen → Sonnet → Opus. Opus'un sınırı dolarsa iş Sonnet'e kaydırılmaz; Sonnet hattı sürer |
 | 8.6 | Güvenlik: Antigravity'nin "terminal otomatik çalışmasın" kuralı yerine Claude Code'da varsayılan izin modu; auto ve bypass PC'de kullanılmaz |
+
+## 9. Tur: Qwen'in çıkarılması (2026-11-04)
+
+Kullanıcının kararı: yerel Qwen sistemden çıkar. Düzen Opus + Sonnet. (8. turdaki Qwen satırları tarihî kayıt olarak durur.)
+
+| # | Değişiklik |
+|---|---|
+| 9.1 | `tools/dev/qwen-review.ps1` ve `tools/dev/qwen/` silindi; `.gitignore`'dan `.qwen/` çıktı |
+| 9.2 | `AGENTS.md` → "Yerel model (Qwen)" bölümü, `04-FAZLAR.md` → "Qwen rolleri", Ön inceleme sütunu ve kota sırasının ilk basamağı, `05-HANDOFF.md` → 0.5 ve 9 çıktı |
+| 9.3 | Görev akışı: yazma son adımı artık derleme ve test; commit gövdesinde Qwen satırı yok. Hata ve log açıklamalar doğrudan Sonnet · Medium'a gider |

@@ -18,7 +18,7 @@ Uygulamanın parçaları ve birbirleriyle nasıl konuştukları. Kod içermez; T
 | Satır sonları | `.gitattributes`: metin dosyaları LF | PC (Windows) ve bulut (Linux) aynı repoda çalışıyor; bash betikleri bozulmaz |
 | Derleme ve test çıktısı | `tools/dev/` içinde sessiz betikler (bash + PowerShell): sadece hata ve özet | Ajanların okuduğu çıktı kısalır, bilgi kaybı yok |
 | 🔧 testleri için çalıştırma | CI her push'ta self-contained `win-x64` paket üretir (7 gün saklama); PC'de .NET 10 SDK ile yerel derleme de mümkün | Kullanıcı istediği yolu seçer |
-| Geliştirme ortamı | Claude Code (PC, Windows, masaüstü uygulaması) ana araç; Claude Code bulut (Linux) yedek; Qwen yerel | Kurallar `AGENTS.md`'de |
+| Geliştirme ortamı | Claude Code (PC, Windows, masaüstü uygulaması) ana araç; Claude Code bulut (Linux) yedek | Kurallar `AGENTS.md`'de |
 | Harici | testufo.com (kare atlama ve hareket testi), NVIDIA Denetim Masası (Hz modu ekleme) | Var olan araçlar yeniden yazılmaz |
 
 ## Süreç

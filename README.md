@@ -2,7 +2,7 @@
 
 HP P21b G4 monitörü için bir Windows uygulamasının planı. Sistem: monitör **RTX 3080**'in HDMI'ında, **RTX 3090** ağır işler için boş.
 
-> **Durum:** Plan aşaması, uygulama kodu yok. [İlk gün kontrolü](docs/09-ILK-GUN.md) yapıldı; sıradaki görev `docs/04-FAZLAR.md` içindeki **T001**. Kodlama Claude Code'da (Opus, Sonnet) ve yerel Qwen ile; başlamadan önce: [`docs/05-HANDOFF.md`](docs/05-HANDOFF.md), bölüm 0 (kurulum).
+> **Durum:** Plan aşaması, uygulama kodu yok. [İlk gün kontrolü](docs/09-ILK-GUN.md) yapıldı; sıradaki görev `docs/04-FAZLAR.md` içindeki **T001**. Kodlama Claude Code'da (Opus, Sonnet); başlamadan önce: [`docs/05-HANDOFF.md`](docs/05-HANDOFF.md), bölüm 0 (kurulum).
 >
 > **Not:** Plan HP V214a için yazılmıştı; ilk gün kontrolünde monitörün **HP P21b G4** olduğu anlaşıldı. Sinyal sınırları aynı olduğu için plan uyarlandı, repo adı `hp-v214a` olarak kaldı. Ünitenin ham verileri `donanim/hp-p21b-g4/` içinde.
 
@@ -37,7 +37,7 @@ Hedef: bu panelden çıkabilecek en iyi görüntü, göz konforu ve 76 Hz. Gerek
 | [docs/02-MIMARI.md](docs/02-MIMARI.md) | Teknoloji kararları, katmanlar, renk boru hattı, modül sözleşmeleri, CI korumaları |
 | [docs/03-GUVENLIK.md](docs/03-GUVENLIK.md) | Değişmez kurallar, kurtarma yolları, ajan kuralları |
 | [docs/04-FAZLAR.md](docs/04-FAZLAR.md) | 21 görev, modeller ve kota sırası, paralel dalgalar |
-| [docs/05-HANDOFF.md](docs/05-HANDOFF.md) | Kurulum, görev döngüsü ve Claude Code / Qwen için hazır metinler |
+| [docs/05-HANDOFF.md](docs/05-HANDOFF.md) | Kurulum, görev döngüsü ve Claude Code için hazır metinler |
 | [docs/06-CIKARILANLAR.md](docs/06-CIKARILANLAR.md) | Çıkarılan özellikler ve nedenleri |
 | [docs/07-INCELEME.md](docs/07-INCELEME.md) | İnceleme turlarının kaydı ve eski → yeni görev eşlemeleri |
 | [docs/08-GORUNTU-YONTEMLERI.md](docs/08-GORUNTU-YONTEMLERI.md) | Üst-alt farkı, renk düzeltme, parlaklığı düşürme, mavi ışık filtresi, renk boru hattı |

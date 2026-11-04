@@ -37,5 +37,5 @@ HP P21b G4 ünitesinde test edilen gerçek değerler: ilk gün kontrolü (`docs/
   - PowerShell 5.1'de boruyla verilen Türkçe metin bozuldu.
   - `*ollama*` ile `Stop-Process` kurulum programını da kapattı.
   - 16k bağlamı aşan girdi sessizce kırpıldı.
-  - Bundan sonra: Qwen'e fark ve dokümanlar `tools/dev/qwen-review.ps1` ile verilir (UTF-8, bağlam tahmini, parçalama); tuzaklar `05-HANDOFF.md` → 9.5'te.
+  - Qwen 2026-11-04'te çıkarıldı (betik, Ollama adımları ve rolleri silindi); bu tuzaklar artık geçerli değil, kayıt olarak duruyor.
 - 2026-11-03 · Plan · Betik yazılırken ajanın aracı `\u00e7` gibi kaçışları gerçek harfe çevirdi. BOM'suz .ps1'de bu harfler PowerShell 5.1'de bozulur, ’ gibi tırnaklar dizeyi erken kapatır · `.ps1` dosyaları ASCII kalır; Türkçe harf `TR '{00e7}'` biçiminde yazılır, Türkçe metinler ayrı UTF-8 dosyalarda tutulur
