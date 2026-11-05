@@ -11,13 +11,15 @@ public enum PanelSetting { Brightness, Contrast, ColorPreset, RedGain, GreenGain
 /// <remarks>
 /// <see cref="WrongColorPreset"/>: RGB kazancı sadece profildeki ön ayarda (Custom RGB) etkili.
 /// <see cref="BlueLightActive"/>: açık mavi ışık filtresi (T307) aynı kodları kendisi yazıyor; kapanınca kullanıcının değeri geri gelir.
+/// Renk ön ayarı da kilitlidir (T318): filtre açıkken ön ayar değişirse filtre Custom RGB'nin kazancını geri yazamazdı.
 /// <see cref="DimmingActive"/>: ek karartma (T306) açıkken arka ışığı tek kaydırıcı yönetir; panel onunla yarışmaz.
 /// </remarks>
 public enum SettingLock { None, NotWritable, WrongColorPreset, BlueLightActive, DimmingActive }
 
 /// <param name="Name">Sabit ad (çeviri anahtarı için): OSD ön ayarı ("Neutral"), giriş ("Hdmi"/"Vga") ya da sayı.</param>
-/// <param name="Selectable">Ön ayarda sadece monitörde doğrulanmış (confirmed) eşleme seçilebilir.</param>
-public sealed record PanelChoice(int Value, string Name, bool Selectable);
+/// <param name="Selectable">Seçilebilir: monitörün ilan ettiği ve profilde eşlemesi olan değer (T318'den beri tahmini adlılar da).</param>
+/// <param name="Verified">Adı monitörde doğrulandı (confirmed). false: ad tahmin (MCCS standardı ya da HP sırası), arayüz işaretler.</param>
+public sealed record PanelChoice(int Value, string Name, bool Selectable, bool Verified = true);
 
 /// <param name="Minimum">Arayüzün kaydırıcı sınırı. Kontrastta üst sınır dijital parlaklık korumasıdır.</param>
 /// <param name="DeviceMaximum">Monitörün kendi üst sınırı (kontrastta Maximum'dan büyük olabilir).</param>
@@ -39,7 +41,8 @@ public enum PanelSetResult
     Written, Unchanged, NoDdc, NotSupported, Locked, OutOfRange,
     /// <summary>Kontrast, başlangıç değerinin (tavan) üstüne çıkarılamaz: parlaklık için arka ışık kullanılır.</summary>
     BlockedDigitalBoost,
-    NotConfirmed,
+    /// <summary>Renk ön ayarı yazıldı ama monitör geri okununca eski değerde (bu ön ayar DDC ile seçilemiyor); yeni değer alındı.</summary>
+    NotApplied,
     /// <summary>Kullanıcı eski değeri görürken monitörde değer değişti; yazılmadı, yeni değer alındı.</summary>
     ExternallyChanged,
     NeedsInputWarning, Throttled, Failed,
@@ -143,7 +146,7 @@ public sealed class DdcPanel : IDdcPanel
         {
             case DdcWriteResult.Written:
                 _known[setting] = value;
-                return PanelSetResult.Written;
+                return setting == PanelSetting.ColorPreset ? VerifyPreset(value) : PanelSetResult.Written;
             case DdcWriteResult.NoDdc: return PanelSetResult.NoDdc;
             case DdcWriteResult.Forbidden: return PanelSetResult.NotSupported;
             case DdcWriteResult.Throttled: return PanelSetResult.Throttled;
@@ -151,12 +154,22 @@ public sealed class DdcPanel : IDdcPanel
         }
     }
 
+    /// <summary>
+    /// Ön ayar yazıldıktan sonra monitörden geri okunur (T318): bazı ön ayarlar DDC ile seçilemeyebilir. Okunamazsa yazıldı
+    /// sayılır (sonraki yenileme gösterir); farklıysa gerçek değer alınır, sonraki yenileme bunu "dış değişiklik" saymaz.
+    /// </summary>
+    private PanelSetResult VerifyPreset(int value)
+    {
+        if (_ddc.Read(ColorPresetCode) is not { } read || read.Current == value) return PanelSetResult.Written;
+        _known[PanelSetting.ColorPreset] = read.Current;
+        return PanelSetResult.NotApplied;
+    }
+
     private PanelSetResult? Validate(PanelSettingState state, int value, bool inputWarningAccepted)
     {
         if (state.Choices.Count > 0)
         {
-            if (state.Choices.FirstOrDefault(c => c.Value == value) is not { } choice) return PanelSetResult.OutOfRange;
-            if (state.Setting == PanelSetting.ColorPreset && !choice.Selectable) return PanelSetResult.NotConfirmed;
+            if (state.Choices.FirstOrDefault(c => c.Value == value) is not { Selectable: true }) return PanelSetResult.OutOfRange;
             if (state.Setting == PanelSetting.Input && value != state.Current && value != _connectedInput && !inputWarningAccepted)
                 return PanelSetResult.NeedsInputWarning;
             return null;
@@ -203,21 +216,22 @@ public sealed class DdcPanel : IDdcPanel
     {
         if (!_ddc.WritableCodes.Contains(code)) return SettingLock.NotWritable;
         if (setting == PanelSetting.Brightness) return _dimmingActive() ? SettingLock.DimmingActive : SettingLock.None;
+        if (setting == PanelSetting.ColorPreset) return BlueLightActive() ? SettingLock.BlueLightActive : SettingLock.None;
         if (!IsGain(setting)) return SettingLock.None;
 
         var mapped = _profile.ColorPresetMap.FirstOrDefault(m => m.DdcValue == preset);
         if (mapped?.Preset != _profile.Osd.RgbGainPreset) return SettingLock.WrongColorPreset;
-        return _blueLight.Kelvin < KelvinCalculator.OffKelvin && !_blueLight.IsSuspended
-            ? SettingLock.BlueLightActive
-            : SettingLock.None;
+        return BlueLightActive() ? SettingLock.BlueLightActive : SettingLock.None;
     }
+
+    private bool BlueLightActive() => _blueLight.Kelvin < KelvinCalculator.OffKelvin && !_blueLight.IsSuspended;
 
     private IReadOnlyList<PanelChoice> ChoicesFor(PanelSetting setting, DdcCodeInfo info) => setting switch
     {
         PanelSetting.ColorPreset => [.. info.PossibleValues.Select(v =>
         {
             var m = _profile.ColorPresetMap.FirstOrDefault(x => x.DdcValue == v);
-            return new PanelChoice(v, m?.Preset.ToString() ?? v.ToString(), m?.Confidence == MappingConfidence.Confirmed);
+            return new PanelChoice(v, m?.Preset.ToString() ?? v.ToString(), m is not null, m?.Confidence == MappingConfidence.Confirmed);
         })],
         PanelSetting.Input => [.. info.PossibleValues.Select(v =>
             new PanelChoice(v, v switch { HdmiInput => "Hdmi", VgaInput => "Vga", _ => v.ToString() }, true))],

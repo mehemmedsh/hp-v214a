@@ -44,7 +44,7 @@ Ham döküm: `donanim/hp-p21b-g4/ddc-vcp-60hz.txt`.
 |---|---|---|---|---|
 | 10 | Parlaklık | R/W | 55 (0–100) | Arka ışık |
 | 12 | Kontrast | R/W | 72 (0–100) | — |
-| 14 | Renk ön ayarı | R/W | 5 | Değerler: 2, 4, 5, 8, 11, 12, 13, 14, 15. Tahmin: 2 Native, 4 Warm, 5 Neutral (doğrulandı), 8 Cool, 11 Custom RGB; 12–15 Night / Low Blue Light / Reading / HP Enhance+ (sıra doğrulanacak) |
+| 14 | Renk ön ayarı | R/W | 5 | Değerler: 2, 4, 5, 8, 11, 12, 13, 14, 15. MCCS standardına göre 2 Display Native, 4 = 5000K (Warm), 5 = 6500K (Neutral, doğrulandı), 8 = 9300K (Cool), 11 = User 1 (Custom RGB); 12–15 HP'nin kendi modları Night / Low Blue Light / Reading / HP Enhance+ (sıra tahmin, doğrulanacak). T318'den beri hepsi uygulamadan seçilir; aşağıda "Renk ön ayarları" |
 | 16 / 18 / 1A | RGB kazancı | R/W | 255 / 255 / 255 (max 255) | Sadece azaltılabilir |
 | 0C | Renk sıcaklığı isteği | R/W | 40 (max 126), 0B artış = 50 | Çalışıp çalışmadığı T301'de test edilir |
 | 6C / 6E / 70 | Kanal başına siyah seviyesi | R/W | 128 (max 255) | Kullanılmıyor (kamerasız ayarda gerek yok) |
@@ -60,6 +60,27 @@ Ham döküm: `donanim/hp-p21b-g4/ddc-vcp-60hz.txt`.
 | D6, CA, CC, DA | Güç, OSD, dil, tarama | R/W | — | Uygulama kullanmaz |
 | 04, 05, 08 | Fabrika sıfırlamaları | W | — | **Asla yazılmaz** |
 | E6–FF | Üreticiye özel | — | — | **Dokunulmaz** |
+
+### Renk ön ayarları ne yapar (araştırma, 2026-11-05, T318)
+
+P21b G4 için ölçümlü bağımsız inceleme (RTINGS, TFTCentral, Monitornerds) bulunamadı. Aşağıdakiler MCCS standardından (VESA'nın DDC kod tablosu) ve HP'nin P serisi G4 belgelerinden; değerler bu üniteye özel ölçüm değil. Bu yüzden ince ayar gözle ve desenlerle yapılır (ayar sihirbazı).
+
+| Ön ayar | DDC 14 | Ne yapar | Ne zaman |
+|---|---|---|---|
+| **Neutral** | 5 (doğrulandı) | Fabrika 6500K beyaz, varsayılan | Hazırlar içinde en doğru renk; önerilen |
+| **Custom RGB** | 11 (User 1) | Beyazı RGB kazancıyla kullanıcı ayarlar | Sihirbazla beyaz eşlendikten sonra en doğru; mavi ışık filtresinin monitör payı sadece burada çalışır |
+| Warm | 4 (5000K) | Sarımsı beyaz | Akşam okuma; doğru renk değil |
+| Cool | 8 (9300K) | Mavimsi beyaz | Doğru renk değil, göz için yorucu |
+| Native | 2 | Panelin işlenmemiş beyazı ve gamı, renk düzeltmesi yok; en parlak | Doğru renk değil (TN'de beyaz genelde mavimsi) |
+| HP Enhance+ | 12–15 | Keskinlik ve kontrastı artırır (HP: durağan görüntü ve video) | Video için canlı; yazıda hale ve açık tonlarda kırpma yapabilir |
+| Low Blue Light | 12–15 | TÜV onaylı, mavi ışık azaltılır | Göz konforu |
+| Reading | 12–15 | İç mekânda okuma için mavi ışık ve parlaklık dengesi | Okuma |
+| Night | 12–15 | En az mavi ışık | Uykudan önce |
+
+- 12–15'in hangi ön ayar olduğu HP'ye özel ve tahmin (profil: 12 Night, 13 Low Blue Light, 14 Reading, 15 HP Enhance+). Uygulamadan seçince OSD → Information → Color Setting satırı doğrular; yanlışsa profildeki `colorPresetMap` düzeltilir.
+- RGB kazancı bu ünitede sadece Custom RGB'de etkili (HP'nin bazı G4 modellerinde her ön ayarın ayrı kazancı var; burada değil).
+- Keskinlik: fabrika 4 (1–7). Üstü yazı kenarında hale yapar; sihirbazın keskinlik adımı en iyisini desenle bulur.
+- 0C (renk sıcaklığı isteği) MCCS'e göre 3000 + değer × 0B (50) K. Neutral'deyken 40 (= 5000K) okundu; tutarsız, uygulama kullanmaz.
 
 ### EDID
 
@@ -161,4 +182,9 @@ Her hücre: **pixel clock (MHz) / yatay frekans (kHz).** EDID sınırları 170 M
 - [Monitor Nerds: NVIDIA ve AMD'de HDMI sorunları](https://monitornerds.com/hdmi-1080p-1440p/): HDMI'da Limited RGB ve "Output dynamic range"
 - [Monitor Tests forumu: NVIDIA'da HDMI üzerinden FreeSync](https://www.monitortests.com/forum/Thread-Gsync-or-Freesync-over-HDMI-on-Nvidia-Cards-with-CRU): NVIDIA HDMI'da FreeSync desteklemiyor
 - [Lorimer: TN monitörler](https://lorimer.id.au/tn-monitors.html): göz konumu ve TN telafi filmi
+- [ddcutil: MCCS VCP kod tablosu (`vcp_feature_codes.c`)](https://github.com/rockowitz/ddcutil/blob/master/src/vcp/vcp_feature_codes.c): 14 değerleri (02 Display Native, 04 5000K, 05 6500K, 08 9300K, 0B User 1), 0C formülü
+- [HP P24 G4 QuickSpecs (PDF)](https://h20195.www2.hp.com/v2/GetPDF.aspx/c06724394.pdf): Warm 5000K, Neutral 6500K (varsayılan), Cool 9300K; RGB kazancı
+- [HP P serisi G4 kullanıcı kılavuzu (PDF)](https://h10032.www1.hp.com/ctg/Manual/c06636426.pdf) ve [HP P24 G4 kılavuzu](https://manualmachine.com/hp/p24g4/8127085-user-manual/): Native (renk işleme yok), HP Enhance+ (keskinlik ve kontrast), ön ayar başına RGB kazancı
+- [HP OMEN 25 kılavuzu: Low Blue Light, Reading, Night](https://www.manualslib.com/manual/1436351/Hp-Omen-25.html?page=23): üç az mavi ışık modunun tanımı
+- [HP DreamColor Z24x kılavuzu](https://www.manualowl.com/m/Hewlett-Packard/DreamColor-Z24x/Manual/581043?page=44): Native, panelin en yüksek parlaklığı
 - Ünite verileri: `donanim/hp-p21b-g4/` (EDID, DDC dökümü)

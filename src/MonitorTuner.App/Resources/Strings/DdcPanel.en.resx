@@ -89,16 +89,49 @@
     <value>VGA</value>
   </data>
   <data name="Choice_Unverified" xml:space="preserve">
-    <value>{0} (not verified; choose it in the monitor menu)</value>
+    <value>{0} (estimated)</value>
+  </data>
+  <data name="About_Neutral" xml:space="preserve">
+    <value>Factory 6500K white: the white that the web, photos and Windows expect. The most accurate of the built-in presets; recommended.</value>
+  </data>
+  <data name="About_CustomRgb" xml:space="preserve">
+    <value>You set the white with RGB gain; the setup wizard matches the white to the Pixel's screen here. The most accurate choice after the wizard. The blue light filter uses the monitor's gains only in this preset.</value>
+  </data>
+  <data name="About_Warm" xml:space="preserve">
+    <value>Warm white (about 5000K): yellowish. Comfortable for reading in the evening; not for color accuracy.</value>
+  </data>
+  <data name="About_Cool" xml:space="preserve">
+    <value>Cool white (about 9300K): bluish. Not accurate and more tiring for the eyes.</value>
+  </data>
+  <data name="About_Native" xml:space="preserve">
+    <value>The panel's unprocessed white (no color correction): the brightest preset, but the white is usually bluish.</value>
+  </data>
+  <data name="About_HpEnhancePlus" xml:space="preserve">
+    <value>HP's vivid mode: raises sharpness and contrast. Looks vivid in video; can add halos to text and clip light tones.</value>
+  </data>
+  <data name="About_LowBlueLight" xml:space="preserve">
+    <value>HP's low blue light mode (TÜV certified): less blue, warmer colors. For eye comfort.</value>
+  </data>
+  <data name="About_Reading" xml:space="preserve">
+    <value>HP's reading mode: balances blue light and brightness for reading indoors.</value>
+  </data>
+  <data name="About_Night" xml:space="preserve">
+    <value>HP's night mode: blue light at its lowest. For the hours before sleep.</value>
+  </data>
+  <data name="About_Unverified" xml:space="preserve">
+    <value>The DDC number of this preset is estimated: after choosing it, check its name in the monitor menu under Information → Color Setting.</value>
+  </data>
+  <data name="Hint_Sharpness" xml:space="preserve">
+    <value>Factory value is 4. Higher values add thin light/dark halos around text; if you see them, lower it. The setup wizard's sharpness step finds the best value with a pattern.</value>
   </data>
   <data name="Lock_NotWritable" xml:space="preserve">
     <value>This setting cannot be written from the app; change it in the monitor menu.</value>
   </data>
   <data name="Lock_WrongColorPreset" xml:space="preserve">
-    <value>RGB gain only works in the Custom RGB color preset. In the monitor menu choose Color → Custom RGB.</value>
+    <value>RGB gain only works in the Custom RGB color preset. Choose Custom RGB in the Color preset list above or in the monitor menu (Color).</value>
   </data>
   <data name="Lock_BlueLightActive" xml:space="preserve">
-    <value>The blue light filter is on and uses the same gains. Turn the filter off to adjust RGB gain; your value comes back.</value>
+    <value>The blue light filter is on and uses the monitor's color gains. Turn the filter off to change RGB gain or the color preset; your value comes back.</value>
   </data>
   <data name="Lock_DimmingActive" xml:space="preserve">
     <value>Extra (digital) dimming is on; the backlight is controlled by the brightness and extra dimming slider. Adjust it there.</value>
@@ -124,8 +157,8 @@
   <data name="Result_BlockedDigitalBoost" xml:space="preserve">
     <value>Contrast is not raised above its starting value. For a brighter picture, raise the backlight (Brightness).</value>
   </data>
-  <data name="Result_NotConfirmed" xml:space="preserve">
-    <value>The DDC value of this color preset has not been verified on the monitor, so it was not written. Choose it in the monitor menu.</value>
+  <data name="Result_NotApplied" xml:space="preserve">
+    <value>The monitor did not accept this preset over DDC and stayed on the old one. Choose this preset in the monitor menu (Color).</value>
   </data>
   <data name="Result_ExternallyChanged" xml:space="preserve">
     <value>This setting changed on the monitor (OSD) while you were looking. The new value is shown; set it again if you still want to.</value>

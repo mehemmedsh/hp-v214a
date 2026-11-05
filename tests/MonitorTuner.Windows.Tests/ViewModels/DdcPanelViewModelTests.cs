@@ -41,7 +41,7 @@ public class DdcPanelViewModelTests
             State = new(true,
             [
                 Slider(PanelSetting.Brightness, 55),
-                Choice(PanelSetting.ColorPreset, 5, new PanelChoice(4, "Warm", false), new PanelChoice(5, "Neutral", true)),
+                Choice(PanelSetting.ColorPreset, 5, new PanelChoice(4, "Warm", true, Verified: false), new PanelChoice(5, "Neutral", true)),
             ], []),
         };
         var vm = new DdcPanelViewModel(panel);
@@ -56,7 +56,63 @@ public class DdcPanelViewModelTests
         Assert.Equal("Parlaklık (arka ışık)", vm.Items[0].Title);
         Assert.True(vm.Items[1].IsChoice);
         Assert.Equal("Neutral (nötr)", vm.Items[1].SelectedChoice!.Title);
-        Assert.Contains("doğrulanmadı", vm.Items[1].ChoiceList[0].Title); // tahmin eşleme açıkça işaretli
+        Assert.Equal("Warm (sıcak) (tahmini)", vm.Items[1].ChoiceList[0].Title); // T318: seçilebilir, adı tahmin olarak işaretli
+        Assert.True(vm.Items[1].ChoiceList[0].Selectable);
+        Assert.Contains("6500K", vm.Items[1].Description); // seçili ön ayarın ne yaptığı
+        Assert.False(vm.Items[0].HasDescription);
+    }
+
+    /// <summary>T318: tahmini adlı ön ayar seçilince yazılır; açıklama seçimi izler ve adın nasıl doğrulanacağını söyler.</summary>
+    [Fact]
+    public void ColorPreset_EstimatedChoice_IsWritten_AndDescriptionFollowsSelection()
+    {
+        var panel = new StubPanel
+        {
+            State = new(true, [Choice(PanelSetting.ColorPreset, 5,
+                new PanelChoice(4, "Warm", true, Verified: false), new PanelChoice(5, "Neutral", true))], []),
+        };
+        var vm = new DdcPanelViewModel(panel);
+        vm.Refresh();
+        var row = vm.Items[0];
+        var changed = new List<string?>();
+        row.PropertyChanged += (_, e) => changed.Add(e.PropertyName);
+
+        row.SelectedChoice = row.ChoiceList[0];
+
+        Assert.Equal((PanelSetting.ColorPreset, 4, false), Assert.Single(panel.Sets));
+        Assert.Contains(nameof(PanelItemViewModel.Description), changed);
+        Assert.Contains("5000K", row.Description);
+        Assert.Contains("Information → Color Setting", row.Description);
+        Assert.Equal("Ayar yazıldı.", vm.Status);
+    }
+
+    [Fact]
+    public void ColorPreset_NotApplied_ShowsWhy()
+    {
+        var panel = new StubPanel
+        {
+            State = new(true, [Choice(PanelSetting.ColorPreset, 5, new PanelChoice(12, "Night", true, Verified: false), new PanelChoice(5, "Neutral", true))], []),
+        };
+        panel.Results.Enqueue(PanelSetResult.NotApplied);
+        var vm = new DdcPanelViewModel(panel);
+        vm.Refresh();
+
+        vm.Items[0].SelectedChoice = vm.Items[0].ChoiceList[0];
+
+        Assert.Contains("kabul etmedi", vm.Status);
+        Assert.Equal(5, vm.Items[0].SelectedChoice!.Value); // yeniden okundu: monitör hâlâ Neutral
+    }
+
+    [Fact]
+    public void Sharpness_ShowsFactoryNeutralHint()
+    {
+        var panel = new StubPanel { State = new(true, [Slider(PanelSetting.Sharpness, 6, 1, 7)], []) };
+        var vm = new DdcPanelViewModel(panel);
+
+        vm.Refresh();
+
+        Assert.True(vm.Items[0].HasDescription);
+        Assert.Contains("Fabrika değeri 4", vm.Items[0].Description);
     }
 
     [Fact]
@@ -175,6 +231,8 @@ public class DdcPanelViewModelTests
             .Concat(Enum.GetNames<SettingLock>().Where(n => n != nameof(SettingLock.None)).Select(n => "DdcPanel.Lock_" + n))
             .Concat(Enum.GetNames<PanelSetResult>().Select(n => "DdcPanel.Result_" + n))
             .Concat(Enum.GetNames<OsdColorPreset>().Select(n => "DdcPanel.Choice_" + n))
+            .Concat(Enum.GetNames<OsdColorPreset>().Select(n => "DdcPanel.About_" + n)) // T318: her ön ayarın açıklaması
+            .Concat(["DdcPanel.About_Unverified", "DdcPanel.Hint_Sharpness"])
             .Concat(["DdcPanel.Choice_Hdmi", "DdcPanel.Choice_Vga", "DdcPanel.Choice_Unverified", "DdcPanel.ExternalChange",
                      "DdcPanel.InputWarning_Title", "DdcPanel.InputWarning_Text", "DdcPanel.TabTitle", "DdcPanel.PageTitle",
                      "DdcPanel.Intro", "DdcPanel.BrightnessHint", "DdcPanel.Refresh", "DdcPanel.Osd_Title", "DdcPanel.Osd_Why",

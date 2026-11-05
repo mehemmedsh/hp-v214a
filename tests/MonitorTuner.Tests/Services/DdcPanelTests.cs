@@ -307,41 +307,99 @@ public class DdcPanelTests
         Assert.Equal(PanelSetResult.Written, rig.Panel.Set(PanelSetting.Brightness, 60));
     }
 
-    // ---- Renk ön ayarı ----
+    // ---- Renk ön ayarı (T305, T318) ----
 
     [Fact]
-    public void ColorPreset_OnlyConfirmedMappingsAreSelectable()
+    public void ColorPreset_EveryAdvertisedPresetIsSelectable_OnlyNeutralIsVerified()
     {
         var choices = new Rig().State(PanelSetting.ColorPreset).Choices;
 
         Assert.Equal([2, 4, 5, 8, 11, 12, 13, 14, 15], choices.Select(c => c.Value));
-        Assert.Equal([5], choices.Where(c => c.Selectable).Select(c => c.Value));
+        Assert.All(choices, c => Assert.True(c.Selectable)); // T318: tahmini adlı ön ayar da seçilebilir
+        Assert.Equal([5], choices.Where(c => c.Verified).Select(c => c.Value));
         Assert.Equal("Neutral", choices.Single(c => c.Value == 5).Name);
         Assert.Equal("CustomRgb", choices.Single(c => c.Value == CustomRgb).Name);
+        Assert.Equal("HpEnhancePlus", choices.Single(c => c.Value == 15).Name);
     }
 
     [Fact]
-    public void ColorPreset_EstimatedMapping_IsNeverWritten()
+    public void ColorPreset_EstimatedMapping_IsWritten_AndReadBack()
     {
         var rig = new Rig();
 
-        Assert.Equal(PanelSetResult.NotConfirmed, rig.Panel.Set(PanelSetting.ColorPreset, 4)); // Warm: tahmin
-        Assert.Equal(PanelSetResult.NotConfirmed, rig.Panel.Set(PanelSetting.ColorPreset, CustomRgb));
+        Assert.Equal(PanelSetResult.Written, rig.Panel.Set(PanelSetting.ColorPreset, 4)); // Warm (MCCS 5000K)
+        Assert.Equal(4, rig.State(PanelSetting.ColorPreset).Current);
+        Assert.Equal(PanelSetResult.Written, rig.Panel.Set(PanelSetting.ColorPreset, 15)); // HP Enhance+ (HP sırası, tahmini)
+
+        Assert.Equal(15, rig.Monitor.Read(FakeHardware.Display, Preset)!.Value.Current);
+        Assert.Equal(2, rig.Monitor.WriteCount(Preset));
+        Assert.Empty(rig.Panel.Refresh().ExternallyChanged); // kendi yazdığımız değer "dış değişiklik" değil
+    }
+
+    [Fact]
+    public void ColorPreset_ValueTheMonitorDoesNotAdvertise_IsOutOfRange()
+    {
+        var rig = new Rig();
+
+        Assert.Equal(PanelSetResult.OutOfRange, rig.Panel.Set(PanelSetting.ColorPreset, 1)); // sRGB: bu monitörde yok
         Assert.Equal(PanelSetResult.OutOfRange, rig.Panel.Set(PanelSetting.ColorPreset, 99));
         Assert.Equal(0, rig.Monitor.WriteCount(Preset));
     }
 
     [Fact]
+    public void ColorPreset_MonitorKeepsOldValue_IsNotApplied_AndNotReportedAsExternal()
+    {
+        var rig = new Rig();
+        rig.Panel.Refresh();
+        // Yazma "başarılı" döndü ama monitör ön ayarı değiştirmedi (DDC ile seçilemeyen ön ayar).
+        rig.Ddc.Override = code => code == Preset ? DdcWriteResult.Written : null;
+
+        Assert.Equal(PanelSetResult.NotApplied, rig.Panel.Set(PanelSetting.ColorPreset, 12));
+
+        var state = rig.Panel.Refresh();
+        Assert.Equal(5, state.Settings.Single(s => s.Setting == PanelSetting.ColorPreset).Current);
+        Assert.Empty(state.ExternallyChanged);
+    }
+
+    [Fact]
     public void ColorPreset_ConfirmedMapping_IsWritten()
     {
-        var profile = Profile with
-        {
-            ColorPresetMap = [.. Profile.ColorPresetMap.Select(m => m.DdcValue == 4 ? m with { Confidence = MappingConfidence.Confirmed } : m)],
-        };
-        var rig = new Rig(profile: profile);
+        var rig = new Rig();
+        rig.UseCustomRgb();
 
-        Assert.Equal(PanelSetResult.Written, rig.Panel.Set(PanelSetting.ColorPreset, 4));
-        Assert.Equal(4, rig.Monitor.Read(FakeHardware.Display, Preset)!.Value.Current);
+        Assert.Equal(PanelSetResult.Written, rig.Panel.Set(PanelSetting.ColorPreset, 5)); // Neutral: monitörde doğrulandı
+        Assert.Equal(5, rig.Monitor.Read(FakeHardware.Display, Preset)!.Value.Current);
+    }
+
+    [Fact]
+    public void ColorPreset_SwitchingToCustomRgb_UnlocksGains()
+    {
+        var rig = new Rig();
+        Assert.Equal(SettingLock.WrongColorPreset, rig.State(PanelSetting.RedGain).Lock);
+
+        Assert.Equal(PanelSetResult.Written, rig.Panel.Set(PanelSetting.ColorPreset, CustomRgb));
+
+        Assert.Equal(SettingLock.None, rig.State(PanelSetting.RedGain).Lock);
+        Assert.Equal(PanelSetResult.Written, rig.Panel.Set(PanelSetting.RedGain, 240));
+    }
+
+    /// <summary>
+    /// Mavi ışık filtresi monitör payını Custom RGB'nin kazancına yazar; filtre açıkken ön ayar değişirse filtre kapanınca
+    /// kazancı geri yazamaz (başka ön ayardayız) ve Custom RGB sıcak kalırdı. Bu yüzden ön ayar da kazanç gibi kilitli.
+    /// </summary>
+    [Fact]
+    public void ColorPreset_WhileBlueLightFilterIsActive_IsLocked()
+    {
+        var rig = new Rig();
+        rig.UseCustomRgb();
+        rig.BlueLight.Kelvin = 3400;
+
+        Assert.Equal(SettingLock.BlueLightActive, rig.State(PanelSetting.ColorPreset).Lock);
+        Assert.Equal(PanelSetResult.Locked, rig.Panel.Set(PanelSetting.ColorPreset, 5));
+        Assert.Equal(0, rig.Monitor.WriteCount(Preset));
+
+        rig.BlueLight.IsSuspended = true; // sihirbaz: filtre askıda, ön ayar serbest
+        Assert.Equal(SettingLock.None, rig.State(PanelSetting.ColorPreset).Lock);
     }
 
     // ---- RGB kazancı ----

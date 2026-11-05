@@ -39,6 +39,7 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
 
                             <TextBlock Grid.Column="0" Text="{Binding Title}" VerticalAlignment="Center" />
@@ -60,6 +61,11 @@
                             <TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding LockText}"
                                        TextWrapping="Wrap" Foreground="#856404" FontSize="12" Margin="0,2,0,0"
                                        Visibility="{Binding HasLock, Converter={StaticResource BoolToVisibility}}" />
+
+                            <!-- T318: seçili ön ayarın ne yaptığı, keskinlikte nötr değer ipucu -->
+                            <TextBlock Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Description}"
+                                       TextWrapping="Wrap" Foreground="#555555" FontSize="12" Margin="0,2,0,0"
+                                       Visibility="{Binding HasDescription, Converter={StaticResource BoolToVisibility}}" />
                         </Grid>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>

@@ -49,6 +49,7 @@ Yöntemlerin ayrıntısı: `08-GORUNTU-YONTEMLERI.md`.
 
 ### 3.1 DDC/CI katmanı ve paneli · T301, T305
 - Panel: parlaklık, kontrast, renk ön ayarı, RGB kazancı (Custom RGB'de), keskinlik, giriş, hoparlör sesi. Bunlar monitörün içinde yapılır; renk seviyesi kaybı olmaz.
+- Monitörün 9 renk ön ayarının hepsi uygulamadan seçilir; seçilenin ne yaptığı altında yazar, adı tahmin olanlar işaretli (T318).
 - DDC yazmaları monitörün belleğini yormamak için sınırlanır (kaydırıcı bırakılınca tek yazma).
 - **Dijital parlaklık koruması:** Kontrast veya RGB ile parlaklık artırma engellenir.
 

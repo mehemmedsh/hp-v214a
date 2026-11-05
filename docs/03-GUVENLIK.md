@@ -32,6 +32,7 @@ Bu uygulama monitörün, ekran kartının ve Windows'un ekran ayarlarına yazıy
 - Aynı ayara kısa sürede tekrar tekrar yazma engellenir.
 - Mavi ışığın isteğe bağlı akşam geçişi birkaç adımda ve uzun aralıklarla ilerler.
 - Sadece profildeki çalışan kodlara yazılır. 04, 05, 08 ve E6–FF'ye hiçbir zaman yazılmaz; bilinmeyen kodlara yazılmaz.
+- Renk ön ayarına (14) sadece monitörün kendi ilan ettiği ve profilde eşlemesi olan değerler yazılır; yazdıktan sonra geri okunur.
 
 ## 4. Renk boru hattı güvenliği
 

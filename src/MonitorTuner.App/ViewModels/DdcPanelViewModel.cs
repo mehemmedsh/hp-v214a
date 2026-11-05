@@ -7,7 +7,9 @@ using MonitorTuner.Services;
 
 namespace MonitorTuner.App.ViewModels;
 
-public sealed record ChoiceItem(int Value, string Title, bool Selectable)
+/// <param name="Key">Sabit ad (<see cref="PanelChoice.Name"/>): açıklama metninin anahtarı.</param>
+/// <param name="Verified">false: ön ayarın adı tahmin (T318); başlık ve açıklama bunu söyler.</param>
+public sealed record ChoiceItem(int Value, string Title, bool Selectable, string Key = "", bool Verified = true)
 {
     public override string ToString() => Title;
 }
@@ -32,6 +34,19 @@ public sealed class PanelItemViewModel(PanelSettingState state, Action<PanelItem
     public string LockText { get; } = state.Lock == SettingLock.None ? "" : Loc.Get("DdcPanel.Lock_" + state.Lock);
     public bool HasLock => LockText.Length > 0;
 
+    /// <summary>
+    /// Satırın altındaki kısa açıklama (T318): renk ön ayarında seçili ön ayarın ne yaptığı (araştırma, 00-DONANIM.md → DDC/CI),
+    /// adı tahminse nasıl doğrulanacağı; keskinlikte nötr değer ipucu. Diğer ayarlarda boş.
+    /// </summary>
+    public string Description => Setting switch
+    {
+        PanelSetting.ColorPreset when _selected is { } c => DescribePreset(c),
+        PanelSetting.Sharpness => Loc.Get("DdcPanel.Hint_Sharpness"),
+        _ => "",
+    };
+
+    public bool HasDescription => Description.Length > 0;
+
     /// <summary>Kaydırıcı değeri. Sürüklerken sadece ekranda değişir; yazma <see cref="PanelItemViewModel"/> bırakılınca (Commit) olur.</summary>
     public double Value
     {
@@ -54,6 +69,8 @@ public sealed class PanelItemViewModel(PanelSettingState state, Action<PanelItem
             if (value is null || value == _selected) return;
             _selected = value;
             Raise();
+            Raise(nameof(Description));
+            Raise(nameof(HasDescription));
             commit(this); // seçim listesinde seçmek "bırakmak" demektir: tek yazma
         }
     }
@@ -63,9 +80,19 @@ public sealed class PanelItemViewModel(PanelSettingState state, Action<PanelItem
     private static IReadOnlyList<ChoiceItem> Choices(PanelSettingState s) => [.. s.Choices.Select(c =>
     {
         var name = Loc.Get("DdcPanel.Choice_" + c.Name);
-        if (name.StartsWith("[[", StringComparison.Ordinal)) name = c.Name; // bilinmeyen ön ayar değeri: sayı
-        return new ChoiceItem(c.Value, c.Selectable ? name : string.Format(CultureInfo.CurrentCulture, Loc.Get("DdcPanel.Choice_Unverified"), name), c.Selectable);
+        if (IsMissing(name)) name = c.Name; // bilinmeyen ön ayar değeri: sayı
+        var title = c.Verified ? name : string.Format(CultureInfo.CurrentCulture, Loc.Get("DdcPanel.Choice_Unverified"), name);
+        return new ChoiceItem(c.Value, title, c.Selectable, c.Name, c.Verified);
     })];
+
+    private static string DescribePreset(ChoiceItem choice)
+    {
+        var about = Loc.Get("DdcPanel.About_" + choice.Key);
+        if (IsMissing(about)) about = "";
+        return choice.Verified ? about : (about + " " + Loc.Get("DdcPanel.About_Unverified")).Trim();
+    }
+
+    private static bool IsMissing(string text) => text.StartsWith("[[", StringComparison.Ordinal);
 
     private void Raise([CallerMemberName] string? name = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }

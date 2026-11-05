@@ -65,13 +65,13 @@ public class DdcControlTests
     [InlineData("vcp(10 12 14(05")] // kesik dize
     public void Capabilities_MissingOrBrokenVcpList_IsNull(string caps) => Assert.Null(DdcCapabilities.ParseVcpCodes(caps));
 
-    /// <summary>Profilin ve monitörün aralığı dışı, olası değerlerde olmayan ya da doğrulanmamış 14 eşlemesi yazılmaz.</summary>
+    /// <summary>Profilin ve monitörün aralığı dışı ya da olası değerlerde olmayan değer yazılmaz (14 dahil: sadece monitörün ilan ettiği ön ayarlar).</summary>
     [Theory]
     [InlineData(0x10, 101)]
     [InlineData(0x87, 0)]
     [InlineData(0x87, 8)]
+    [InlineData(0x14, 1)]  // sRGB: MCCS'te var, bu monitör ilan etmiyor
     [InlineData(0x14, 3)]  // olası değerlerde yok
-    [InlineData(0x14, 13)] // Low Blue Light: eşleme tahmin (estimated)
     public void Write_ValueNotAllowed_IsForbidden(int code, int value)
     {
         var rig = new Rig();
@@ -103,6 +103,23 @@ public class DdcControlTests
 
         Assert.Equal(DdcWriteResult.Written, rig.Ddc.Write(ColorPreset, 5)); // Neutral: confirmed
         Assert.Equal(1, rig.Hw.Monitor.WriteCount(ColorPreset));
+    }
+
+    /// <summary>
+    /// T318: adı monitörde doğrulanmamış (estimated) ön ayar da yazılır; değer monitörün ilan ettiği listede olduğu sürece
+    /// zararsızdır, yine Güvenlik'ten geri alma noktası alır ve geri alınabilir.
+    /// </summary>
+    [Fact]
+    public void Write_EstimatedColorPreset_IsWritten_AndCanBeRolledBack()
+    {
+        var rig = new Rig();
+
+        Assert.Equal(DdcWriteResult.Written, rig.Ddc.Write(ColorPreset, 13)); // Low Blue Light (tahmini eşleme)
+        var write = Assert.Single(rig.Hw.Monitor.Writes);
+        Assert.Equal(new WriteRequest(WriteTarget.Ddc, Display, ColorPreset), write.RestorePoint.Request);
+
+        rig.Safety.RollBack(write.RestorePoint);
+        Assert.Equal(5, rig.Ddc.Read(ColorPreset)!.Value.Current);
     }
 
     [Fact]

@@ -89,16 +89,49 @@
     <value>VGA</value>
   </data>
   <data name="Choice_Unverified" xml:space="preserve">
-    <value>{0} (doğrulanmadı; monitörün menüsünden seç)</value>
+    <value>{0} (tahmini)</value>
+  </data>
+  <data name="About_Neutral" xml:space="preserve">
+    <value>Fabrika 6500K beyaz: web, fotoğraf ve Windows'un beklediği beyaz. Hazır ön ayarlar içinde en doğru renk; önerilen.</value>
+  </data>
+  <data name="About_CustomRgb" xml:space="preserve">
+    <value>Beyazı RGB kazancıyla sen ayarlarsın; ayar sihirbazı burada beyazı Pixel'in ekranına eşler. Sihirbazdan sonra en doğru seçenek. Mavi ışık filtresi monitörün kazancını sadece bu ön ayarda kullanır.</value>
+  </data>
+  <data name="About_Warm" xml:space="preserve">
+    <value>Sıcak beyaz (yaklaşık 5000K): sarımsı. Akşam okumak için rahat; renk doğruluğu için değil.</value>
+  </data>
+  <data name="About_Cool" xml:space="preserve">
+    <value>Soğuk beyaz (yaklaşık 9300K): mavimsi. Doğru renk değil ve göz için daha yorucu.</value>
+  </data>
+  <data name="About_Native" xml:space="preserve">
+    <value>Panelin işlenmemiş beyazı (renk düzeltmesi yok): en parlak ön ayar, ama beyaz genelde mavimsi.</value>
+  </data>
+  <data name="About_HpEnhancePlus" xml:space="preserve">
+    <value>HP'nin canlı modu: keskinliği ve kontrastı artırır. Videoda canlı görünür; yazıda hale, açık tonlarda kırpma yapabilir.</value>
+  </data>
+  <data name="About_LowBlueLight" xml:space="preserve">
+    <value>HP'nin az mavi ışık modu (TÜV onaylı): mavi azalır, renkler sıcaklaşır. Göz konforu için.</value>
+  </data>
+  <data name="About_Reading" xml:space="preserve">
+    <value>HP'nin okuma modu: iç mekânda okumak için mavi ışığı ve parlaklığı dengeler.</value>
+  </data>
+  <data name="About_Night" xml:space="preserve">
+    <value>HP'nin gece modu: mavi ışık en aza iner. Uykudan önceki saatler için.</value>
+  </data>
+  <data name="About_Unverified" xml:space="preserve">
+    <value>Bu ön ayarın DDC numarası tahmini: seçince monitörün menüsünde Information → Color Setting satırına bakıp adını doğrula.</value>
+  </data>
+  <data name="Hint_Sharpness" xml:space="preserve">
+    <value>Fabrika değeri 4. Daha yüksek değer yazı kenarlarında ince açık/koyu hale yapar; görürsen düşür. Ayar sihirbazının keskinlik adımı en iyisini desenle bulur.</value>
   </data>
   <data name="Lock_NotWritable" xml:space="preserve">
     <value>Bu ayar uygulamadan yazılamıyor; monitörün menüsünden değiştir.</value>
   </data>
   <data name="Lock_WrongColorPreset" xml:space="preserve">
-    <value>RGB kazancı sadece Custom RGB renk ön ayarında etkili. Monitörün menüsünde Color → Custom RGB seç.</value>
+    <value>RGB kazancı sadece Custom RGB renk ön ayarında etkili. Yukarıdaki Renk ön ayarı listesinden ya da monitörün menüsünden (Color) Custom RGB seç.</value>
   </data>
   <data name="Lock_BlueLightActive" xml:space="preserve">
-    <value>Mavi ışık filtresi açık ve aynı kazancı kullanıyor. RGB kazancını ayarlamak için filtreyi kapat; senin değerin geri gelir.</value>
+    <value>Mavi ışık filtresi açık ve monitörün renk kazancını kullanıyor. RGB kazancını ya da renk ön ayarını değiştirmek için filtreyi kapat; senin değerin geri gelir.</value>
   </data>
   <data name="Lock_DimmingActive" xml:space="preserve">
     <value>Ek karartma (dijital) açık; arka ışığı Parlaklık ve ek karartma kaydırıcısı yönetiyor. Oradan ayarla.</value>
@@ -124,8 +157,8 @@
   <data name="Result_BlockedDigitalBoost" xml:space="preserve">
     <value>Kontrast başlangıç değerinin üstüne çıkarılmaz. Daha parlak istiyorsan arka ışığı (Parlaklık) artır.</value>
   </data>
-  <data name="Result_NotConfirmed" xml:space="preserve">
-    <value>Bu renk ön ayarının DDC karşılığı monitörde doğrulanmadı, yazılmadı. Monitörün menüsünden seç.</value>
+  <data name="Result_NotApplied" xml:space="preserve">
+    <value>Monitör bu ön ayarı DDC ile kabul etmedi, eski ön ayarda kaldı. Bu ön ayarı monitörün menüsünden (Color) seç.</value>
   </data>
   <data name="Result_ExternallyChanged" xml:space="preserve">
     <value>Bu ayar sen bakarken monitörden (OSD) değişti. Yeni değer gösteriliyor, hâlâ istiyorsan yeniden ayarla.</value>

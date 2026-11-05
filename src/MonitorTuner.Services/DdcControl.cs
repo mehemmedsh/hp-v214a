@@ -8,7 +8,8 @@ namespace MonitorTuner.Services;
 /// <summary>
 /// DDC katmanı (T301, 03-GUVENLIK.md → 3). Yetenek testi ilk kullanımda bir kez yapılır (<see cref="Probe"/> yeniler).
 /// İzin listesi: profilde yazılabilir ∩ monitörün yetenek dizesi, 04/05/08 ve E6–FF hiçbir zaman. Değer profilin ve
-/// monitörün sınırında olmalı; 14 (renk ön ayarı) sadece <see cref="MappingConfidence.Confirmed"/> eşlemeyle yazılır.
+/// monitörün sınırında olmalı; 14 (renk ön ayarı) sadece monitörün ilan ettiği ve profilde eşlemesi olan bir değerle yazılır
+/// (T318: eşlemenin adı tahmin olsa da; değer monitörün kendi listesinden olduğu için zararsız, adı panel söyler).
 /// Monitördeki değer zaten isteneneyse yazılmaz. Yazma sınırı kod başınadır: <see cref="MinWriteInterval"/> içinde
 /// ikinci yazma ve dakikada <see cref="MaxWritesPerMinute"/>'dan fazlası <see cref="DdcWriteResult.Throttled"/>.
 /// Her yazma önce Güvenlik katmanından geri alma noktası alır. DDC hattına aynı anda tek istek gider (kilit).
@@ -116,7 +117,6 @@ public sealed class DdcControl(DisplayId display, IDdcMonitor monitor, ISafetyLa
         if (info is null) return false;
         if (info.PossibleValues.Count > 0 ? !info.PossibleValues.Contains(value) : info.Maximum is { } max && value > max)
             return false;
-        return code != ColorPresetCode
-            || profile.ColorPresetMap.Any(m => m.DdcValue == value && m.Confidence == MappingConfidence.Confirmed);
+        return code != ColorPresetCode || profile.ColorPresetMap.Any(m => m.DdcValue == value);
     }
 }

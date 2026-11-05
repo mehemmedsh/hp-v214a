@@ -89,16 +89,49 @@
     <value>VGA</value>
   </data>
   <data name="Choice_Unverified" xml:space="preserve">
-    <value>{0} (təsdiqlənməyib; monitorun menyusundan seç)</value>
+    <value>{0} (təxmini)</value>
+  </data>
+  <data name="About_Neutral" xml:space="preserve">
+    <value>Zavod 6500K ağ: vebin, fotoların və Windows-un gözlədiyi ağ. Hazır rejimlər içində ən dəqiq rəng; tövsiyə olunur.</value>
+  </data>
+  <data name="About_CustomRgb" xml:space="preserve">
+    <value>Ağı RGB gücləndirməsi ilə özün ayarlayırsan; ayar sehrbazı burada ağı Pixel-in ekranına uyğunlaşdırır. Sehrbazdan sonra ən dəqiq seçim. Mavi işıq filtri monitorun gücləndirməsini yalnız bu rejimdə istifadə edir.</value>
+  </data>
+  <data name="About_Warm" xml:space="preserve">
+    <value>İsti ağ (təxminən 5000K): sarımtıl. Axşam oxumaq üçün rahatdır; rəng dəqiqliyi üçün deyil.</value>
+  </data>
+  <data name="About_Cool" xml:space="preserve">
+    <value>Soyuq ağ (təxminən 9300K): göyümtül. Dəqiq rəng deyil və göz üçün daha yorucudur.</value>
+  </data>
+  <data name="About_Native" xml:space="preserve">
+    <value>Panelin emal olunmamış ağı (rəng düzəlişi yoxdur): ən parlaq rejim, amma ağ adətən göyümtül olur.</value>
+  </data>
+  <data name="About_HpEnhancePlus" xml:space="preserve">
+    <value>HP-nin canlı rejimi: kəskinliyi və kontrastı artırır. Videoda canlı görünür; yazıda halo, açıq tonlarda kəsilmə yarada bilər.</value>
+  </data>
+  <data name="About_LowBlueLight" xml:space="preserve">
+    <value>HP-nin az mavi işıq rejimi (TÜV təsdiqli): mavi azalır, rənglər istiləşir. Göz rahatlığı üçün.</value>
+  </data>
+  <data name="About_Reading" xml:space="preserve">
+    <value>HP-nin oxu rejimi: qapalı məkanda oxumaq üçün mavi işığı və parlaqlığı tarazlayır.</value>
+  </data>
+  <data name="About_Night" xml:space="preserve">
+    <value>HP-nin gecə rejimi: mavi işıq ən aza enir. Yuxudan əvvəlki saatlar üçün.</value>
+  </data>
+  <data name="About_Unverified" xml:space="preserve">
+    <value>Bu rejimin DDC nömrəsi təxminidir: seçəndən sonra monitorun menyusunda Information → Color Setting sətrinə baxıb adını yoxla.</value>
+  </data>
+  <data name="Hint_Sharpness" xml:space="preserve">
+    <value>Zavod dəyəri 4-dür. Daha yüksək dəyər yazının kənarlarında nazik açıq/tünd halo yaradır; görsən, azalt. Ayar sehrbazının kəskinlik addımı ən yaxşı dəyəri naxışla tapır.</value>
   </data>
   <data name="Lock_NotWritable" xml:space="preserve">
     <value>Bu ayar proqramdan yazıla bilmir; monitorun menyusundan dəyiş.</value>
   </data>
   <data name="Lock_WrongColorPreset" xml:space="preserve">
-    <value>RGB gücləndirməsi yalnız Custom RGB rəng rejimində işləyir. Monitorun menyusunda Color → Custom RGB seç.</value>
+    <value>RGB gücləndirməsi yalnız Custom RGB rəng rejimində işləyir. Yuxarıdakı Rəng rejimi siyahısından və ya monitorun menyusundan (Color) Custom RGB seç.</value>
   </data>
   <data name="Lock_BlueLightActive" xml:space="preserve">
-    <value>Mavi işıq filtri açıqdır və eyni gücləndirməni istifadə edir. RGB gücləndirməsini ayarlamaq üçün filtri bağla; sənin dəyərin geri gələcək.</value>
+    <value>Mavi işıq filtri açıqdır və monitorun rəng gücləndirməsini istifadə edir. RGB gücləndirməsini və ya rəng rejimini dəyişmək üçün filtri bağla; sənin dəyərin geri gələcək.</value>
   </data>
   <data name="Lock_DimmingActive" xml:space="preserve">
     <value>Əlavə qaraltma (rəqəmsal) açıqdır; arxa işığı Parlaqlıq və əlavə qaraltma sürüşdürücüsü idarə edir. Oradan ayarla.</value>
@@ -124,8 +157,8 @@
   <data name="Result_BlockedDigitalBoost" xml:space="preserve">
     <value>Kontrast başlanğıc dəyərindən yuxarı qaldırılmır. Daha parlaq istəyirsənsə, arxa işığı (Parlaqlıq) artır.</value>
   </data>
-  <data name="Result_NotConfirmed" xml:space="preserve">
-    <value>Bu rəng rejiminin DDC qarşılığı monitorda təsdiqlənməyib, yazılmadı. Monitorun menyusundan seç.</value>
+  <data name="Result_NotApplied" xml:space="preserve">
+    <value>Monitor bu rejimi DDC ilə qəbul etmədi, köhnə rejimdə qaldı. Bu rejimi monitorun menyusundan (Color) seç.</value>
   </data>
   <data name="Result_ExternallyChanged" xml:space="preserve">
     <value>Bu ayar sən baxarkən monitordan (OSD) dəyişdi. Yeni dəyər göstərilir; hələ də istəyirsənsə, yenidən ayarla.</value>
