@@ -19,9 +19,6 @@
   <data name="WizardActive" xml:space="preserve">
     <value>Ayar sihirbazı açık: profil, parlaklık ve mavi ışık kapalı (panik açık)</value>
   </data>
-  <data name="Profiles" xml:space="preserve">
-    <value>Renk profilleri</value>
-  </data>
   <data name="Brightness" xml:space="preserve">
     <value>Parlaklık</value>
   </data>
@@ -74,10 +71,10 @@
     <value>ton eğrisi</value>
   </data>
   <data name="Done_Profile" xml:space="preserve">
-    <value>{0} profili uygulandı.</value>
+    <value>{0} modu uygulandı.</value>
   </data>
   <data name="Partial_Profile" xml:space="preserve">
-    <value>{0} profili tam uygulanamadı. Uygulanmayan: {1}.</value>
+    <value>{0} modu tam uygulanamadı. Uygulanmayan: {1}.</value>
   </data>
   <data name="Done_Brightness" xml:space="preserve">
     <value>Parlaklık %{0} yapıldı.</value>
@@ -132,5 +129,26 @@
   </data>
   <data name="Profile_DaVinci" xml:space="preserve">
     <value>DaVinci zaman çizelgesi</value>
+  </data>
+  <data name="Profile_Cinema" xml:space="preserve">
+    <value>Sinema</value>
+  </data>
+  <data name="Profile_CinemaDark" xml:space="preserve">
+    <value>Sinema · Karanlık oda</value>
+  </data>
+  <data name="Profile_CinemaVivid" xml:space="preserve">
+    <value>Sinema · Canlı</value>
+  </data>
+  <data name="Profile_CinemaNight" xml:space="preserve">
+    <value>Sinema · Gece</value>
+  </data>
+  <data name="Profile_ComfortDay" xml:space="preserve">
+    <value>Konfor · Gündüz</value>
+  </data>
+  <data name="Profile_ComfortEvening" xml:space="preserve">
+    <value>Konfor · Akşam</value>
+  </data>
+  <data name="Profile_ComfortNight" xml:space="preserve">
+    <value>Konfor · Gece</value>
   </data>
 </root>

@@ -12,14 +12,20 @@ public static class ProfileText
 {
     private static readonly IReadOnlyDictionary<string, string> BuiltInKeys = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
     {
+        ["Film"] = "Film", ["Sinema"] = "Cinema", ["Sinema · Karanlık oda"] = "CinemaDark", ["Sinema · Canlı"] = "CinemaVivid",
+        ["Sinema · Gece"] = "CinemaNight",
+        ["Konfor · Gündüz"] = "ComfortDay", ["Konfor · Akşam"] = "ComfortEvening", ["Konfor · Gece"] = "ComfortNight",
         ["Gündüz"] = "Day", ["Akşam"] = "Evening", ["Gece"] = "Night", ["Kod"] = "Code",
-        ["Film"] = "Film", ["Oyun"] = "Game", ["DaVinci zaman çizelgesi"] = "DaVinci",
+        ["Oyun"] = "Game", ["DaVinci zaman çizelgesi"] = "DaVinci",
     };
 
     /// <summary>Hazır profilin çeviri anahtarı ("Day"); kullanıcı profilinde null.</summary>
     public static string? BuiltInKey(string name) => BuiltInKeys.TryGetValue(name, out var key) ? key : null;
 
     public static string DisplayName(string name) => BuiltInKey(name) is { } key ? Loc.Get("Tray.Profile_" + key) : name;
+
+    /// <summary>Grubun arayüz dilindeki adı (T321): tepsinin alt menüleri ve ana penceredeki bölümler.</summary>
+    public static string GroupTitle(ProfileGroup group) => Loc.Get("Modes.Group_" + group);
 
     /// <summary>Uygulanamayan ya da ertelenen (ekranda henüz olmayan) ayarların adları, virgülle.</summary>
     public static string NotApplied(ProfileApplyResult? profile)

@@ -14,8 +14,14 @@ public class ColorProfilesServiceTests
 {
     private static readonly MonitorKey Key = new("HP P21b G4", "SN1", "HDMI", "RTX 3080");
 
+    /// <summary>Arayüzdeki sırayla (T321): Sinema, Uzun kullanım (Konfor), Günlük, Özel.</summary>
     private static readonly string[] BuiltInNames =
-        ["Gündüz", "Akşam", "Gece", "Kod", "Film", "Oyun", "DaVinci zaman çizelgesi"];
+    [
+        "Film", "Sinema", "Sinema · Karanlık oda", "Sinema · Canlı", "Sinema · Gece",
+        "Konfor · Gündüz", "Konfor · Akşam", "Konfor · Gece",
+        "Gündüz", "Akşam", "Gece", "Kod",
+        "Oyun", "DaVinci zaman çizelgesi",
+    ];
 
     // ---- Sahteler (hepsi aynı olay günlüğüne yazar) ----
 
@@ -182,12 +188,97 @@ public class ColorProfilesServiceTests
     // ---- Hazır profiller ----
 
     [Fact]
-    public void Profiles_ListsTheSevenBuiltIns_InOrder_AllMarkedBuiltIn()
+    public void Profiles_ListsTheBuiltIns_InOrder_AllMarkedBuiltIn()
     {
         var rig = new Rig();
 
         Assert.Equal(BuiltInNames, rig.Profiles.Profiles.Select(p => p.Name));
         Assert.All(rig.Profiles.Profiles, p => Assert.True(p.BuiltIn));
+    }
+
+    /// <summary>Her hazır modun grubu var, gruplar arayüz sırasında art arda (T321); hiçbir hazır mod "Kendi" grubunda değil.</summary>
+    [Fact]
+    public void BuiltIns_AreGrouped_InTheDisplayOrder()
+    {
+        var groups = ColorProfiles.BuiltIns.Select(p => p.Group).ToList();
+
+        Assert.Equal(
+            [ProfileGroup.Cinema, ProfileGroup.Comfort, ProfileGroup.Daily, ProfileGroup.Special],
+            groups.Distinct());
+        Assert.Equal(groups.OrderBy(g => ColorProfiles.GroupOrder.ToList().IndexOf(g)), groups);
+        Assert.Equal([ProfileGroup.Cinema, ProfileGroup.Comfort, ProfileGroup.Daily, ProfileGroup.Special, ProfileGroup.User],
+            ColorProfiles.GroupOrder);
+        Assert.DoesNotContain(ProfileGroup.User, groups);
+    }
+
+    /// <summary>
+    /// Sinema (T321, 08-GORUNTU-YONTEMLERI.md → 6): beyaz 6500K (filmler D65 ile hazırlanır; yalnız Gece ılık), loş ve karanlık
+    /// oda gamma 2,4 (BT.1886), Canlı kontrast eğrisi; Film aynen (kullanıcı beğendi). Parlaklık odaya göre: Canlı > Film >
+    /// Sinema > Karanlık oda > Gece, hiçbiri ek karartmaya inmez (GPU karartması kontrastı düşürür).
+    /// </summary>
+    [Fact]
+    public void Cinema_UsesD65_TheCinemaGamma_AndDimsWithTheRoom()
+    {
+        var rig = new Rig();
+        ColorProfile film = rig.Built("Film"), cinema = rig.Built("Sinema"), dark = rig.Built("Sinema · Karanlık oda"),
+            vivid = rig.Built("Sinema · Canlı"), night = rig.Built("Sinema · Gece");
+
+        Assert.Equal(new ColorProfile("Film", true, 0.50, KelvinCalculator.OffKelvin, 60, ToneStyle.Standard, ProfileGroup.Cinema), film);
+        Assert.All(new[] { cinema, dark, night }, p => Assert.Equal(ToneStyle.Cinema, p.Tone));
+        Assert.Equal(ToneStyle.Contrast, vivid.Tone);
+        Assert.All(new[] { film, cinema, dark, vivid }, p => Assert.Equal(KelvinCalculator.OffKelvin, p.Kelvin));
+        Assert.InRange(night.Kelvin!.Value, 4000, 5000); // yatmadan önce: daha az mavi ama uzun izlemede yormayacak kadar ılımlı
+
+        Assert.True(vivid.Brightness > film.Brightness && film.Brightness > cinema.Brightness);
+        Assert.True(cinema.Brightness > dark.Brightness && dark.Brightness > night.Brightness);
+        Assert.All(new[] { film, cinema, dark, vivid, night }, p => Assert.True(p.Brightness >= DimmingPlanner.TransitionPoint, p.Name));
+    }
+
+    /// <summary>Karanlıkta renkler soluk algılanır (Hunt etkisi): karanlık oda loş odadan biraz daha canlı; canlılık hep ölçülü (≤ 70).</summary>
+    [Fact]
+    public void Cinema_DarkRoom_GetsALittleMoreVibrance()
+    {
+        var rig = new Rig();
+
+        Assert.True(rig.Built("Sinema · Karanlık oda").Vibrance > rig.Built("Sinema").Vibrance);
+        Assert.All(rig.Profiles.Profiles.Where(p => p.Group == ProfileGroup.Cinema), p => Assert.InRange(p.Vibrance!.Value, 55, 70));
+    }
+
+    /// <summary>
+    /// Uzun kullanım (T321): efekt yok (ton Standart, canlılık yok), ılımlı sıcaklık (4000–5500K: 2800K uzun okumada en çok
+    /// yoruyor), parlaklık odayla birlikte iner ama ek karartmaya inmez.
+    /// </summary>
+    [Fact]
+    public void Comfort_IsEffectFree_ModeratelyWarm_AndDimsWithTheRoom()
+    {
+        var rig = new Rig();
+        ColorProfile day = rig.Built("Konfor · Gündüz"), evening = rig.Built("Konfor · Akşam"), night = rig.Built("Konfor · Gece");
+
+        Assert.All(new[] { day, evening, night }, p =>
+        {
+            Assert.Equal(ProfileGroup.Comfort, p.Group);
+            Assert.Equal(ToneStyle.Standard, p.Tone);
+            Assert.Null(p.Vibrance);
+            Assert.InRange(p.Kelvin!.Value, 4000, 5500);
+            Assert.True(p.Brightness >= DimmingPlanner.TransitionPoint, p.Name);
+        });
+        Assert.True(day.Brightness > evening.Brightness && evening.Brightness > night.Brightness);
+        Assert.True(day.Kelvin > evening.Kelvin && evening.Kelvin >= night.Kelvin);
+    }
+
+    /// <summary>Kullanıcının kaydettiği her profil "Kendi" grubundadır; dosyada başka grup yazsa da.</summary>
+    [Fact]
+    public void UserProfiles_AreAlwaysInTheUserGroup()
+    {
+        var rig = new Rig();
+        rig.Profiles.Save(User("Benim") with { Group = ProfileGroup.Cinema });
+        rig.Store.Sections[ColorProfiles.Section] = new ColorProfilesRecord(
+            [.. rig.Store.Read<ColorProfilesRecord>(Key, ColorProfiles.Section)!.Profiles, User("Elle") with { Group = ProfileGroup.Daily }]);
+
+        var reopened = rig.Reopen().Profiles.Where(p => !p.BuiltIn).ToList();
+
+        Assert.Equal(["Benim", "Elle"], reopened.Select(p => p.Name));
+        Assert.All(reopened, p => Assert.Equal(ProfileGroup.User, p.Group));
     }
 
     [Fact]
@@ -198,14 +289,14 @@ public class ColorProfilesServiceTests
         foreach (var profile in rig.Profiles.Profiles) ColorProfiles.Validate(profile); // atmamalı
     }
 
-    /// <summary>Canlılık sadece Film ve Oyun'da açık; diğer hazır profillerde null (kapalı).</summary>
+    /// <summary>Canlılık sadece sinema modlarında ve Oyun'da açık; diğer hazır profillerde null (kapalı).</summary>
     [Fact]
-    public void BuiltIns_VibranceOnlyInFilmAndGame()
+    public void BuiltIns_VibranceOnlyInCinemaAndGame()
     {
         var rig = new Rig();
 
         foreach (var profile in rig.Profiles.Profiles)
-            Assert.Equal(profile.Name is "Film" or "Oyun", profile.Vibrance is not null);
+            Assert.Equal(profile.Group == ProfileGroup.Cinema || profile.Name == "Oyun", profile.Vibrance is not null);
     }
 
     /// <summary>DaVinci zaman çizelgesi: nötr ve efektsiz (mavi ışık kapalı, canlılık yok).</summary>

@@ -19,9 +19,6 @@
   <data name="WizardActive" xml:space="preserve">
     <value>Ayar sehrbazı açıqdır: profil, parlaqlıq və mavi işıq bağlıdır (panika açıqdır)</value>
   </data>
-  <data name="Profiles" xml:space="preserve">
-    <value>Rəng profilləri</value>
-  </data>
   <data name="Brightness" xml:space="preserve">
     <value>Parlaqlıq</value>
   </data>
@@ -74,10 +71,10 @@
     <value>ton əyrisi</value>
   </data>
   <data name="Done_Profile" xml:space="preserve">
-    <value>{0} profili tətbiq olundu.</value>
+    <value>{0} rejimi tətbiq olundu.</value>
   </data>
   <data name="Partial_Profile" xml:space="preserve">
-    <value>{0} profili tam tətbiq olunmadı. Tətbiq olunmayan: {1}.</value>
+    <value>{0} rejimi tam tətbiq olunmadı. Tətbiq olunmayan: {1}.</value>
   </data>
   <data name="Done_Brightness" xml:space="preserve">
     <value>Parlaqlıq %{0} edildi.</value>
@@ -132,5 +129,26 @@
   </data>
   <data name="Profile_DaVinci" xml:space="preserve">
     <value>DaVinci zaman şkalası</value>
+  </data>
+  <data name="Profile_Cinema" xml:space="preserve">
+    <value>Kino</value>
+  </data>
+  <data name="Profile_CinemaDark" xml:space="preserve">
+    <value>Kino · Qaranlıq otaq</value>
+  </data>
+  <data name="Profile_CinemaVivid" xml:space="preserve">
+    <value>Kino · Canlı</value>
+  </data>
+  <data name="Profile_CinemaNight" xml:space="preserve">
+    <value>Kino · Gecə</value>
+  </data>
+  <data name="Profile_ComfortDay" xml:space="preserve">
+    <value>Rahatlıq · Gündüz</value>
+  </data>
+  <data name="Profile_ComfortEvening" xml:space="preserve">
+    <value>Rahatlıq · Axşam</value>
+  </data>
+  <data name="Profile_ComfortNight" xml:space="preserve">
+    <value>Rahatlıq · Gecə</value>
   </data>
 </root>

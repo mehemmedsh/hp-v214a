@@ -12,13 +12,37 @@ namespace MonitorTuner.Services;
 /// <param name="Kelvin">Mavi ışık; 6500 = kapalı.</param>
 /// <param name="Vibrance">NVIDIA canlılık (50–100; NVIDIA panelindeki %).</param>
 /// <param name="Tone">Ton eğrisi (T320): Standart (kalibrasyonun 2,2'si), Sinema (2,4) ya da canlı kontrast.</param>
+/// <param name="Group">Arayüzdeki grubu (T321); kullanıcı profilleri her zaman <see cref="ProfileGroup.User"/>.</param>
 public sealed record ColorProfile(
-    string Name, bool BuiltIn, double? Brightness, int? Kelvin, int? Vibrance, ToneStyle Tone = ToneStyle.Standard);
+    string Name, bool BuiltIn, double? Brightness, int? Kelvin, int? Vibrance, ToneStyle Tone = ToneStyle.Standard,
+    ProfileGroup Group = ProfileGroup.User);
+
+/// <summary>
+/// Modların grubu (T321). Arayüzde ve tepside <c>ColorProfiles.GroupOrder</c> sırasıyla. <see cref="User"/> = 0: eski
+/// kayıtlarda alan yoksa da kullanıcı grubu gelir.
+/// </summary>
+public enum ProfileGroup
+{
+    /// <summary>Kullanıcının kaydettiği profiller.</summary>
+    User = 0,
+
+    /// <summary>Film ve dizi: oda ışığına göre sinema modları.</summary>
+    Cinema = 1,
+
+    /// <summary>Uzun kullanım, göz konforu: efektsiz, ılımlı sıcaklık, oda ışığına uygun parlaklık.</summary>
+    Comfort = 2,
+
+    /// <summary>Günlük: Gündüz (doğru renk), Akşam ve Gece (uyku öncesi, güçlü mavi ışık azaltma), Kod.</summary>
+    Daily = 3,
+
+    /// <summary>Özel işler: Oyun, DaVinci zaman çizelgesi.</summary>
+    Special = 4,
+}
 
 /// <summary>Renk profilleri (T308): sadece kullanıcı seçince, değerleri bir kez ayarlar.</summary>
 public interface IColorProfiles
 {
-    /// <summary>Hazırlar (Gündüz, Akşam, Gece, Kod, Film, Oyun, DaVinci zaman çizelgesi) ve kullanıcınınkiler.</summary>
+    /// <summary>Hazırlar (grup sırasıyla: sinema, uzun kullanım, günlük, özel; T321) ve kullanıcınınkiler.</summary>
     IReadOnlyList<ColorProfile> Profiles { get; }
 
     /// <summary>

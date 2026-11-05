@@ -17,7 +17,7 @@
     <value>Görüntü rejimləri</value>
   </data>
   <data name="Intro" xml:space="preserve">
-    <value>Bir rejimə tıkla: parlaqlıq, mavi işıq və rəng canlılığı birlikdə ayarlanır. Hz-ə, kalibrləməyə və monitorun rəng rejiminə toxunmur.</value>
+    <value>Bir rejimə tıkla: parlaqlıq, mavi işıq, ton əyrisi və rəng canlılığı birlikdə ayarlanır. Hz-ə, kalibrləməyə və monitorun rəng rejiminə toxunmur.</value>
   </data>
   <data name="Recommended" xml:space="preserve">
     <value>tövsiyə olunur</value>
@@ -32,7 +32,7 @@
     <value>2. Ayar sehrbazı: ağı Pixel-in ekranına uyğunlaşdırır, qamma 2.2-ni və boz balansını gözlə və naxışlarla ayarlayır. Ən dəqiq rəng budur.</value>
   </data>
   <data name="BestStep3" xml:space="preserve">
-    <value>3. Gündəlik istifadədə Gündüz rejimi; axşam Axşam, qaranlıq otaqda Gecə.</value>
+    <value>3. Gündəlik işdə Gündüz; film üçün Kino rejimləri (otağın işığına görə); saatlarla işləyəndə Uzun istifadə rejimləri.</value>
   </data>
   <data name="Done" xml:space="preserve">
     <value>{0} rejimi tətbiq olundu.</value>
@@ -56,16 +56,16 @@
     <value>Gündüz və gündəlik iş üçün ən dəqiq görüntü: effekt yoxdur, ağ 6500K.</value>
   </data>
   <data name="Purpose_Evening" xml:space="preserve">
-    <value>Axşam: ağ istiləşir (3400K), parlaqlıq bir az azalır; göz daha az yorulur.</value>
+    <value>Axşam, yuxudan əvvəlki saatlar: nəzərəçarpan mavi işıq azaltması (3400K). Uzun oxuda Rahatlıq · Axşam daha az yorur.</value>
   </data>
   <data name="Purpose_Night" xml:space="preserve">
-    <value>Qaranlıq otaq və yatmazdan əvvəl: çox isti ağ (2700K), aşağı parlaqlıq.</value>
+    <value>Yatmazdan dərhal əvvəl qısa istifadə: ən az mavi işıq (2700K) və aşağı parlaqlıq.</value>
   </data>
   <data name="Purpose_Code" xml:space="preserve">
     <value>Uzun oxu və kod: bir az isti ağ (5000K); ağ səhifə gözü qamaşdırmır.</value>
   </data>
   <data name="Purpose_Film" xml:space="preserve">
-    <value>Film və video: rənglər daha canlı (NVIDIA canlılığı), TN panelin solğun rəngini kompensasiya edir; dəqiq rəng deyil.</value>
+    <value>İşıqlı otaqda film və serial: canlı rənglər (TN panelin solğun rəngini kompensasiya edir), standart ton. Dəqiq rəng deyil, gözə xoş rəng.</value>
   </data>
   <data name="Purpose_Game" xml:space="preserve">
     <value>Oyun: bir az daha parlaq və canlı rənglər.</value>
@@ -90,5 +90,53 @@
   </data>
   <data name="Value_VibranceOff" xml:space="preserve">
     <value>Canlılıq yoxdur</value>
+  </data>
+  <data name="Purpose_Cinema" xml:space="preserve">
+    <value>Yarıqaranlıq otaqda film (bir lampa yanır): filmlərin hazırlandığı qamma 2.4 ilə dərin orta tonlar, kölgələr qorunur; 6500K ağ, yüngül canlılıq.</value>
+  </data>
+  <data name="Purpose_CinemaDark" xml:space="preserve">
+    <value>İşıqlar sönülü olanda film: aşağı parlaqlıq gözü qamaşdırmır və TN panelin boz qarasını tündləşdirir; qamma 2.4; qaranlıqda rənglər solğun göründüyü üçün bir az daha canlılıq. Monitorun arxasına zəif 6500K işıq (bias işığı) qaranı daha dərin göstərir.</value>
+  </data>
+  <data name="Purpose_CinemaVivid" xml:space="preserve">
+    <value>Animasiya, döyüş filmləri, sənədli filmlər: canlı kontrast əyrisi və güclü canlılıq; daha dolğun və parlaq görüntü. Dəqiq rəng deyil.</value>
+  </data>
+  <data name="Purpose_CinemaNight" xml:space="preserve">
+    <value>Yatmazdan əvvəl film: aşağı parlaqlıq və mülayim isti ağ (4500K) yuxuya daha az təsir edir; qamma 2.4 qalır.</value>
+  </data>
+  <data name="Purpose_ComfortDay" xml:space="preserve">
+    <value>Gün işığında saatlarla iş: parlaqlıq otağa uyğun, bir az isti ağ (5500K), effekt yoxdur.</value>
+  </data>
+  <data name="Purpose_ComfortEvening" xml:space="preserve">
+    <value>Yarıqaranlıq otaqda uzun oxu və iş: daha aşağı parlaqlıq, mülayim isti ağ (4500K: araşdırmada ən az yoran aralıq), effekt yoxdur.</value>
+  </data>
+  <data name="Purpose_ComfortNight" xml:space="preserve">
+    <value>Qaranlıq otaqda uzun istifadə: ən aşağı arxa işıq (əlavə qaraltma yoxdur), 4000K. Çox isti ağ (2700K) uzun oxuda daha çox yorur.</value>
+  </data>
+  <data name="Group_Cinema" xml:space="preserve">
+    <value>Kino</value>
+  </data>
+  <data name="Group_Comfort" xml:space="preserve">
+    <value>Uzun istifadə · göz rahatlığı</value>
+  </data>
+  <data name="Group_Daily" xml:space="preserve">
+    <value>Gündəlik</value>
+  </data>
+  <data name="Group_Special" xml:space="preserve">
+    <value>Xüsusi</value>
+  </data>
+  <data name="Group_User" xml:space="preserve">
+    <value>Öz rejimlərin</value>
+  </data>
+  <data name="GroupHint_Cinema" xml:space="preserve">
+    <value>24 fps filmlər 60 Hz-də ilişir; ekranı 72 Hz-ə keçirsən, hər kadr bərabər müddət görünür (72 Hz əvvəlcə NVIDIA-da əlavə olunmalıdır: Bələdçi, bölmə 2). Rejimlər Hz-ə toxunmur.</value>
+  </data>
+  <data name="GroupHint_Comfort" xml:space="preserve">
+    <value>Gözü ən çox ekranın otaqdan çox parlaq olması yorur: ağ səhifə yanındakı divardan parlaq görünməsin. Hər 20 dəqiqədən bir 20 saniyə 6 metr uzağa bax (20-20-20).</value>
+  </data>
+  <data name="Value_ToneCinema" xml:space="preserve">
+    <value>Kino tonu (qamma 2.4)</value>
+  </data>
+  <data name="Value_ToneContrast" xml:space="preserve">
+    <value>Canlı kontrast</value>
   </data>
 </root>

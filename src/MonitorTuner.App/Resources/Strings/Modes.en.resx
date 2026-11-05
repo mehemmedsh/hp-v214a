@@ -17,7 +17,7 @@
     <value>Picture modes</value>
   </data>
   <data name="Intro" xml:space="preserve">
-    <value>Click a mode: brightness, blue light and color vibrance are set together. It does not touch the refresh rate, the calibration or the monitor's color preset.</value>
+    <value>Click a mode: brightness, blue light, tone curve and color vibrance are set together. It does not touch the refresh rate, the calibration or the monitor's color preset.</value>
   </data>
   <data name="Recommended" xml:space="preserve">
     <value>recommended</value>
@@ -32,7 +32,7 @@
     <value>2. Setup wizard: matches the white to the Pixel's screen and sets gamma 2.2 and grey balance by eye with patterns. This gives the most accurate color.</value>
   </data>
   <data name="BestStep3" xml:space="preserve">
-    <value>3. Day mode for everyday use; Evening in the evening, Night in a dark room.</value>
+    <value>3. Day for everyday work; Cinema modes for movies (by room light); Long use modes for hours of work.</value>
   </data>
   <data name="Done" xml:space="preserve">
     <value>{0} mode applied.</value>
@@ -56,16 +56,16 @@
     <value>The most accurate picture for daytime and everyday work: no effects, 6500K white.</value>
   </data>
   <data name="Purpose_Evening" xml:space="preserve">
-    <value>Evening: warmer white (3400K), slightly lower brightness; less eye strain.</value>
+    <value>Evening, the hours before sleep: clear blue light reduction (3400K). For long reading Comfort · Evening is less tiring.</value>
   </data>
   <data name="Purpose_Night" xml:space="preserve">
-    <value>Dark room and before bed: very warm white (2700K), low brightness.</value>
+    <value>Short use right before bed: least blue light (2700K) and low brightness.</value>
   </data>
   <data name="Purpose_Code" xml:space="preserve">
     <value>Long reading and code: slightly warm white (5000K); white pages don't glare.</value>
   </data>
   <data name="Purpose_Film" xml:space="preserve">
-    <value>Movies and video: more vivid colors (NVIDIA vibrance) to offset the TN panel's washed-out look; not accurate color.</value>
+    <value>Movies and series in a bright room: vivid colors (offsets the TN panel's washed-out look), standard tone. Not accurate color, pleasing color.</value>
   </data>
   <data name="Purpose_Game" xml:space="preserve">
     <value>Games: a little brighter and more vivid colors.</value>
@@ -90,5 +90,53 @@
   </data>
   <data name="Value_VibranceOff" xml:space="preserve">
     <value>No vibrance</value>
+  </data>
+  <data name="Purpose_Cinema" xml:space="preserve">
+    <value>Movies in a dim room (a lamp on): gamma 2.4, the value films are mastered for, gives deep midtones while shadows are kept; 6500K white, a little vibrance.</value>
+  </data>
+  <data name="Purpose_CinemaDark" xml:space="preserve">
+    <value>Movies with the lights off: low brightness doesn't glare and deepens the TN panel's grey black; gamma 2.4; a little more vibrance because colors look paler in the dark. A soft 6500K light behind the monitor (bias light) makes black look deeper.</value>
+  </data>
+  <data name="Purpose_CinemaVivid" xml:space="preserve">
+    <value>Animation, action, documentaries: vivid contrast curve and strong vibrance; a fuller, punchier picture. Not accurate color.</value>
+  </data>
+  <data name="Purpose_CinemaNight" xml:space="preserve">
+    <value>A movie before bed: low brightness and mild warm white (4500K) affect sleep less; gamma 2.4 stays.</value>
+  </data>
+  <data name="Purpose_ComfortDay" xml:space="preserve">
+    <value>Hours of work in daylight: brightness suited to the room, slightly warm white (5500K), no effects.</value>
+  </data>
+  <data name="Purpose_ComfortEvening" xml:space="preserve">
+    <value>Long reading and work in a dim room: lower brightness, mild warm white (4500K: the least tiring range in research), no effects.</value>
+  </data>
+  <data name="Purpose_ComfortNight" xml:space="preserve">
+    <value>Long use in a dark room: lowest backlight (no extra dimming), 4000K. Very warm white (2700K) tires more in long reading.</value>
+  </data>
+  <data name="Group_Cinema" xml:space="preserve">
+    <value>Cinema</value>
+  </data>
+  <data name="Group_Comfort" xml:space="preserve">
+    <value>Long use · eye comfort</value>
+  </data>
+  <data name="Group_Daily" xml:space="preserve">
+    <value>Everyday</value>
+  </data>
+  <data name="Group_Special" xml:space="preserve">
+    <value>Special</value>
+  </data>
+  <data name="Group_User" xml:space="preserve">
+    <value>Your modes</value>
+  </data>
+  <data name="GroupHint_Cinema" xml:space="preserve">
+    <value>24 fps movies judder at 60 Hz; at 72 Hz every frame is shown for the same time (add 72 Hz in NVIDIA first: Guide, section 2). Modes don't touch the refresh rate.</value>
+  </data>
+  <data name="GroupHint_Comfort" xml:space="preserve">
+    <value>What tires the eyes most is a screen much brighter than the room: a white page should not look brighter than the wall next to it. Every 20 minutes look 6 m away for 20 seconds (20-20-20).</value>
+  </data>
+  <data name="Value_ToneCinema" xml:space="preserve">
+    <value>Cinema tone (gamma 2.4)</value>
+  </data>
+  <data name="Value_ToneContrast" xml:space="preserve">
+    <value>Vivid contrast</value>
   </data>
 </root>

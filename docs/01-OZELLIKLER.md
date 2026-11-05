@@ -67,7 +67,7 @@ Yöntemlerin ayrıntısı: `08-GORUNTU-YONTEMLERI.md`.
 
 ### 3.4 Dithering ve canlılık · T303
 - **Dithering:** GPU tablosu değiştiğinde (kalibrasyon, mavi ışık, ek karartma) 256 ton seviyesinin bir kısmı kaybolur ve koyu geçişlerde (gökyüzü, gölge) basamaklar görünür. Dithering kaybolan ara tonları çok ince bir desenle taklit eder; geçişler pürüzsüz kalır. NVIDIA tam aralık RGB'de varsayılan olarak bunu yapmadığı için GPU tablosu kullanılırken açık tutulur.
-- **Canlılık (NVIDIA Digital Vibrance):** Renk doygunluğunu artırır, TN'nin soluk görünümünü canlandırır. Doğru renk değil, göze hoş renk; sadece Film ve Oyun profillerinde açılır. Uygulama kapanınca varsayılana döner.
+- **Canlılık (NVIDIA Digital Vibrance):** Renk doygunluğunu artırır, TN'nin soluk görünümünü canlandırır. Doğru renk değil, göze hoş renk; sadece sinema modlarında ve Oyun'da açılır (T321). Uygulama kapanınca varsayılana döner.
 
 ### 3.5 Parlaklık ve ek karartma · T306
 - Tek kaydırıcı: önce arka ışık (DDC, 100 → 0; PWM yok, titreşimsiz), sonra GPU ile ek karartma (beyaz en az %15). Karanlık odada 0'ın bile parlak geldiği durum için.
@@ -77,8 +77,11 @@ Yöntemlerin ayrıntısı: `08-GORUNTU-YONTEMLERI.md`.
 - Monitörün Low Blue Light ön ayarına kısayol. İsteğe bağlı yavaş akşam geçişi (varsayılan kapalı; sadece renk değişir).
 - Windows Gece ışığı veya f.lux açıksa uyarı.
 
-### 3.7 Renk profilleri (presetler) · T308
-- **Gündüz**, **Akşam**, **Gece** (mavi ışık + düşük parlaklık), **Kod**, **Film** ve **Oyun** (canlılık açık), **DaVinci zaman çizelgesi** (nötr, efektsiz). Kullanıcı yenilerini ekleyebilir.
+### 3.7 Renk profilleri (görüntü modları) · T308, T321
+- **Sinema** (T321): **Film** (aydınlık oda), **Sinema** (loş oda, gamma 2.4), **Sinema · Karanlık oda**, **Sinema · Canlı** (canlı kontrast), **Sinema · Gece** (4500K). Beyaz 6500K, canlılık ölçülü; 24 fps için 72 Hz önerisi yazar (Hz'e dokunmaz).
+- **Uzun kullanım · göz konforu** (T321): **Konfor · Gündüz / Akşam / Gece**: parlaklık odanın ışığına göre, 4000–5500K, efekt yok.
+- **Günlük:** **Gündüz** (en doğru), **Akşam** ve **Gece** (uyku öncesi, güçlü mavi ışık azaltma), **Kod**. **Özel:** **Oyun**, **DaVinci zaman çizelgesi** (nötr, efektsiz). Kullanıcı yenilerini ekleyebilir.
+- Değerler ve dayanakları: `08-GORUNTU-YONTEMLERI.md` → 6. Tepside de gruplu alt menüler.
 - Sadece kullanıcı seçince uygulanır; Hz'e dokunmaz.
 - Ana pencerenin ilk sekmesinde "Görüntü modları" olarak tek tıkla; her modun ne için olduğu ve ne ayarladığı yazar. Yanında "En iyi görüntü için" üç adım: Neutral (ya da sihirbaz için Custom RGB) ve keskinlik 4, ayar sihirbazı, Gündüz modu (T319). Tepsiden de seçilir.
 

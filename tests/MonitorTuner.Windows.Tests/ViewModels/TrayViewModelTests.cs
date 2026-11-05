@@ -60,18 +60,36 @@ public class TrayViewModelTests
         var texts = vm.BuildMenu().Where(i => !i.IsSeparator).Select(i => i.Text).ToList();
 
         Assert.Equal(
-            ["Renk profilleri", "Parlaklık", "Ek karartma", "Mavi ışık", "Panik: efektleri kapat (Ctrl+Alt+Shift+P)", "Ana pencereyi aç", "Çık"],
-            texts);
+        [
+            "Sinema", "Uzun kullanım · göz konforu", "Günlük", "Özel", "Kendi modların",
+            "Parlaklık", "Ek karartma", "Mavi ışık", "Panik: efektleri kapat (Ctrl+Alt+Shift+P)", "Ana pencereyi aç", "Çık",
+        ], texts);
     }
 
+    /// <summary>Görüntü modları gruplarıyla (T321): her grup bir alt menü, içinde servisin sırası; kullanıcının modları en sonda.</summary>
     [Fact]
-    public void ProfileSubmenu_ListsBuiltInAndUserProfiles()
+    public void ModeGroups_ListBuiltInAndUserProfiles()
     {
         var (vm, _, _) = Make();
+        var menu = vm.BuildMenu();
 
-        var profiles = Find(vm.BuildMenu(), "Renk profilleri").Children!.Select(i => i.Text);
+        Assert.Equal(["Film", "Sinema", "Sinema · Karanlık oda", "Sinema · Canlı", "Sinema · Gece"],
+            Find(menu, "Sinema").Children!.Select(i => i.Text));
+        Assert.Equal(["Konfor · Gündüz", "Konfor · Akşam", "Konfor · Gece"],
+            Find(menu, "Uzun kullanım · göz konforu").Children!.Select(i => i.Text));
+        Assert.Equal(["Gündüz", "Akşam", "Gece", "Kod"], Find(menu, "Günlük").Children!.Select(i => i.Text));
+        Assert.Equal(["Oyun", "DaVinci zaman çizelgesi"], Find(menu, "Özel").Children!.Select(i => i.Text));
+        Assert.Equal(["Benim"], Find(menu, "Kendi modların").Children!.Select(i => i.Text));
+    }
 
-        Assert.Equal(["Gündüz", "Akşam", "Gece", "Kod", "Film", "Oyun", "DaVinci zaman çizelgesi", "Benim"], profiles);
+    /// <summary>Kullanıcı modu yoksa boş "Kendi modların" menüsü görünmez.</summary>
+    [Fact]
+    public void EmptyGroup_IsNotShown()
+    {
+        var (vm, quick, _) = Make();
+        quick.List.RemoveAll(p => !p.BuiltIn);
+
+        Assert.DoesNotContain(vm.BuildMenu(), i => i.Text == "Kendi modların");
     }
 
     /// <summary>T502: hazır profillerin adları arayüz dilinde görünür; servise Türkçe sabit ad gider. Kullanıcı profili olduğu gibi.</summary>
@@ -81,14 +99,17 @@ public class TrayViewModelTests
         TestCulture.With("en-US", () =>
         {
             var (vm, quick, notes) = Make();
-            var profiles = Find(vm.BuildMenu(), "Color profiles").Children!;
+            var menu = vm.BuildMenu();
 
-            Assert.Equal(["Day", "Evening", "Night", "Code", "Movie", "Game", "DaVinci timeline", "Benim"], profiles.Select(i => i.Text));
+            Assert.Equal(["Movie", "Cinema", "Cinema · Dark room", "Cinema · Vivid", "Cinema · Night"],
+                Find(menu, "Cinema").Children!.Select(i => i.Text));
+            Assert.Equal(["Day", "Evening", "Night", "Code"], Find(menu, "Everyday").Children!.Select(i => i.Text));
+            Assert.Equal(["Benim"], Find(menu, "Your modes").Children!.Select(i => i.Text));
 
-            profiles.Single(i => i.Text == "Evening").Click!();
+            Find(menu, "Everyday").Children!.Single(i => i.Text == "Evening").Click!();
 
             Assert.Equal(["profile:Akşam"], quick.Calls);
-            Assert.Equal(["Evening profile applied."], notes);
+            Assert.Equal(["Evening mode applied."], notes);
         });
     }
 
@@ -97,10 +118,10 @@ public class TrayViewModelTests
     {
         var (vm, quick, notes) = Make();
 
-        Find(vm.BuildMenu(), "Renk profilleri").Children!.Single(i => i.Text == "Film").Click!();
+        Find(vm.BuildMenu(), "Sinema").Children!.Single(i => i.Text == "Film").Click!();
 
         Assert.Equal(["profile:Film"], quick.Calls);
-        Assert.Equal(["Film profili uygulandı."], notes);
+        Assert.Equal(["Film modu uygulandı."], notes);
     }
 
     [Fact]
@@ -140,7 +161,7 @@ public class TrayViewModelTests
         var menu = vm.BuildMenu();
 
         Assert.Contains(menu, i => i.Text.StartsWith("Ayar sihirbazı açık", StringComparison.Ordinal) && !i.Enabled);
-        foreach (var submenu in new[] { "Renk profilleri", "Parlaklık", "Ek karartma", "Mavi ışık" })
+        foreach (var submenu in new[] { "Sinema", "Uzun kullanım · göz konforu", "Günlük", "Özel", "Kendi modların", "Parlaklık", "Ek karartma", "Mavi ışık" })
         {
             var item = Find(menu, submenu);
             Assert.All(item.Children!, child => Assert.False(child.Enabled, $"{submenu} → {child.Text}"));
@@ -159,7 +180,8 @@ public class TrayViewModelTests
         var menu = vm.BuildMenu();
 
         Assert.DoesNotContain(menu, i => i.Text.StartsWith("Ayar sihirbazı açık", StringComparison.Ordinal));
-        Assert.All(Find(menu, "Renk profilleri").Children!, c => Assert.True(c.Enabled));
+        Assert.All(Find(menu, "Sinema").Children!, c => Assert.True(c.Enabled));
+        Assert.All(Find(menu, "Kendi modların").Children!, c => Assert.True(c.Enabled));
     }
 
     [Fact]
@@ -169,7 +191,7 @@ public class TrayViewModelTests
         var menu = vm.BuildMenu();
         quick.Next = new QuickResult(QuickOutcome.Blocked); // menü açıkken sihirbaz başladı
 
-        Find(menu, "Renk profilleri").Children!.Single(i => i.Text == "Film").Click!();
+        Find(menu, "Sinema").Children!.Single(i => i.Text == "Film").Click!();
 
         Assert.Equal(["Ayar sihirbazı açıkken bu ayar kapalı. Sihirbazı bitirin ya da iptal edin."], notes);
     }
@@ -185,7 +207,7 @@ public class TrayViewModelTests
 
         vm.SelectProfile("Film");
 
-        Assert.Equal(["Film profili tam uygulanamadı. Uygulanmayan: mavi ışık, canlılık."], notes);
+        Assert.Equal(["Film modu tam uygulanamadı. Uygulanmayan: mavi ışık, canlılık."], notes);
     }
 
     [Fact]

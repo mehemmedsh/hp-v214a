@@ -45,8 +45,39 @@ public class ModesViewModelTests
     {
         var (vm, _) = Make();
 
-        Assert.Equal(["Gündüz", "Akşam", "Gece", "Kod", "Film", "Oyun", "DaVinci zaman çizelgesi", "Benim"], vm.Modes.Select(m => m.Title));
+        Assert.Equal(
+        [
+            "Film", "Sinema", "Sinema · Karanlık oda", "Sinema · Canlı", "Sinema · Gece",
+            "Konfor · Gündüz", "Konfor · Akşam", "Konfor · Gece",
+            "Gündüz", "Akşam", "Gece", "Kod", "Oyun", "DaVinci zaman çizelgesi", "Benim",
+        ], vm.Modes.Select(m => m.Title));
         Assert.Equal("Benim", vm.Modes[^1].Name);
+    }
+
+    /// <summary>Gruplar (T321) arayüz sırasında; kullanıcı profili listede nerede olursa olsun "Kendi modların"da, en sonda.</summary>
+    [Fact]
+    public void Modes_AreOrderedByGroup_WithGroupTitles()
+    {
+        var quick = new StubQuick();
+        quick.List.Insert(0, new ColorProfile("Önce", false, 0.5, null, null));
+
+        var vm = new ModesViewModel(quick);
+
+        Assert.Equal(["Sinema", "Uzun kullanım · göz konforu", "Günlük", "Özel", "Kendi modların"],
+            vm.Modes.Select(m => m.GroupTitle).Distinct());
+        Assert.Equal(["Önce", "Benim"], vm.Modes.Where(m => m.Group == ProfileGroup.User).Select(m => m.Name));
+        Assert.Equal("Benim", vm.Modes[^1].Name);
+    }
+
+    [Fact]
+    public void Groups_AreTranslated()
+    {
+        TestCulture.With("en-US", () =>
+        {
+            var (vm, _) = Make();
+            Assert.Equal(["Cinema", "Long use · eye comfort", "Everyday", "Special", "Your modes"], vm.Modes.Select(m => m.GroupTitle).Distinct());
+            Assert.Equal("Cinema · Dark room", vm.Modes.Single(m => m.Name == "Sinema · Karanlık oda").Title);
+        });
     }
 
     [Fact]
@@ -82,6 +113,17 @@ public class ModesViewModelTests
         // Yüzde, monitöre gerçekten yazılan değer: DimmingPlanner 0,30'u 12'ye çevirir (12,4999… kayan nokta).
         Assert.Equal("Arka ışık %12 · Mavi ışık 2700K · Canlılık yok", Mode(vm, "Gece").Values);
         Assert.Equal("Arka ışık %25 · Mavi ışık 4500K · Canlılık yok", Mode(vm, "Benim").Values);
+    }
+
+    /// <summary>Ton eğrisi (T320) değerlerde adıyla görünür; Standart ton yazılmaz.</summary>
+    [Fact]
+    public void Values_ShowTheToneCurve_WhenItIsNotStandard()
+    {
+        var (vm, _) = Make();
+
+        Assert.Equal("Arka ışık %27 · Mavi ışık kapalı (6500K) · Sinema tonu (gamma 2.4) · Canlılık %56", Mode(vm, "Sinema").Values);
+        Assert.Equal("Arka ışık %44 · Mavi ışık kapalı (6500K) · Canlı kontrast · Canlılık %68", Mode(vm, "Sinema · Canlı").Values);
+        Assert.DoesNotContain("ton", Mode(vm, "Konfor · Akşam").Values, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -178,9 +220,9 @@ public class ModesViewModelTests
         lane.RunAll();
 
         Assert.True(task.IsCompleted);
-        Assert.Equal(["profile:Gündüz"], quick.Calls);
+        Assert.Equal(["profile:Film"], quick.Calls); // listenin ilki: Sinema grubunun ilk modu (T321)
         Assert.False(vm.IsBusy);
-        Assert.Equal("Gündüz modu uygulandı.", vm.Status);
+        Assert.Equal("Film modu uygulandı.", vm.Status);
     }
 
     [Fact]
@@ -197,13 +239,15 @@ public class ModesViewModelTests
     [Fact]
     public void AllTexts_ExistInTurkishResources()
     {
-        var keys = new[]
-        {
+        string[] keys =
+        [
             "Modes.Title", "Modes.Intro", "Modes.Recommended", "Modes.BestTitle", "Modes.BestStep1", "Modes.BestStep2",
             "Modes.BestStep3", "Modes.Done", "Modes.Partial", "Modes.Blocked", "Modes.NotFound", "Modes.Failed", "Modes.Unexpected",
             "Modes.Value_Backlight", "Modes.Value_Dimming", "Modes.Value_BlueLightOff", "Modes.Value_Kelvin", "Modes.Value_Vibrance",
-            "Modes.Value_VibranceOff", "Common.HomeText",
-        };
+            "Modes.Value_VibranceOff", "Common.HomeText", "Modes.Value_ToneCinema", "Modes.Value_ToneContrast",
+            "Modes.GroupHint_Cinema", "Modes.GroupHint_Comfort",
+            .. Enum.GetValues<ProfileGroup>().Select(g => "Modes.Group_" + g),
+        ];
 
         var missing = keys.Where(k => Loc.Get(k).StartsWith("[[", StringComparison.Ordinal)).ToList();
 

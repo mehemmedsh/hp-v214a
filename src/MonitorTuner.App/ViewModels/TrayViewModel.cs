@@ -36,8 +36,15 @@ public sealed class TrayViewModel(IQuickControls quick, string hotKeyText)
         var items = new List<TrayItem>();
         if (!enabled) items.Add(new TrayItem(Loc.Get("Tray.WizardActive"), Enabled: false));
 
-        items.Add(new TrayItem(Loc.Get("Tray.Profiles"), Children:
-            [.. quick.Profiles.Select(p => new TrayItem(DisplayName(p.Name), enabled, () => SelectProfile(p.Name)))]));
+        // Görüntü modları gruplarıyla (T321): Sinema, Uzun kullanım, Günlük, Özel, kendi modların; boş grup gösterilmez.
+        var profiles = quick.Profiles;
+        foreach (var group in ColorProfiles.GroupOrder)
+        {
+            var members = profiles.Where(p => p.Group == group).ToList();
+            if (members.Count == 0) continue;
+            items.Add(new TrayItem(ProfileText.GroupTitle(group), Children:
+                [.. members.Select(p => new TrayItem(DisplayName(p.Name), enabled, () => SelectProfile(p.Name)))]));
+        }
 
         items.Add(new TrayItem(Loc.Get("Tray.Brightness"), Children:
             [.. BrightnessLevels.Select(level =>

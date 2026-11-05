@@ -12,9 +12,13 @@ namespace MonitorTuner.App.ViewModels;
 /// <param name="Name">Servisin bildiği sabit ad (hazırlarda Türkçe); seçimde servise bu gider.</param>
 /// <param name="Title">Arayüz dilinde ad.</param>
 /// <param name="Purpose">Ne zaman kullanılır; sadece hazır modlarda (araştırma: 08-GORUNTU-YONTEMLERI.md, 00-DONANIM.md).</param>
-/// <param name="Values">Ne ayarlar: arka ışık ya da ek karartma, mavi ışık, canlılık.</param>
+/// <param name="Values">Ne ayarlar: arka ışık ya da ek karartma, mavi ışık, ton eğrisi, canlılık.</param>
 /// <param name="Recommended">Günlük kullanım için önerilen mod (Gündüz: efektsiz, 6500K).</param>
-public sealed record ModeItem(string Name, string Title, string Purpose, string Values, bool Recommended)
+/// <param name="Group">Grubu (T321): sinema, uzun kullanım, günlük, özel, kendi modların.</param>
+/// <param name="GroupTitle">Grubun arayüz dilindeki adı.</param>
+public sealed record ModeItem(
+    string Name, string Title, string Purpose, string Values, bool Recommended, ProfileGroup Group = ProfileGroup.User,
+    string GroupTitle = "")
 {
     public bool HasPurpose => Purpose.Length > 0;
 }
@@ -62,11 +66,20 @@ public sealed class ModesViewModel : INotifyPropertyChanged
 
     public bool IsReady => !IsBusy;
 
-    /// <summary>Listeyi yeniden kurar (pencere her açıldığında; kullanıcı profilleri değişmiş olabilir). Hiçbir şey yazmaz.</summary>
+    /// <summary>
+    /// Listeyi yeniden kurar (pencere her açıldığında; kullanıcı profilleri değişmiş olabilir), grup sırasıyla (T321; grup içinde
+    /// servisin sırası). Hiçbir şey yazmaz.
+    /// </summary>
     public void Reload()
     {
         Modes.Clear();
-        foreach (var profile in _quick.Profiles) Modes.Add(ToItem(profile));
+        foreach (var profile in _quick.Profiles.OrderBy(p => GroupIndex(p.Group))) Modes.Add(ToItem(profile));
+    }
+
+    private static int GroupIndex(ProfileGroup group)
+    {
+        var index = ColorProfiles.GroupOrder.ToList().IndexOf(group);
+        return index < 0 ? int.MaxValue : index;
     }
 
     /// <summary>Kullanıcı moda tıkladı: profil bir kez uygulanır. Hata yutulmaz, kullanıcıya söylenir; uygulama düşmez.</summary>
@@ -94,7 +107,8 @@ public sealed class ModesViewModel : INotifyPropertyChanged
     {
         var purpose = ProfileText.BuiltInKey(profile.Name) is { } key ? Loc.Get("Modes.Purpose_" + key) : "";
         return new ModeItem(profile.Name, ProfileText.DisplayName(profile.Name), purpose, Values(profile),
-            string.Equals(profile.Name, RecommendedName, StringComparison.OrdinalIgnoreCase));
+            string.Equals(profile.Name, RecommendedName, StringComparison.OrdinalIgnoreCase), profile.Group,
+            ProfileText.GroupTitle(profile.Group));
     }
 
     /// <summary>Profilin ne ayarladığı; null ayar (profil dokunmuyor) yazılmaz. Arka ışık yüzdesi tek kaydırıcının planından (T306).</summary>
@@ -109,6 +123,9 @@ public sealed class ModesViewModel : INotifyPropertyChanged
 
         if (profile.Kelvin is { } kelvin)
             parts.Add(kelvin >= KelvinCalculator.OffKelvin ? Loc.Get("Modes.Value_BlueLightOff") : Format("Modes.Value_Kelvin", kelvin));
+
+        // Standart ton yazılmaz (kalibrasyonun kendisi); sinema ve canlı kontrast adıyla (T320).
+        if (profile.Tone != ToneStyle.Standard) parts.Add(Loc.Get("Modes.Value_Tone" + profile.Tone));
 
         // null canlılık: uygulamanın açtığı canlılık kapanır (ColorProfiles.Apply), yani "canlılık yok".
         parts.Add(profile.Vibrance is { } vibrance ? Format("Modes.Value_Vibrance", vibrance) : Loc.Get("Modes.Value_VibranceOff"));

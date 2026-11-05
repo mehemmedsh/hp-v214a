@@ -129,7 +129,7 @@ public class QuickControlsTests
     {
         var s = new Setup();
 
-        Assert.Equal(["Gündüz", "Akşam", "Gece", "Kod", "Film", "Oyun", "DaVinci zaman çizelgesi", "Benim"],
+        Assert.Equal([.. ColorProfiles.BuiltIns.Select(p => p.Name), "Benim"],
             s.Quick.Profiles.Select(p => p.Name));
     }
 

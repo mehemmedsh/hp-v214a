@@ -19,9 +19,6 @@
   <data name="WizardActive" xml:space="preserve">
     <value>Setup wizard is open: profiles, brightness and blue light are off (panic works)</value>
   </data>
-  <data name="Profiles" xml:space="preserve">
-    <value>Color profiles</value>
-  </data>
   <data name="Brightness" xml:space="preserve">
     <value>Brightness</value>
   </data>
@@ -74,10 +71,10 @@
     <value>tone curve</value>
   </data>
   <data name="Done_Profile" xml:space="preserve">
-    <value>{0} profile applied.</value>
+    <value>{0} mode applied.</value>
   </data>
   <data name="Partial_Profile" xml:space="preserve">
-    <value>{0} profile was not fully applied. Not applied: {1}.</value>
+    <value>{0} mode was not fully applied. Not applied: {1}.</value>
   </data>
   <data name="Done_Brightness" xml:space="preserve">
     <value>Brightness set to {0}%.</value>
@@ -132,5 +129,26 @@
   </data>
   <data name="Profile_DaVinci" xml:space="preserve">
     <value>DaVinci timeline</value>
+  </data>
+  <data name="Profile_Cinema" xml:space="preserve">
+    <value>Cinema</value>
+  </data>
+  <data name="Profile_CinemaDark" xml:space="preserve">
+    <value>Cinema · Dark room</value>
+  </data>
+  <data name="Profile_CinemaVivid" xml:space="preserve">
+    <value>Cinema · Vivid</value>
+  </data>
+  <data name="Profile_CinemaNight" xml:space="preserve">
+    <value>Cinema · Night</value>
+  </data>
+  <data name="Profile_ComfortDay" xml:space="preserve">
+    <value>Comfort · Day</value>
+  </data>
+  <data name="Profile_ComfortEvening" xml:space="preserve">
+    <value>Comfort · Evening</value>
+  </data>
+  <data name="Profile_ComfortNight" xml:space="preserve">
+    <value>Comfort · Night</value>
   </data>
 </root>

@@ -42,20 +42,44 @@ public sealed class ColorProfiles : IColorProfiles
     /// <summary>NVIDIA panelinde %50 varsayılandır ve altı yazılmaz (<c>INvidiaControl.SetVibrance</c>).</summary>
     public const int MinVibrance = 50, MaxVibrance = 100;
 
+    /// <summary>Grupların arayüzdeki sırası (T321): kullanıcının önceliği sinema ve uzun süreli konfor.</summary>
+    public static IReadOnlyList<ProfileGroup> GroupOrder { get; } =
+        [ProfileGroup.Cinema, ProfileGroup.Comfort, ProfileGroup.Daily, ProfileGroup.Special, ProfileGroup.User];
+
+    private const int D65 = KelvinCalculator.OffKelvin;
+
     /// <summary>
-    /// Hazır profiller, bu sırayla. Parlaklık kaydırıcı değeridir (0,2 üstü: sadece arka ışık, ek karartma yok); 0,6 ≈ arka ışık
-    /// %50 (masaüstü 100–120 nit hedefi). Canlılık sadece Film ve Oyun'da; DaVinci zaman çizelgesi nötr ve efektsizdir
-    /// (mavi ışık kapalı, canlılık yok, ek karartma yok).
+    /// Hazır profiller, bu sırayla (gruplar <see cref="GroupOrder"/> sırasında). Parlaklık kaydırıcı değeridir (0,2 üstü: sadece arka
+    /// ışık, ek karartma yok); 0,6 ≈ arka ışık %50 (masaüstü 100–120 nit hedefi). Değerlerin dayanağı 08-GORUNTU-YONTEMLERI.md → 6:
+    /// <list type="bullet">
+    /// <item><b>Sinema:</b> beyaz 6500K (filmler D65 ile hazırlanır); loş ve karanlık odada gamma 2,4 (BT.1886, ton katmanı);
+    /// parlaklık odaya göre (karanlık oda ≈ sinema salonunun düşük parlaklığı); karanlıkta renk soluk algılandığı için (Hunt
+    /// etkisi) biraz daha canlılık. Film aynen kaldı (kullanıcı beğendi: aydınlık oda).</item>
+    /// <item><b>Uzun kullanım:</b> efekt yok (ton Standart, canlılık yok), 4000–5500K (çok sıcak beyaz uzun okumada daha çok
+    /// yoruyor), parlaklık odanın ışığına uygun ve ek karartmaya inmez.</item>
+    /// <item><b>Günlük:</b> Gündüz doğru renk; Akşam ve Gece uyku öncesi güçlü mavi ışık azaltma (08 → 4); Kod hafif sıcak.</item>
+    /// <item><b>Özel:</b> Oyun canlı; DaVinci zaman çizelgesi nötr ve efektsiz (kaydırıcı 0,2 üstü, ek karartma da kapanır).</item>
+    /// </list>
     /// </summary>
     public static IReadOnlyList<ColorProfile> BuiltIns { get; } =
     [
-        new("Gündüz", true, 0.60, KelvinCalculator.OffKelvin, null),
-        new("Akşam", true, 0.50, 3400, null),
-        new("Gece", true, 0.30, 2700, null), // mavi ışık + düşük parlaklık (08-GORUNTU-YONTEMLERI.md → 4)
-        new("Kod", true, 0.55, 5000, null),
-        new("Film", true, 0.50, KelvinCalculator.OffKelvin, 60),
-        new("Oyun", true, 0.65, KelvinCalculator.OffKelvin, 65),
-        new("DaVinci zaman çizelgesi", true, 0.60, KelvinCalculator.OffKelvin, null),
+        new("Film", true, 0.50, D65, 60, ToneStyle.Standard, ProfileGroup.Cinema),
+        new("Sinema", true, 0.42, D65, 56, ToneStyle.Cinema, ProfileGroup.Cinema),
+        new("Sinema · Karanlık oda", true, 0.30, D65, 60, ToneStyle.Cinema, ProfileGroup.Cinema),
+        new("Sinema · Canlı", true, 0.55, D65, 68, ToneStyle.Contrast, ProfileGroup.Cinema),
+        new("Sinema · Gece", true, 0.26, 4500, 58, ToneStyle.Cinema, ProfileGroup.Cinema),
+
+        new("Konfor · Gündüz", true, 0.52, 5500, null, ToneStyle.Standard, ProfileGroup.Comfort),
+        new("Konfor · Akşam", true, 0.38, 4500, null, ToneStyle.Standard, ProfileGroup.Comfort),
+        new("Konfor · Gece", true, 0.22, 4000, null, ToneStyle.Standard, ProfileGroup.Comfort),
+
+        new("Gündüz", true, 0.60, D65, null, ToneStyle.Standard, ProfileGroup.Daily),
+        new("Akşam", true, 0.50, 3400, null, ToneStyle.Standard, ProfileGroup.Daily),
+        new("Gece", true, 0.30, 2700, null, ToneStyle.Standard, ProfileGroup.Daily), // mavi ışık + düşük parlaklık (08 → 4)
+        new("Kod", true, 0.55, 5000, null, ToneStyle.Standard, ProfileGroup.Daily),
+
+        new("Oyun", true, 0.65, D65, 65, ToneStyle.Standard, ProfileGroup.Special),
+        new("DaVinci zaman çizelgesi", true, 0.60, D65, null, ToneStyle.Standard, ProfileGroup.Special),
     ];
 
     private readonly IBrightnessControl _brightness;
@@ -109,7 +133,7 @@ public sealed class ColorProfiles : IColorProfiles
     public void Save(ColorProfile profile)
     {
         ArgumentNullException.ThrowIfNull(profile);
-        var saved = profile with { Name = profile.Name?.Trim()!, BuiltIn = false };
+        var saved = profile with { Name = profile.Name?.Trim()!, BuiltIn = false, Group = ProfileGroup.User };
         Validate(saved);
         if (IsBuiltInName(saved.Name)) throw new ArgumentException($"'{saved.Name}' hazır bir profilin adı.", nameof(profile));
 
@@ -162,6 +186,8 @@ public sealed class ColorProfiles : IColorProfiles
             throw new ArgumentException($"Canlılık {MinVibrance}–{MaxVibrance} olmalı.", nameof(profile));
         if (!Enum.IsDefined(profile.Tone))
             throw new ArgumentException($"Bilinmeyen ton: {profile.Tone}.", nameof(profile));
+        if (!Enum.IsDefined(profile.Group))
+            throw new ArgumentException($"Bilinmeyen grup: {profile.Group}.", nameof(profile));
     }
 
     // ---- İç ----
@@ -186,7 +212,7 @@ public sealed class ColorProfiles : IColorProfiles
             try
             {
                 if (stored is null) continue;
-                var profile = stored with { Name = stored.Name?.Trim()!, BuiltIn = false };
+                var profile = stored with { Name = stored.Name?.Trim()!, BuiltIn = false, Group = ProfileGroup.User };
                 Validate(profile);
                 if (!IsBuiltInName(profile.Name) && !_user.Any(p => SameName(p.Name, profile.Name))) _user.Add(profile);
             }
