@@ -105,6 +105,7 @@ public class PatternWindowTests
             var pattern = WizardPatterns.For(WizardStep.Gamma).Single();
             var window = new PatternWindow(pattern);
             var canvas = Lay(window);
+            window.Move(0); // pencere gösterilmediği için çizimi tetikler (Loaded gelmez)
             var patch = pattern.Frames[0].Patches.Single(p => p.StripeColor is not null);
 
             var image = Assert.Single(canvas.Children.OfType<Image>());
