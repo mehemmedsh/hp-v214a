@@ -11,11 +11,17 @@ namespace MonitorTuner.Services;
 /// </remarks>
 public enum ProfileStep { Skipped, Applied, Deferred, Failed }
 
-/// <summary>Profil uygulamanın sonucu: ayar başına durum.</summary>
-public sealed record ProfileApplyResult(string Name, ProfileStep Brightness, ProfileStep BlueLight, ProfileStep Vibrance)
+/// <summary>Profil uygulamanın sonucu: ayar başına durum. <paramref name="Tone"/>: ton eğrisi (T320).</summary>
+public sealed record ProfileApplyResult(
+    string Name, ProfileStep Brightness, ProfileStep BlueLight, ProfileStep Vibrance, ProfileStep Tone = ProfileStep.Skipped)
 {
     /// <summary>Hiçbir ayar başarısız olmadı (atlananlar ve ertelenenler başarısızlık sayılmaz).</summary>
-    public bool Success => Brightness != ProfileStep.Failed && BlueLight != ProfileStep.Failed && Vibrance != ProfileStep.Failed;
+    public bool Success => Steps.All(s => s != ProfileStep.Failed);
+
+    /// <summary>Ekranda tam olarak bu profil var: her ayar uygulandı ya da profil ona dokunmuyor (ertelenen ekranda henüz yok).</summary>
+    public bool Complete => Steps.All(s => s is ProfileStep.Applied or ProfileStep.Skipped);
+
+    private ProfileStep[] Steps => [Brightness, BlueLight, Tone, Vibrance];
 }
 
 /// <summary>Kullanıcı profilleri (ayar deposu, "ColorProfiles" bölümü). Hazır profiller depoda tutulmaz.</summary>
@@ -23,9 +29,10 @@ public sealed record ColorProfilesRecord(ColorProfile[] Profiles);
 
 /// <summary>
 /// Renk profilleri (T308). Sadece <see cref="Apply"/> çağrılınca çalışır: kendiliğinden uygulanmaz, arkada zamanlayıcısı
-/// yoktur. Parlaklığı <see cref="IBrightnessControl"/>, mavi ışığı <see cref="IBlueLightFilter"/>, canlılığı
-/// <see cref="INvidiaControl"/> üzerinden uygular; yazma sınırı, Güvenlik ve geri alma noktaları onlardadır. Hz'e
-/// (ekran modları) ve kalibrasyona ulaşan bir bağımlılığı yoktur. Tek iş parçacığından çağrılır (arayüz).
+/// yoktur. Parlaklığı <see cref="IBrightnessControl"/>, mavi ışığı <see cref="IBlueLightFilter"/>, ton eğrisini
+/// <see cref="IToneControl"/> (T320, yalnız ton katmanı), canlılığı <see cref="INvidiaControl"/> üzerinden uygular; yazma sınırı,
+/// Güvenlik ve geri alma noktaları onlardadır. Hz'e (ekran modları) ve kalibrasyona ulaşan bir bağımlılığı yoktur. Tek iş
+/// parçacığından çağrılır (arayüz).
 /// </summary>
 public sealed class ColorProfiles : IColorProfiles
 {
@@ -54,17 +61,20 @@ public sealed class ColorProfiles : IColorProfiles
     private readonly IBrightnessControl _brightness;
     private readonly IBlueLightFilter _blueLight;
     private readonly INvidiaControl _nvidia;
+    private readonly IToneControl _tone;
     private readonly ISettingsStore _store;
     private readonly MonitorKey _key;
 
     private List<ColorProfile>? _user;
 
     public ColorProfiles(
-        IBrightnessControl brightness, IBlueLightFilter blueLight, INvidiaControl nvidia, ISettingsStore store, MonitorKey key)
+        IBrightnessControl brightness, IBlueLightFilter blueLight, INvidiaControl nvidia, IToneControl tone, ISettingsStore store,
+        MonitorKey key)
     {
         _brightness = brightness;
         _blueLight = blueLight;
         _nvidia = nvidia;
+        _tone = tone;
         _store = store;
         _key = key;
     }
@@ -87,10 +97,13 @@ public sealed class ColorProfiles : IColorProfiles
             blueLight = state.Applied ? ProfileStep.Applied : _blueLight.IsSuspended ? ProfileStep.Deferred : ProfileStep.Failed;
         }
 
+        // Her profilin bir tonu var (Standart = ton katmanı yok): önceki profilin sinema eğrisi yeni profile taşınmaz.
+        var tone = _tone.Set(profile.Tone) ? ProfileStep.Applied : _tone.IsSuspended ? ProfileStep.Deferred : ProfileStep.Failed;
+
         // Canlılığı olmayan profil, uygulamanın açtığı canlılığı kapatır; kullanıcının kendi değerine dokunmaz.
         var vibrance = Step(profile.Vibrance is { } v ? _nvidia.SetVibrance(v) : _nvidia.ResetVibrance());
 
-        return new ProfileApplyResult(profile.Name, brightness, blueLight, vibrance);
+        return new ProfileApplyResult(profile.Name, brightness, blueLight, vibrance, tone);
     }
 
     public void Save(ColorProfile profile)
@@ -116,8 +129,8 @@ public sealed class ColorProfiles : IColorProfiles
     }
 
     /// <summary>
-    /// Panik kısayolu (T310 bağlar): ek karartma, mavi ışık ve canlılık kapanır. Kalibrasyon katmanına, Hz'e ve arka ışığa
-    /// dokunulmaz. Biri atarsa ötekiler yine de kapanır.
+    /// Panik kısayolu (T310 bağlar): ek karartma, mavi ışık, ton eğrisi (T320) ve canlılık kapanır. Kalibrasyon katmanına, Hz'e
+    /// ve arka ışığa dokunulmaz. Biri atarsa ötekiler yine de kapanır.
     /// </summary>
     public void PanicOff()
     {
@@ -125,7 +138,11 @@ public sealed class ColorProfiles : IColorProfiles
         finally
         {
             try { _blueLight.Disable(); }
-            finally { _nvidia.ResetVibrance(); }
+            finally
+            {
+                try { _tone.Disable(); }
+                finally { _nvidia.ResetVibrance(); }
+            }
         }
     }
 
@@ -143,6 +160,8 @@ public sealed class ColorProfiles : IColorProfiles
             throw new ArgumentException($"Kelvin {KelvinCalculator.MinKelvin}–{KelvinCalculator.OffKelvin} olmalı.", nameof(profile));
         if (profile.Vibrance is { } v && v is < MinVibrance or > MaxVibrance)
             throw new ArgumentException($"Canlılık {MinVibrance}–{MaxVibrance} olmalı.", nameof(profile));
+        if (!Enum.IsDefined(profile.Tone))
+            throw new ArgumentException($"Bilinmeyen ton: {profile.Tone}.", nameof(profile));
     }
 
     // ---- İç ----

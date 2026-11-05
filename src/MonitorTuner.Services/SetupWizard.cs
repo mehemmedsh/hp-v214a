@@ -8,7 +8,7 @@ public sealed record BaselineRecord(Dictionary<string, int> Ddc, ushort[] Red, u
 
 /// <summary>
 /// Ayar sihirbazı (T312, T313): desenlerle monitör ayarları (parlaklık, kontrast, keskinlik, beyaz noktası) ve gözle
-/// kalibrasyon (gamma, gri dengesi). Başlarken mavi ışık, ek karartma ve canlılık geçici kapanır, bitince ya da iptalde geri gelir
+/// kalibrasyon (gamma, gri dengesi). Başlarken mavi ışık, ek karartma, ton eğrisi (T320) ve canlılık geçici kapanır, bitince ya da iptalde geri gelir
 /// (02-MIMARI.md → Ayar sahipliği, 4). DDC yazmaları yalnız <see cref="IDdcPanel"/> üzerinden gider (sihirbaz Güvenlik katmanını
 /// ve DDC koruma kurallarını atlamaz); kalibrasyon yalnız <see cref="IColorPipeline"/>'ın kalibrasyon katmanına yazılır.
 /// Sihirbaz hiçbir ayarı kendiliğinden değiştirmez: her yazma kullanıcının bir eylemidir. Tek iş parçacığından çağrılır (arayüz).
@@ -34,6 +34,7 @@ public sealed class SetupWizard : ISetupWizard
     private readonly IBrightnessControl _brightness;
     private readonly IBlueLightFilter _blueLight;
     private readonly INvidiaControl _nvidia;
+    private readonly IToneControl _tone;
     private readonly IColorPipeline _pipeline;
     private readonly ICalibrationCurves _curves;
     private readonly ISettingsStore _store;
@@ -49,13 +50,14 @@ public sealed class SetupWizard : ISetupWizard
     private bool _calibrationTouched;        // Begin eski kalibrasyonu kapattı ya da bir seçim denendi
 
     public SetupWizard(
-        IDdcPanel panel, IBrightnessControl brightness, IBlueLightFilter blueLight, INvidiaControl nvidia,
+        IDdcPanel panel, IBrightnessControl brightness, IBlueLightFilter blueLight, INvidiaControl nvidia, IToneControl tone,
         IColorPipeline pipeline, ICalibrationCurves curves, ISettingsStore store, MonitorKey key, TimeProvider time)
     {
         _panel = panel;
         _brightness = brightness;
         _blueLight = blueLight;
         _nvidia = nvidia;
+        _tone = tone;
         _pipeline = pipeline;
         _curves = curves;
         _store = store;
@@ -81,10 +83,12 @@ public sealed class SetupWizard : ISetupWizard
     {
         if (IsActive) return;
 
-        // Önce efektler: mavi ışık kazançları eski değerine döndürür, ek karartma arka ışık kilidini kaldırır.
-        // Değerler bundan sonra okunur ki iptalde döneceğimiz şey kullanıcının gerçek ayarı olsun.
+        // Önce efektler: mavi ışık kazançları eski değerine döndürür, ek karartma arka ışık kilidini kaldırır, ton eğrisi
+        // kalkar (gamma desenleri sinema eğrisiyle ölçülseydi kalibrasyon onu "düzeltirdi"). Değerler bundan sonra okunur ki
+        // iptalde döneceğimiz şey kullanıcının gerçek ayarı olsun.
         _blueLight.Suspend();
         _brightness.Suspend();
+        _tone.Suspend();
         _nvidia.Suspend();
         _initial.Clear();
         _written.Clear();
@@ -178,6 +182,7 @@ public sealed class SetupWizard : ISetupWizard
     {
         IsActive = false;
         _blueLight.Resume();
+        _tone.Resume();
         _nvidia.Resume();
         if (backlightChanged && _brightness.ReadSlider() is { } slider) _brightness.ResumeAt(slider);
         else _brightness.Resume();

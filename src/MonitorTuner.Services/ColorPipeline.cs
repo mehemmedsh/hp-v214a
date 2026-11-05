@@ -5,8 +5,11 @@ using MonitorTuner.Safety;
 
 namespace MonitorTuner.Services;
 
-/// <summary>Birleştirme sırası: değer sırası katman sırasıdır.</summary>
-public enum ColorLayer { Calibration, BlueLight, Dimming }
+/// <summary>
+/// Birleştirme sırası: değer sırası katman sırasıdır. Ton (T320) kalibrasyondan önce gelir: içeriğin tonu seçilir, kalibrasyon
+/// onu panelde doğru gösterir (ton eğrisi üç kanala aynıdır, gri dengesini kalibrasyon düzeltir). Değerler kayıtta tutulmaz.
+/// </summary>
+public enum ColorLayer { Tone, Calibration, BlueLight, Dimming }
 
 /// <summary>Renk boru hattı (T302): GPU renk tablosunun tek yazarı.</summary>
 public interface IColorPipeline

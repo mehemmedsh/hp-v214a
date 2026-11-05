@@ -43,11 +43,11 @@ public sealed class AppRuntime
 
     private AppRuntime(
         MonitorInfo monitor, MonitorProfile profile, IColorPipeline pipeline, INvidiaControl nvidia, IBrightnessControl brightness,
-        IBlueLightFilter blueLight, IDdcPanel ddcPanel, IRefreshRatePanel refreshRates, ISetupWizard wizard,
+        IBlueLightFilter blueLight, IToneControl tone, IDdcPanel ddcPanel, IRefreshRatePanel refreshRates, ISetupWizard wizard,
         IColorProfiles profiles, IQuickControls quickControls)
     {
         (Monitor, Profile, _pipeline, _nvidia) = (monitor, profile, pipeline, nvidia);
-        (Brightness, BlueLight, DdcPanel, RefreshRates) = (brightness, blueLight, ddcPanel, refreshRates);
+        (Brightness, BlueLight, Tone, DdcPanel, RefreshRates) = (brightness, blueLight, tone, ddcPanel, refreshRates);
         (Wizard, Profiles, QuickControls) = (wizard, profiles, quickControls);
     }
 
@@ -55,6 +55,10 @@ public sealed class AppRuntime
     public MonitorProfile Profile { get; }
     public IBrightnessControl Brightness { get; }
     public IBlueLightFilter BlueLight { get; }
+
+    /// <summary>Ton eğrisi (T320): sinema gamması ya da canlı kontrast; renk profilleri kurar, panik kapatır.</summary>
+    public IToneControl Tone { get; }
+
     public IDdcPanel DdcPanel { get; }
     public IRefreshRatePanel RefreshRates { get; }
     public ISetupWizard Wizard { get; }
@@ -100,13 +104,14 @@ public sealed class AppRuntime
         var ddc = new DdcControl(display, ports.Ddc, safety, profile, time);
         var brightness = new BrightnessControl(ddc, pipeline, new DimmingPlanner());
         var blueLight = new BlueLightFilter(profile, ddc, pipeline, new KelvinCalculator(), ports.ConflictProbe, time, store, key);
+        var tone = new ToneControl(pipeline, new ToneCurves());
         var panel = new DdcPanel(profile, ddc, blueLight, store, key, monitor.Connection, () => brightness.DimmingActive);
-        var wizard = new SetupWizard(panel, brightness, blueLight, nvidia, pipeline, new CalibrationCurves(), store, key, time);
-        var colorProfiles = new ColorProfiles(brightness, blueLight, nvidia, store, key);
+        var wizard = new SetupWizard(panel, brightness, blueLight, nvidia, tone, pipeline, new CalibrationCurves(), store, key, time);
+        var colorProfiles = new ColorProfiles(brightness, blueLight, nvidia, tone, store, key);
         var refreshRates = new RefreshRatePanel(display, profile, ports.Modes, ddc, safety, store, key);
         var quick = new QuickControls(colorProfiles, brightness, blueLight, wizard);
 
-        return new AppRuntime(monitor, profile, pipeline, nvidia, brightness, blueLight, panel, refreshRates, wizard, colorProfiles, quick);
+        return new AppRuntime(monitor, profile, pipeline, nvidia, brightness, blueLight, tone, panel, refreshRates, wizard, colorProfiles, quick);
     }
 
     /// <summary>
@@ -138,7 +143,7 @@ public sealed class AppRuntime
 
     /// <summary>
     /// Normal kapanış, sırayla: açık sihirbaz iptal edilir (ayarları eski değere döner), mavi ışık ve ek karartma kalkar,
-    /// tabloda sadece kalibrasyon kalır, dithering ve canlılık kullanıcının değerine döner. Hz, parlaklık (arka ışık) ve
+    /// tabloda sadece kalibrasyon kalır (ton eğrisi de kalkar), dithering ve canlılık kullanıcının değerine döner. Hz, parlaklık (arka ışık) ve
     /// GdiIcmGammaRange'e dokunmaz. İkinci çağrı bir şey yapmaz. Bir adım hata verse de ötekiler yapılır.
     /// </summary>
     public void Shutdown()

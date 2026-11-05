@@ -32,7 +32,7 @@ public interface IQuickControls
     /// <summary>Mavi ışık (<see cref="KelvinCalculator.MinKelvin"/>–<see cref="KelvinCalculator.OffKelvin"/>; 6500 = kapalı).</summary>
     QuickResult SetBlueLight(int kelvin);
 
-    /// <summary>Panik kısayolu: mavi ışık, ek karartma ve canlılık kapanır; kalibrasyon, arka ışık ve Hz kalır.</summary>
+    /// <summary>Panik kısayolu: mavi ışık, ek karartma, ton eğrisi ve canlılık kapanır; kalibrasyon, arka ışık ve Hz kalır.</summary>
     QuickResult Panic();
 }
 
@@ -59,8 +59,7 @@ public sealed class QuickControls(
 
         var result = profiles.Apply(profile);
         // Ertelenen adım ekranda henüz yok; tam başarı sayılmaz.
-        var clean = new[] { result.Brightness, result.BlueLight, result.Vibrance }.All(s => s is ProfileStep.Applied or ProfileStep.Skipped);
-        return new QuickResult(clean ? QuickOutcome.Done : QuickOutcome.Partial, result);
+        return new QuickResult(result.Complete ? QuickOutcome.Done : QuickOutcome.Partial, result);
     }
 
     public QuickResult SetBrightness(double slider)

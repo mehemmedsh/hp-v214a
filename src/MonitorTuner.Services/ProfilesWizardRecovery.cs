@@ -6,11 +6,14 @@ namespace MonitorTuner.Services;
 /// <summary>
 /// Renk profili. Hz alanı yok: profiller Hz'e dokunmaz. null <c>Brightness</c> ve <c>Kelvin</c>: profil o ayara dokunmaz.
 /// null <c>Vibrance</c>: canlılık yok; uygulamanın açtığı canlılık kapanır (kullanıcının kendi değerine dokunulmaz).
+/// <c>Tone</c> her profilde vardır (T320): eski kayıtlarda alan yoksa <see cref="ToneStyle.Standard"/> (ton katmanı kapanır).
 /// </summary>
 /// <param name="Brightness">Tek kaydırıcı (0–1): arka ışık + ek karartma.</param>
 /// <param name="Kelvin">Mavi ışık; 6500 = kapalı.</param>
-/// <param name="Vibrance">NVIDIA canlılık (50–100; NVIDIA panelindeki %); hazır profillerde sadece Film ve Oyun'da açık.</param>
-public sealed record ColorProfile(string Name, bool BuiltIn, double? Brightness, int? Kelvin, int? Vibrance);
+/// <param name="Vibrance">NVIDIA canlılık (50–100; NVIDIA panelindeki %).</param>
+/// <param name="Tone">Ton eğrisi (T320): Standart (kalibrasyonun 2,2'si), Sinema (2,4) ya da canlı kontrast.</param>
+public sealed record ColorProfile(
+    string Name, bool BuiltIn, double? Brightness, int? Kelvin, int? Vibrance, ToneStyle Tone = ToneStyle.Standard);
 
 /// <summary>Renk profilleri (T308): sadece kullanıcı seçince, değerleri bir kez ayarlar.</summary>
 public interface IColorProfiles
@@ -19,7 +22,7 @@ public interface IColorProfiles
     IReadOnlyList<ColorProfile> Profiles { get; }
 
     /// <summary>
-    /// Kullanıcı seçince: parlaklık, mavi ışık, canlılık sırayla, her biri bir kez (kendi servisi üzerinden). Hz'e ve
+    /// Kullanıcı seçince: parlaklık, mavi ışık, ton eğrisi, canlılık sırayla, her biri bir kez (kendi servisi üzerinden). Hz'e ve
     /// kalibrasyona dokunmaz. Geçersiz profilde <see cref="ArgumentException"/>, hiçbir şey yazılmadan.
     /// </summary>
     ProfileApplyResult Apply(ColorProfile profile);
@@ -30,7 +33,7 @@ public interface IColorProfiles
     /// <summary>Kullanıcı profilini siler. Hazır profil silinemez (<see cref="InvalidOperationException"/>); olmayan ad sessizce geçilir.</summary>
     void Delete(string name);
 
-    /// <summary>Panik kısayolu (T310): mavi ışık, ek karartma ve canlılık kapanır; kalibrasyon kalır.</summary>
+    /// <summary>Panik kısayolu (T310): mavi ışık, ek karartma, ton eğrisi (T320) ve canlılık kapanır; kalibrasyon kalır.</summary>
     void PanicOff();
 }
 
@@ -43,7 +46,7 @@ public enum WizardStep
 /// <summary>Temel ayar: sihirbazın DDC değerleri (kod → değer) ve kalibrasyon katmanı.</summary>
 public sealed record Baseline(IReadOnlyDictionary<byte, ushort> DdcValues, GammaRamp Calibration);
 
-/// <summary>Ayar sihirbazı (T312, T313). Başlarken efektler (mavi ışık, ek karartma, canlılık) geçici kapanır, bitince ya da iptalde geri gelir.</summary>
+/// <summary>Ayar sihirbazı (T312, T313). Başlarken efektler (mavi ışık, ek karartma, ton eğrisi, canlılık) geçici kapanır, bitince ya da iptalde geri gelir.</summary>
 public interface ISetupWizard
 {
     /// <summary>Adımlar sırayla: ısınma, kırpma, keskinlik, RGB Full, açı, ölü piksel, beyaz eşleme, gamma, gri dengesi.</summary>
@@ -55,7 +58,7 @@ public interface ISetupWizard
     TimeSpan WarmUpRemaining { get; }
 
     /// <summary>
-    /// Mavi ışık, ek karartma ve canlılık kapanır, DDC değerleri iptal için saklanır. Monitöre (DDC) yazmaz. Eski kalibrasyon
+    /// Mavi ışık, ek karartma, ton eğrisi ve canlılık kapanır, DDC değerleri iptal için saklanır. Monitöre (DDC) yazmaz. Eski kalibrasyon
     /// varsa ekran ham panele döner (gamma ve gri dengesi düzeltilmemiş panelde ölçülür); Finish ya da Cancel geri getirir.
     /// </summary>
     void Begin();
