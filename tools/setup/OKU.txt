@@ -1,0 +1,21 @@
+MonitorTuner
+============
+
+KURMAK
+  MonitorTuner-Kurulum.exe'ye çift tıkla. Hepsi bu.
+  - Uygulama bilgisayarına kurulur, masaüstüne "MonitorTuner" simgesi gelir ve uygulama hemen açılır.
+  - Sonra hep masaüstündeki simgeden aç.
+  - "Windows bilgisayarınızı korudu" çıkarsa: Ek bilgi -> Yine de çalıştır (uygulama imzasız olduğu için çıkar).
+  - Yönetici izni istemez. Kurulduğu yer: %LocalAppData%\Programs\MonitorTuner
+
+GÜNCELLEMEK
+  Yeni paketteki MonitorTuner-Kurulum.exe'ye çift tıkla, Enter'a bas. Ayarların kalır.
+  Uygulama açıksa önce tepsideki simgeye sağ tıkla -> Çıkış (kurulum bunu bekler).
+
+KALDIRMAK
+  MonitorTuner-Kurulum.exe'ye çift tıkla, K'ye bas. Ayarların ve yedeklerin %AppData%\MonitorTuner'da kalır.
+
+KLASÖRLER
+  MonitorTuner-Kurulum.exe   kurulum, güncelleme, kaldırma
+  uygulama\                  uygulamanın dosyaları (kurulum buradan kopyalar; elle açmana gerek yok)
+  kurtarma\                  görüntü bozulursa: MonitorTuner-Kurtarma.exe ve OKU.md (kurulumla bilgisayara da kopyalanır)

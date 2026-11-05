@@ -23,6 +23,7 @@
     <ProjectReference Include="..\..\src\MonitorTuner.App\MonitorTuner.App.csproj" />
     <ProjectReference Include="..\..\src\MonitorTuner.Composition\MonitorTuner.Composition.csproj" />
     <ProjectReference Include="..\..\src\MonitorTuner.Hardware\MonitorTuner.Hardware.csproj" />
+    <ProjectReference Include="..\..\tools\setup\MonitorTuner.Setup.csproj" />
   </ItemGroup>
 
 </Project>

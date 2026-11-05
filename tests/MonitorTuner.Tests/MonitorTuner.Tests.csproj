@@ -26,6 +26,8 @@
     <ProjectReference Include="..\..\src\MonitorTuner.Hardware.Abstractions\MonitorTuner.Hardware.Abstractions.csproj" />
     <ProjectReference Include="..\..\src\MonitorTuner.Safety\MonitorTuner.Safety.csproj" />
     <ProjectReference Include="..\..\src\MonitorTuner.Services\MonitorTuner.Services.csproj" />
+    <!-- Kurulum dosyasının mantığı (T317) platformdan bağımsız: Linux'ta da test edilir. -->
+    <ProjectReference Include="..\..\tools\setup\MonitorTuner.Setup.csproj" />
     <ProjectReference Include="..\MonitorTuner.ArchitectureFixtures\MonitorTuner.ArchitectureFixtures.csproj" />
   </ItemGroup>
 
