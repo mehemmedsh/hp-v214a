@@ -37,7 +37,7 @@ public sealed class TrayViewModel(IQuickControls quick, string hotKeyText)
         if (!enabled) items.Add(new TrayItem(Loc.Get("Tray.WizardActive"), Enabled: false));
 
         items.Add(new TrayItem(Loc.Get("Tray.Profiles"), Children:
-            [.. quick.Profiles.Select(p => new TrayItem(p.Name, enabled, () => SelectProfile(p.Name)))]));
+            [.. quick.Profiles.Select(p => new TrayItem(DisplayName(p.Name), enabled, () => SelectProfile(p.Name)))]));
 
         items.Add(new TrayItem(Loc.Get("Tray.Brightness"), Children:
             [.. BrightnessLevels.Select(level =>
@@ -73,8 +73,8 @@ public sealed class TrayViewModel(IQuickControls quick, string hotKeyText)
         var result = quick.SelectProfile(name);
         Notify(result.Outcome switch
         {
-            QuickOutcome.Done => Format("Tray.Done_Profile", name),
-            QuickOutcome.Partial => Format("Tray.Partial_Profile", name, NotApplied(result.Profile)),
+            QuickOutcome.Done => Format("Tray.Done_Profile", DisplayName(name)),
+            QuickOutcome.Partial => Format("Tray.Partial_Profile", DisplayName(name), NotApplied(result.Profile)),
             _ => Generic(result),
         });
     });
@@ -99,6 +99,19 @@ public sealed class TrayViewModel(IQuickControls quick, string hotKeyText)
         var result = quick.SetBrightness(slider);
         Notify(result.Outcome == QuickOutcome.Done ? doneText : Generic(result));
     });
+
+    /// <summary>
+    /// Hazır profillerin adı Türkçe sabittir (servis bu adla bulur); arayüzde çevirisi görünür (T502). Kullanıcı profili
+    /// kullanıcının verdiği adla kalır.
+    /// </summary>
+    private static readonly IReadOnlyDictionary<string, string> BuiltInKeys = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+    {
+        ["Gündüz"] = "Day", ["Akşam"] = "Evening", ["Gece"] = "Night", ["Kod"] = "Code",
+        ["Film"] = "Film", ["Oyun"] = "Game", ["DaVinci zaman çizelgesi"] = "DaVinci",
+    };
+
+    private static string DisplayName(string name) =>
+        BuiltInKeys.TryGetValue(name, out var key) ? Loc.Get("Tray.Profile_" + key) : name;
 
     private static string Generic(QuickResult result) => result.Outcome switch
     {

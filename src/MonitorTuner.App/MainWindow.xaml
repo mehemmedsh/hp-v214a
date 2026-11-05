@@ -9,7 +9,15 @@
         WindowStartupLocation="CenterScreen">
     <TabControl>
         <TabItem Header="{loc:Tr Common.AppTitle}">
-            <TextBlock Margin="24" TextWrapping="Wrap" Text="{loc:Tr Common.SkeletonReady}" />
+            <StackPanel Margin="24" MaxWidth="700" HorizontalAlignment="Left">
+                <TextBlock Text="{loc:Tr Common.AppTitle}" FontSize="20" FontWeight="Bold" Margin="0,0,0,8" />
+                <TextBlock Text="{loc:Tr Common.HomeText}" TextWrapping="Wrap" Margin="0,0,0,20" />
+                <!-- Dil (T502): her dil kendi adıyla; yeni dil yeniden açılınca görünür -->
+                <TextBlock Text="{loc:Tr Common.Language_Label}" Margin="0,0,0,4" />
+                <ComboBox x:Name="LanguageBox" MinWidth="200" HorizontalAlignment="Left" DisplayMemberPath="Title"
+                          SelectionChanged="Language_Changed" />
+                <TextBlock x:Name="LanguageNote" TextWrapping="Wrap" Margin="0,6,0,0" Foreground="#555555" />
+            </StackPanel>
         </TabItem>
         <!-- DDC paneli (T305) sihirbaz açıkken kapalı: sihirbazın iptali sadece kendi yazdığını geri alır -->
         <TabItem x:Name="DdcTab" Header="{loc:Tr DdcPanel.TabTitle}">

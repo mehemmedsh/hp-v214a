@@ -1,6 +1,6 @@
 # Fazlar ve Görevler
 
-**Sıradaki (2026-11-05, tek model Opus, inceleme yok): T502 yaz; sonra kullanıcının 🔧 monitör testleri, en son T503.** T314 ✅ (inceleme atlandı, kullanıcı kararı 2026-11-05; testler CI'da ve bulutta geçti). T315 🔧 (yazıldı 2026-11-05; sayfa ViewModel ve çizgili yama testli; monitörde sihirbaz baştan sona kullanıcıda). Kullanıcının monitörde yapacağı 🔧 testler: T314 (açılış, tepsi ve kapanış), T004 (14 eşlemesi ve 75/76 Hz AE), T104 (kurtarma dosyasını bir kez çalıştırma), T209 (60 ↔ 76 geçişi), T301 (okuma ve tek parlaklık yazması), T303 (gradyanda bant yok, `RealNvidiaTests`), T312 + T315 (sihirbaz baştan sona, tek test; `05-HANDOFF.md` → 5). Diğer yazılmış görevler ✅. Kapsam 2026-10-30'da 66 görevden 21'e indi (`07-INCELEME.md`, 7. tur; plan dışı kalanlar `06-CIKARILANLAR.md`).
+**Sıradaki (2026-11-05, tek model Opus, inceleme yok): kullanıcının 🔧 monitör testleri, sonra T503.** T502 ✅ (2026-11-05; Azerbaycanca ve İngilizce çeviriler, dil seçimi ana pencerede, varsayılan Türkçe). T314 ✅ (inceleme atlandı, kullanıcı kararı 2026-11-05; testler CI'da ve bulutta geçti). T315 🔧 (yazıldı 2026-11-05; sayfa ViewModel ve çizgili yama testli; monitörde sihirbaz baştan sona kullanıcıda). Kullanıcının monitörde yapacağı 🔧 testler: T314 (açılış, tepsi ve kapanış), T004 (14 eşlemesi ve 75/76 Hz AE), T104 (kurtarma dosyasını bir kez çalıştırma), T209 (60 ↔ 76 geçişi), T301 (okuma ve tek parlaklık yazması), T303 (gradyanda bant yok, `RealNvidiaTests`), T312 + T315 (sihirbaz baştan sona, tek test; `05-HANDOFF.md` → 5). Diğer yazılmış görevler ✅. Kapsam 2026-10-30'da 66 görevden 21'e indi (`07-INCELEME.md`, 7. tur; plan dışı kalanlar `06-CIKARILANLAR.md`).
 
 ## Çalışma kuralları
 
@@ -115,7 +115,7 @@ Dalgalar eski (iki modelli) düzenin kaydı. 2026-11-05'ten beri kalan görevler
 
 | No | Görev | Sınıf | Model | Bağımlı | Dalga | Bitti sayılır | Durum |
 |---|---|---|---|---|---|---|---|
-| T502 | Çeviriler: Azerbaycanca ve İngilizce (Türkçe ana dil) | C | Opus | T209, T305–T315 | 10 | Tüm ekranlar üç dilde | ⬜ |
+| T502 | Çeviriler: Azerbaycanca ve İngilizce (Türkçe ana dil) | C | Opus | T209, T305–T315 | 10 | Tüm ekranlar üç dilde (çeviri dosyaları eksiksiz, testli; dil ana pencereden seçilir, varsayılan Türkçe) | ✅ |
 | T503 | **Son kontrol noktası:** uçtan uca test, `LESSONS.md`, plan dışı fikirler için karar | K | Kullanıcı + Claude app Opus | hepsi | 11 | Kullanıcı onayı | ⬜ |
 
 ## Özet
@@ -129,4 +129,4 @@ Dalgalar eski (iki modelli) düzenin kaydı. 2026-11-05'ten beri kalan görevler
 | 5 | 2 | T503 |
 | **Toplam** | **21** | **1** |
 
-**Kalan iş (2026-11-05):** T315 ve T502 yazma (Opus); kullanıcının 🔧 monitör testleri; T503 (Claude app, Opus).
+**Kalan iş (2026-11-05):** kullanıcının 🔧 monitör testleri; T503 (Claude app, Opus).

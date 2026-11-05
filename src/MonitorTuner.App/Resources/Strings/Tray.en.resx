@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tray: İngilizce çeviri (T502). Anahtarlar Türkçe Tray.resx ile aynı; yer tutucular ({0}) korunur. -->
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Tooltip" xml:space="preserve">
+    <value>Monitor Tuner</value>
+  </data>
+  <data name="WizardActive" xml:space="preserve">
+    <value>Setup wizard is open: profiles, brightness and blue light are off (panic works)</value>
+  </data>
+  <data name="Profiles" xml:space="preserve">
+    <value>Color profiles</value>
+  </data>
+  <data name="Brightness" xml:space="preserve">
+    <value>Brightness</value>
+  </data>
+  <data name="Dimming" xml:space="preserve">
+    <value>Extra dimming</value>
+  </data>
+  <data name="BlueLight" xml:space="preserve">
+    <value>Blue light</value>
+  </data>
+  <data name="BrightnessLevel" xml:space="preserve">
+    <value>Brightness {0}%</value>
+  </data>
+  <data name="Dimming_Light" xml:space="preserve">
+    <value>Light</value>
+  </data>
+  <data name="Dimming_Medium" xml:space="preserve">
+    <value>Medium</value>
+  </data>
+  <data name="Dimming_Strong" xml:space="preserve">
+    <value>Strong</value>
+  </data>
+  <data name="Dimming_Darkest" xml:space="preserve">
+    <value>Darkest (white 15%)</value>
+  </data>
+  <data name="BlueLightOff" xml:space="preserve">
+    <value>Off</value>
+  </data>
+  <data name="BlueLightKelvin" xml:space="preserve">
+    <value>{0} K</value>
+  </data>
+  <data name="Panic" xml:space="preserve">
+    <value>Panic: turn effects off ({0})</value>
+  </data>
+  <data name="Open" xml:space="preserve">
+    <value>Open main window</value>
+  </data>
+  <data name="Exit" xml:space="preserve">
+    <value>Exit</value>
+  </data>
+  <data name="Step_Brightness" xml:space="preserve">
+    <value>brightness</value>
+  </data>
+  <data name="Step_BlueLight" xml:space="preserve">
+    <value>blue light</value>
+  </data>
+  <data name="Step_Vibrance" xml:space="preserve">
+    <value>vibrance</value>
+  </data>
+  <data name="Done_Profile" xml:space="preserve">
+    <value>{0} profile applied.</value>
+  </data>
+  <data name="Partial_Profile" xml:space="preserve">
+    <value>{0} profile was not fully applied. Not applied: {1}.</value>
+  </data>
+  <data name="Done_Brightness" xml:space="preserve">
+    <value>Brightness set to {0}%.</value>
+  </data>
+  <data name="Done_Dimming" xml:space="preserve">
+    <value>Extra dimming: {0}.</value>
+  </data>
+  <data name="Done_BlueLight" xml:space="preserve">
+    <value>Blue light set to {0} K.</value>
+  </data>
+  <data name="Done_BlueLightOff" xml:space="preserve">
+    <value>Blue light turned off.</value>
+  </data>
+  <data name="Failed" xml:space="preserve">
+    <value>The setting could not be applied. The monitor does not answer the DDC command or hit the write limit; wait a moment and try again.</value>
+  </data>
+  <data name="Blocked" xml:space="preserve">
+    <value>This setting is off while the setup wizard is open. Finish or cancel the wizard.</value>
+  </data>
+  <data name="NotFound" xml:space="preserve">
+    <value>Profile not found.</value>
+  </data>
+  <data name="Unexpected" xml:space="preserve">
+    <value>Unexpected error: {0}</value>
+  </data>
+  <data name="PanicDone" xml:space="preserve">
+    <value>Panic: blue light, extra dimming and vibrance turned off. Calibration kept.</value>
+  </data>
+  <data name="PanicFailed" xml:space="preserve">
+    <value>Panic did not complete ({0}). Some effects may still be on; press the shortcut or the menu item again.</value>
+  </data>
+  <data name="HotKeyFailed" xml:space="preserve">
+    <value>The panic shortcut ({0}) could not be registered; another program may be using it. Panic is in the tray menu.</value>
+  </data>
+  <data name="Profile_Day" xml:space="preserve">
+    <value>Day</value>
+  </data>
+  <data name="Profile_Evening" xml:space="preserve">
+    <value>Evening</value>
+  </data>
+  <data name="Profile_Night" xml:space="preserve">
+    <value>Night</value>
+  </data>
+  <data name="Profile_Code" xml:space="preserve">
+    <value>Code</value>
+  </data>
+  <data name="Profile_Film" xml:space="preserve">
+    <value>Movie</value>
+  </data>
+  <data name="Profile_Game" xml:space="preserve">
+    <value>Game</value>
+  </data>
+  <data name="Profile_DaVinci" xml:space="preserve">
+    <value>DaVinci timeline</value>
+  </data>
+</root>

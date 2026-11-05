@@ -18,9 +18,19 @@ public class LocTests
     [Fact]
     public void Get_FallsBackToTurkish_WhenTranslationIsMissing()
     {
-        // Azerbaycanca ve İngilizce dosyalar T502'de gelecek; o zamana kadar nötr dil (Türkçe) görünür.
-        Assert.Equal("Monitör Ayarı", Loc.Get("Common.AppTitle", CultureInfo.GetCultureInfo("en-US")));
+        // Almanca çeviri yok: nötr dil (Türkçe) görünür.
+        Assert.Equal("Monitör Ayarı", Loc.Get("Common.AppTitle", CultureInfo.GetCultureInfo("de-DE")));
     }
+
+    /// <summary>T502: Azerbaycanca ve İngilizce çeviri dosyaları derlemeye uydu derlemesi olarak girer ve okunur.</summary>
+    [Theory]
+    [InlineData("az", "Common.AppTitle", "Monitor Ayarı")]
+    [InlineData("az-Latn-AZ", "Tray.Exit", "Çıxış")]
+    [InlineData("en", "Common.AppTitle", "Monitor Tuner")]
+    [InlineData("en-US", "Tray.Exit", "Exit")]
+    [InlineData("en-GB", "SetupWizard.Next", "Next")]
+    public void Get_ReturnsTranslation(string culture, string key, string expected) =>
+        Assert.Equal(expected, Loc.Get(key, CultureInfo.GetCultureInfo(culture)));
 
     [Fact]
     public void Get_UsesCurrentUICulture_ByDefault()

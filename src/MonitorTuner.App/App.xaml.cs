@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Windows;
 using System.Windows.Threading;
 using MonitorTuner.App.Localization;
@@ -21,6 +22,8 @@ public partial class App : System.Windows.Application
     /// <summary>Başka program GPU tablosunu değiştirdi mi bakma sıklığı; tablo okumak ucuzdur, yazma sadece değişince olur.</summary>
     private static readonly TimeSpan TickInterval = TimeSpan.FromSeconds(5);
 
+    private static readonly string SettingsRoot = JsonSettingsStore.DefaultRoot();
+
     private Mutex? _singleInstance;
     private AppRuntime? _runtime;
     private TrayViewModel? _trayViewModel;
@@ -35,6 +38,11 @@ public partial class App : System.Windows.Application
     {
         base.OnStartup(e);
         ShutdownMode = ShutdownMode.OnExplicitShutdown;
+
+        // Arayüz dili (T502): seçilmedikçe Türkçe, Windows'un dilinden bağımsız. İlk iletiden önce ayarlanır.
+        var language = CultureInfo.GetCultureInfo(LanguagePreference.Load(SettingsRoot));
+        CultureInfo.DefaultThreadCurrentUICulture = language;
+        CultureInfo.CurrentUICulture = language;
 
         _singleInstance = new Mutex(initiallyOwned: true, @"Local\MonitorTuner.SingleInstance", out var first);
         if (!first)
@@ -117,7 +125,7 @@ public partial class App : System.Windows.Application
         if (_main is null)
         {
             _main = _wizardViewModel is not null && _ddcPanelViewModel is not null
-                ? new MainWindow(_wizardViewModel, _ddcPanelViewModel)
+                ? new MainWindow(_wizardViewModel, _ddcPanelViewModel, SettingsRoot)
                 : new MainWindow();
             _main.Closed += (_, _) => _main = null; // pencere kapanınca uygulama tepside çalışmaya devam eder
         }

@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SetupWizard: Azerbaycanca çeviri (T502). Anahtarlar Türkçe SetupWizard.resx ile aynı; yer tutucular ({0}) korunur. -->
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="TabTitle" xml:space="preserve">
+    <value>Ayar sehrbazı</value>
+  </data>
+  <data name="PageTitle" xml:space="preserve">
+    <value>Ayar sehrbazı: naxışlarla monitor ayarı</value>
+  </data>
+  <data name="Intro" xml:space="preserve">
+    <value>Sehrbaz başlayanda mavi işıq filtri və əlavə qaraltma müvəqqəti bağlanır, bitəndə geri gəlir. Naxışlar yanıb-sönmür; kadrları sən dəyişirsən. Ləğv etsən, monitor ayarların sehrbazdan əvvəlki vəziyyətə qayıdır.</value>
+  </data>
+  <data name="PatternKeys" xml:space="preserve">
+    <value>Sağ ox və ya Boşluq: növbəti kadr · Sol ox: əvvəlki kadr · Esc: bağla</value>
+  </data>
+  <data name="SampleText" xml:space="preserve">
+    <value>Zəfər, jaketini də, papağını da götür, bu axşam hava çox soyuq olacaq. 0123456789</value>
+  </data>
+  <data name="Step_WarmUpAndPosition_Title" xml:space="preserve">
+    <value>İsinmə və vəziyyət</value>
+  </data>
+  <data name="Step_WarmUpAndPosition_Text" xml:space="preserve">
+    <value>Monitoru ən azı 30 dəqiqə açıq saxla; arxa işıq ilk dəqiqələrdə sürüşür. Gözün ekranın yuxarı kənarı səviyyəsində və ya bir az aşağıda olsun, məsafə 70–80 sm. Otaq işığı həmişəki iş işığın kimi olsun. OSD-də Rəng: Custom RGB (RGB gücləndirməsi üçün), Kəskinlik: 4, Overscan: Off; NVIDIA-da çıxış dinamik diapazonu: Full.</value>
+  </data>
+  <data name="Step_BlackAndWhiteClipping_Title" xml:space="preserve">
+    <value>Kontrast və parlaqlıq</value>
+  </data>
+  <data name="Step_BlackAndWhiteClipping_Text" xml:space="preserve">
+    <value>Əvvəlcə açıq boz naxışında (230–254) ən yüksək kontrastı tap: yan-yana pillələrin hamısı seçilsin. Sonra tünd boz naxışında (1–25) parlaqlığı ayarla: ən tünd pillələr görünsün, amma qara fon parlamasın. Parlaqlığı artırmaq üçün arxa işıq istifadə olunur; kontrast başlanğıc dəyərindən yuxarı qalxmır.</value>
+  </data>
+  <data name="Step_Sharpness_Title" xml:space="preserve">
+    <value>Kəskinlik</value>
+  </data>
+  <data name="Step_Sharpness_Text" xml:space="preserve">
+    <value>Yazı kənarında ağ xətt (hale) yaranmayan ən yüksək kəskinliyi seç. Həm açıq fonda tünd, həm tünd fonda açıq yazıya bax.</value>
+  </data>
+  <data name="Step_FullRgbCheck_Title" xml:space="preserve">
+    <value>RGB Full yoxlaması</value>
+  </data>
+  <data name="Step_FullRgbCheck_Text" xml:space="preserve">
+    <value>Qaraya yaxın 1–16 pillələri qara fondan ayrı görünməlidir. Görünmürsə, NVIDIA-dakı çıxış dinamik diapazonu Limited ola bilər: Full et.</value>
+  </data>
+  <data name="Step_ViewingAngle_Title" xml:space="preserve">
+    <value>Bucaq naxışı</value>
+  </data>
+  <data name="Step_ViewingAngle_Text" xml:space="preserve">
+    <value>Yuxarı, orta və aşağı zolaqlar eyni bozu göstərir. Bərabər görünənə qədər stulu və ya monitorun meylini dəyiş: gözün yuxarı kənar səviyyəsində, meyl 0° ilə −5° arası. Başını yuxarı-aşağı tərpədib fərqin necə dəyişdiyinə bax.</value>
+  </data>
+  <data name="Step_DeadPixelsAndUniformity_Title" xml:space="preserve">
+    <value>Ölü piksel və bircinslik</value>
+  </data>
+  <data name="Step_DeadPixelsAndUniformity_Text" xml:space="preserve">
+    <value>Qara, ağ, qırmızı, yaşıl və mavini ardıcıl gəz: ekranda dəyişməyən nöqtə ölü və ya ilişmiş pikseldir. Üç boz kadrda parlaq və ya tünd ləkələr, künclərdə işıq sızması axtar.</value>
+  </data>
+  <data name="Step_WhiteMatch_Title" xml:space="preserve">
+    <value>Ağın uyğunlaşdırılması</value>
+  </data>
+  <data name="Step_WhiteMatch_Text" xml:space="preserve">
+    <value>Pixel-in ekranında 'Təbii' rəng rejimində ağ səhifə aç və monitorun yanına qoy. İki ağ eyni temperaturda görünənə qədər qırmızı, yaşıl və mavi gücləndirməni azalt (artırma yoxdur: parlaqlıq düşür). RGB gücləndirməsi üçün monitorun OSD-sində Rəng: Custom RGB seçilmiş olmalıdır.</value>
+  </data>
+  <data name="Step_Gamma_Title" xml:space="preserve">
+    <value>Qamma</value>
+  </data>
+  <data name="Step_Gamma_Text" xml:space="preserve">
+    <value>Qamma naxışını aç və 2–3 metr geridən və ya gözlərini qıyaraq bax. Hər kadrda solda nazik qara-ağ xətlər, sağda düz boz var. Xətli sahə ilə düz bozun ən bərabər parlaqlıqda göründüyü kadrı tap (bozun altındakı rəqəm kadrı göstərir) və aşağıdan eyni kadrı seç. Seçim dərhal tətbiq olunur; naxışı yenidən açsan, artıq 2,2 kadrı bərabər görünməlidir.</value>
+  </data>
+  <data name="Step_GreyBalance_Title" xml:space="preserve">
+    <value>Boz balansı</value>
+  </data>
+  <data name="Step_GreyBalance_Text" xml:space="preserve">
+    <value>Boz balansı naxışını aç: tünd, orta və açıq boz. Hər boz rəngsiz (neytral) görünməlidir; Pixel-dəki bozla müqayisə edə bilərsən. Bir boz rəngli görünürsə, o rəngi bir az azalt (çəhrayımtıl: qırmızı və ya mavi; yaşılımtıl: yaşıl; mavimtıl: mavi). Kiçik addımlarla irəlilə; buraxanda dərhal tətbiq olunur.</value>
+  </data>
+  <data name="Idle" xml:space="preserve">
+    <value>Sehrbaz bağlıdır. Başladanda mavi işıq, əlavə qaraltma və canlılıq müvəqqəti bağlanır, sistem panelindən profil seçimi isə sehrbaz bitənə qədər bağlı qalır.</value>
+  </data>
+  <data name="Start" xml:space="preserve">
+    <value>Sehrbazı başlat</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Geri</value>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>İrəli</value>
+  </data>
+  <data name="Finish" xml:space="preserve">
+    <value>Bitir və yadda saxla</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Ləğv et</value>
+  </data>
+  <data name="StepCounter" xml:space="preserve">
+    <value>Addım {0} / {1}</value>
+  </data>
+  <data name="WarmUpRemaining" xml:space="preserve">
+    <value>İsinmə: təxminən {0} dəq qalıb. Gözləmək məcburi deyil, amma ölçmələr isinmədən sonra daha dəqiq olur.</value>
+  </data>
+  <data name="WarmUpDone" xml:space="preserve">
+    <value>İsinmə müddəti bitdi; ayara keçə bilərsən.</value>
+  </data>
+  <data name="OpenPattern" xml:space="preserve">
+    <value>Naxışı aç: {0}</value>
+  </data>
+  <data name="MonitorSettings" xml:space="preserve">
+    <value>Monitor ayarları (sürüşdürücünü buraxanda bir dəfə yazılır)</value>
+  </data>
+  <data name="NoDdc" xml:space="preserve">
+    <value>Monitor DDC-yə cavab vermir: bu addımın ayarlarını monitorun OSD düymələrindən et.</value>
+  </data>
+  <data name="GpuWhite_Title" xml:space="preserve">
+    <value>Ağın uyğunlaşdırılması (videokartda)</value>
+  </data>
+  <data name="GpuWhite_Text" xml:space="preserve">
+    <value>DDC olmadığı üçün ağın uyğunlaşdırılması videokartın rəng cədvəli ilə edilir. Kanalları yalnız azalda bilərsən (%80–100).</value>
+  </data>
+  <data name="Gamma_Label" xml:space="preserve">
+    <value>Panel qamması: ən bərabər görünən kadr</value>
+  </data>
+  <data name="Gamma_Choice" xml:space="preserve">
+    <value>{0} · boz {1}</value>
+  </data>
+  <data name="Gamma_LastFrame" xml:space="preserve">
+    <value>Naxışı bu kadrda bağladın: {0}. Bərabər görünən bu idisə, aşağıdan seç.</value>
+  </data>
+  <data name="Grey_Dark" xml:space="preserve">
+    <value>Tünd boz</value>
+  </data>
+  <data name="Grey_Mid" xml:space="preserve">
+    <value>Orta boz</value>
+  </data>
+  <data name="Grey_Light" xml:space="preserve">
+    <value>Açıq boz</value>
+  </data>
+  <data name="Channel_R" xml:space="preserve">
+    <value>Qırmızı</value>
+  </data>
+  <data name="Channel_G" xml:space="preserve">
+    <value>Yaşıl</value>
+  </data>
+  <data name="Channel_B" xml:space="preserve">
+    <value>Mavi</value>
+  </data>
+  <data name="GainItem" xml:space="preserve">
+    <value>{0} · {1}</value>
+  </data>
+  <data name="Status_Started" xml:space="preserve">
+    <value>Sehrbaz başladı. Mavi işıq, əlavə qaraltma və canlılıq müvəqqəti bağlıdır.</value>
+  </data>
+  <data name="Status_Finished" xml:space="preserve">
+    <value>Əsas ayar yadda saxlanıldı; effektlər geri gəldi.</value>
+  </data>
+  <data name="Status_Cancelled" xml:space="preserve">
+    <value>Ləğv edildi; sehrbazın dəyişdirdiyi ayarlar köhnə dəyərinə qayıtdı, effektlər geri gəldi.</value>
+  </data>
+  <data name="Status_CancelPartial" xml:space="preserve">
+    <value>Ləğv edildi, amma bunlar köhnə dəyərinə qayıtmadı: {0}. Monitorun OSD-sindən yoxla.</value>
+  </data>
+  <data name="Status_CalibrationApplied" xml:space="preserve">
+    <value>Kalibrləmə ekrana tətbiq olundu.</value>
+  </data>
+  <data name="Status_CalibrationRejected" xml:space="preserve">
+    <value>Windows bu rəng cədvəlini rədd etdi; əvvəlki kalibrləmə qaldı. Daha kiçik dəyişiklik sına.</value>
+  </data>
+  <data name="Status_CalibrationOutOfRange" xml:space="preserve">
+    <value>Seçim icazə verilən aralıqdan kənardadır; tətbiq olunmadı.</value>
+  </data>
+  <data name="Pattern_BlackClipping" xml:space="preserve">
+    <value>Tünd pillələr (1–25)</value>
+  </data>
+  <data name="Pattern_WhiteClipping" xml:space="preserve">
+    <value>Açıq pillələr (230–254)</value>
+  </data>
+  <data name="Pattern_Sharpness" xml:space="preserve">
+    <value>Nümunə yazı</value>
+  </data>
+  <data name="Pattern_FullRangeSteps" xml:space="preserve">
+    <value>Qaraya yaxın pillələr (1–16)</value>
+  </data>
+  <data name="Pattern_ViewingAngle" xml:space="preserve">
+    <value>Bucaq zolaqları</value>
+  </data>
+  <data name="Pattern_DeadPixels" xml:space="preserve">
+    <value>Ölü piksel (qara, ağ, qırmızı, yaşıl, mavi)</value>
+  </data>
+  <data name="Pattern_Uniformity" xml:space="preserve">
+    <value>Bircinslik (üç boz)</value>
+  </data>
+  <data name="Pattern_WhiteField" xml:space="preserve">
+    <value>Ağ sahə</value>
+  </data>
+  <data name="Pattern_Gamma" xml:space="preserve">
+    <value>Qamma (xətli sahə və düz boz)</value>
+  </data>
+  <data name="Pattern_GreyBalance" xml:space="preserve">
+    <value>Boz balansı (üç boz)</value>
+  </data>
+</root>

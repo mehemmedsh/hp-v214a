@@ -74,6 +74,24 @@ public class TrayViewModelTests
         Assert.Equal(["Gündüz", "Akşam", "Gece", "Kod", "Film", "Oyun", "DaVinci zaman çizelgesi", "Benim"], profiles);
     }
 
+    /// <summary>T502: hazır profillerin adları arayüz dilinde görünür; servise Türkçe sabit ad gider. Kullanıcı profili olduğu gibi.</summary>
+    [Fact]
+    public void BuiltInProfileNames_AreTranslated_ButTheServiceGetsTheFixedName()
+    {
+        TestCulture.With("en-US", () =>
+        {
+            var (vm, quick, notes) = Make();
+            var profiles = Find(vm.BuildMenu(), "Color profiles").Children!;
+
+            Assert.Equal(["Day", "Evening", "Night", "Code", "Movie", "Game", "DaVinci timeline", "Benim"], profiles.Select(i => i.Text));
+
+            profiles.Single(i => i.Text == "Evening").Click!();
+
+            Assert.Equal(["profile:Akşam"], quick.Calls);
+            Assert.Equal(["Evening profile applied."], notes);
+        });
+    }
+
     [Fact]
     public void ClickingProfile_SelectsItOnce_AndNotifiesDone()
     {

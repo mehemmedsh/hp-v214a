@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- DdcPanel: Azerbaycanca çeviri (T502). Anahtarlar Türkçe DdcPanel.resx ile aynı; yer tutucular ({0}) korunur. -->
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="TabTitle" xml:space="preserve">
+    <value>Monitor ayarları</value>
+  </data>
+  <data name="PageTitle" xml:space="preserve">
+    <value>Monitor ayarları (DDC)</value>
+  </data>
+  <data name="Intro" xml:space="preserve">
+    <value>Bu ayarlar monitorun özündə edilir; rəng səviyyəsi itkisi olmur. Sürüşdürücünü buraxanda ayar bir dəfə yazılır.</value>
+  </data>
+  <data name="BrightnessHint" xml:space="preserve">
+    <value>Ekranı daha parlaq etmək üçün arxa işığı (Parlaqlıq) istifadə et. Kontrast və RGB gücləndirməsi ilə parlaqlığı artırmaq bağlıdır, çünki ağ detalları kəsir.</value>
+  </data>
+  <data name="Refresh" xml:space="preserve">
+    <value>Monitordan yenidən oxu</value>
+  </data>
+  <data name="Setting_Brightness" xml:space="preserve">
+    <value>Parlaqlıq (arxa işıq)</value>
+  </data>
+  <data name="Setting_Contrast" xml:space="preserve">
+    <value>Kontrast</value>
+  </data>
+  <data name="Setting_ColorPreset" xml:space="preserve">
+    <value>Rəng rejimi</value>
+  </data>
+  <data name="Setting_RedGain" xml:space="preserve">
+    <value>RGB gücləndirməsi: Qırmızı</value>
+  </data>
+  <data name="Setting_GreenGain" xml:space="preserve">
+    <value>RGB gücləndirməsi: Yaşıl</value>
+  </data>
+  <data name="Setting_BlueGain" xml:space="preserve">
+    <value>RGB gücləndirməsi: Mavi</value>
+  </data>
+  <data name="Setting_Sharpness" xml:space="preserve">
+    <value>Kəskinlik</value>
+  </data>
+  <data name="Setting_Input" xml:space="preserve">
+    <value>Giriş</value>
+  </data>
+  <data name="Setting_Volume" xml:space="preserve">
+    <value>Dinamik səsi</value>
+  </data>
+  <data name="Choice_Warm" xml:space="preserve">
+    <value>Warm (isti)</value>
+  </data>
+  <data name="Choice_Neutral" xml:space="preserve">
+    <value>Neutral (neytral)</value>
+  </data>
+  <data name="Choice_Cool" xml:space="preserve">
+    <value>Cool (soyuq)</value>
+  </data>
+  <data name="Choice_Night" xml:space="preserve">
+    <value>Night (gecə)</value>
+  </data>
+  <data name="Choice_Native" xml:space="preserve">
+    <value>Native (təbii)</value>
+  </data>
+  <data name="Choice_LowBlueLight" xml:space="preserve">
+    <value>Low Blue Light (az mavi işıq)</value>
+  </data>
+  <data name="Choice_Reading" xml:space="preserve">
+    <value>Reading (oxu)</value>
+  </data>
+  <data name="Choice_HpEnhancePlus" xml:space="preserve">
+    <value>HP Enhance+</value>
+  </data>
+  <data name="Choice_CustomRgb" xml:space="preserve">
+    <value>Custom RGB (xüsusi)</value>
+  </data>
+  <data name="Choice_Hdmi" xml:space="preserve">
+    <value>HDMI</value>
+  </data>
+  <data name="Choice_Vga" xml:space="preserve">
+    <value>VGA</value>
+  </data>
+  <data name="Choice_Unverified" xml:space="preserve">
+    <value>{0} (təsdiqlənməyib; monitorun menyusundan seç)</value>
+  </data>
+  <data name="Lock_NotWritable" xml:space="preserve">
+    <value>Bu ayar proqramdan yazıla bilmir; monitorun menyusundan dəyiş.</value>
+  </data>
+  <data name="Lock_WrongColorPreset" xml:space="preserve">
+    <value>RGB gücləndirməsi yalnız Custom RGB rəng rejimində işləyir. Monitorun menyusunda Color → Custom RGB seç.</value>
+  </data>
+  <data name="Lock_BlueLightActive" xml:space="preserve">
+    <value>Mavi işıq filtri açıqdır və eyni gücləndirməni istifadə edir. RGB gücləndirməsini ayarlamaq üçün filtri bağla; sənin dəyərin geri gələcək.</value>
+  </data>
+  <data name="Lock_DimmingActive" xml:space="preserve">
+    <value>Əlavə qaraltma (rəqəmsal) açıqdır; arxa işığı Parlaqlıq və əlavə qaraltma sürüşdürücüsü idarə edir. Oradan ayarla.</value>
+  </data>
+  <data name="Result_Written" xml:space="preserve">
+    <value>Ayar yazıldı.</value>
+  </data>
+  <data name="Result_Unchanged" xml:space="preserve">
+    <value>Dəyər artıq budur.</value>
+  </data>
+  <data name="Result_NoDdc" xml:space="preserve">
+    <value>Monitor DDC/CI-yə cavab vermir.</value>
+  </data>
+  <data name="Result_NotSupported" xml:space="preserve">
+    <value>Bu ayar bu monitorda yoxdur və ya yazılması qadağandır.</value>
+  </data>
+  <data name="Result_Locked" xml:space="preserve">
+    <value>Bu ayar hazırda dəyişdirilə bilmir (səbəbi ayarın altında yazılıb).</value>
+  </data>
+  <data name="Result_OutOfRange" xml:space="preserve">
+    <value>Dəyər icazə verilən aralıqdan kənardadır.</value>
+  </data>
+  <data name="Result_BlockedDigitalBoost" xml:space="preserve">
+    <value>Kontrast başlanğıc dəyərindən yuxarı qaldırılmır. Daha parlaq istəyirsənsə, arxa işığı (Parlaqlıq) artır.</value>
+  </data>
+  <data name="Result_NotConfirmed" xml:space="preserve">
+    <value>Bu rəng rejiminin DDC qarşılığı monitorda təsdiqlənməyib, yazılmadı. Monitorun menyusundan seç.</value>
+  </data>
+  <data name="Result_ExternallyChanged" xml:space="preserve">
+    <value>Bu ayar sən baxarkən monitordan (OSD) dəyişdi. Yeni dəyər göstərilir; hələ də istəyirsənsə, yenidən ayarla.</value>
+  </data>
+  <data name="Result_NeedsInputWarning" xml:space="preserve">
+    <value>Giriş dəyişikliyi təsdiq gözləyir.</value>
+  </data>
+  <data name="Result_Throttled" xml:space="preserve">
+    <value>Eyni ayara çox tez-tez yazıldı; monitorun yaddaşını qorumaq üçün bir az gözlə.</value>
+  </data>
+  <data name="Result_Failed" xml:space="preserve">
+    <value>Monitor ayarı qəbul etmədi.</value>
+  </data>
+  <data name="ExternalChange" xml:space="preserve">
+    <value>Monitorda dəyişdi (OSD): {0}. Yeni dəyərlər göstərilir, sənin dəyərin üstünə yazılmadı.</value>
+  </data>
+  <data name="InputWarning_Title" xml:space="preserve">
+    <value>Giriş dəyişdirilsin?</value>
+  </data>
+  <data name="InputWarning_Text" xml:space="preserve">
+    <value>Kabelin bağlı olduğu girişdən başqa girişə keçsən, ekranda görüntü olmaya bilər. Geri qayıtmaq üçün monitorun Input düyməsi ilə HDMI-ı seç. Davam edilsin?</value>
+  </data>
+  <data name="Osd_Title" xml:space="preserve">
+    <value>Monitor DDC/CI-yə cavab vermir</value>
+  </data>
+  <data name="Osd_Why" xml:space="preserve">
+    <value>Ayarları proqramdan edə bilmirik; monitorun öz menyusundan et. Əvvəlcə menyuda Management → DDC/CI açıqdırmı, bax, sonra bu səhifədə "Monitordan yenidən oxu" düyməsini bas.</value>
+  </data>
+  <data name="Osd_Brightness" xml:space="preserve">
+    <value>Parlaqlıq və kontrast: Brightness+ menyusu. Parlaqlığı artırmaq istəyirsənsə, yalnız Brightness-i artır.</value>
+  </data>
+  <data name="Osd_Color" xml:space="preserve">
+    <value>Rəng: Color menyusu. Standart olaraq Neutral qalsın; RGB gücləndirməsi üçün Custom RGB seç.</value>
+  </data>
+  <data name="Osd_Image" xml:space="preserve">
+    <value>Kəskinlik: Image → Sharpness (zavod Level 4). Image Scaling "Fill to Screen", Overscan "Off" qalsın.</value>
+  </data>
+  <data name="Osd_Input" xml:space="preserve">
+    <value>Giriş: Input menyusundan HDMI.</value>
+  </data>
+  <data name="Osd_Volume" xml:space="preserve">
+    <value>Dinamik səsi: monitorun menyusundan və ya Windows-un səs ayarından.</value>
+  </data>
+</root>

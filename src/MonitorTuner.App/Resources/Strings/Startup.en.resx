@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Startup: İngilizce çeviri (T502). Anahtarlar Türkçe Startup.resx ile aynı; yer tutucular ({0}) korunur. -->
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="NoSupportedMonitor" xml:space="preserve">
+    <value>No supported monitor (HP P21b G4) was found. Displays seen: {0}.
+
+No setting was changed. The app is closing.</value>
+  </data>
+  <data name="NoDisplaysSeen" xml:space="preserve">
+    <value>no display was seen</value>
+  </data>
+  <data name="UnreadableDisplay" xml:space="preserve">
+    <value>{0} (model could not be read)</value>
+  </data>
+  <data name="SeenDisplay" xml:space="preserve">
+    <value>{0} ({1})</value>
+  </data>
+  <data name="ProfileError" xml:space="preserve">
+    <value>The monitor profile could not be read: {0}
+
+No setting was changed. The app is closing.</value>
+  </data>
+  <data name="StartFailed" xml:space="preserve">
+    <value>The app could not start: {0}
+
+No setting was changed. The app is closing.</value>
+  </data>
+  <data name="NoFullGammaRange" xml:space="preserve">
+    <value>Administrator approval was not given: Windows may reject very dark or very warm color tables (extra dimming, blue light, calibration). Reopen the app and approve to fix this.</value>
+  </data>
+  <data name="TableRejected" xml:space="preserve">
+    <value>Windows did not accept the color table; the previous colors are still on screen.</value>
+  </data>
+  <data name="ExternalTable" xml:space="preserve">
+    <value>Another program changed the screen colors; your color settings were restored.</value>
+  </data>
+</root>

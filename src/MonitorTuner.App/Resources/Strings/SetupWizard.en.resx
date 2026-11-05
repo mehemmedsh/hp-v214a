@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SetupWizard: İngilizce çeviri (T502). Anahtarlar Türkçe SetupWizard.resx ile aynı; yer tutucular ({0}) korunur. -->
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="TabTitle" xml:space="preserve">
+    <value>Setup wizard</value>
+  </data>
+  <data name="PageTitle" xml:space="preserve">
+    <value>Setup wizard: tuning the monitor with patterns</value>
+  </data>
+  <data name="Intro" xml:space="preserve">
+    <value>When the wizard starts, the blue light filter and extra dimming are turned off for a while and come back when it ends. Patterns never flash; you change the frames yourself. If you cancel, your monitor settings return to how they were before the wizard.</value>
+  </data>
+  <data name="PatternKeys" xml:space="preserve">
+    <value>Right arrow or Space: next frame · Left arrow: previous frame · Esc: close</value>
+  </data>
+  <data name="SampleText" xml:space="preserve">
+    <value>The quick brown fox jumps over the lazy dog. 0123456789</value>
+  </data>
+  <data name="Step_WarmUpAndPosition_Title" xml:space="preserve">
+    <value>Warm-up and position</value>
+  </data>
+  <data name="Step_WarmUpAndPosition_Text" xml:space="preserve">
+    <value>Keep the monitor on for at least 30 minutes; the backlight drifts in the first minutes. Your eyes should be at or slightly below the top edge of the screen, at 70–80 cm. Room light should be your usual working light. In the OSD set Color: Custom RGB (for RGB gain), Sharpness: 4, Overscan: Off; in NVIDIA set output dynamic range: Full.</value>
+  </data>
+  <data name="Step_BlackAndWhiteClipping_Title" xml:space="preserve">
+    <value>Contrast and brightness</value>
+  </data>
+  <data name="Step_BlackAndWhiteClipping_Text" xml:space="preserve">
+    <value>First find the highest contrast on the light grey pattern (230–254): all neighboring steps should be distinguishable. Then set brightness on the dark grey pattern (1–25): the darkest steps should be visible but the black background should not glow. The backlight is used to raise brightness; contrast does not go above its starting value.</value>
+  </data>
+  <data name="Step_Sharpness_Title" xml:space="preserve">
+    <value>Sharpness</value>
+  </data>
+  <data name="Step_Sharpness_Text" xml:space="preserve">
+    <value>Choose the highest sharpness that adds no white line (halo) at text edges. Look at both dark text on a light background and light text on a dark background.</value>
+  </data>
+  <data name="Step_FullRgbCheck_Title" xml:space="preserve">
+    <value>RGB Full check</value>
+  </data>
+  <data name="Step_FullRgbCheck_Text" xml:space="preserve">
+    <value>The near-black steps 1–16 should stand out from the black background. If they do not, the output dynamic range in NVIDIA may be Limited: set it to Full.</value>
+  </data>
+  <data name="Step_ViewingAngle_Title" xml:space="preserve">
+    <value>Viewing angle pattern</value>
+  </data>
+  <data name="Step_ViewingAngle_Text" xml:space="preserve">
+    <value>The top, middle and bottom bands show the same grey. Adjust your chair or the monitor's tilt until they look equal: eyes at the top edge, tilt between 0° and −5°. Move your head up and down and watch how the difference changes.</value>
+  </data>
+  <data name="Step_DeadPixelsAndUniformity_Title" xml:space="preserve">
+    <value>Dead pixels and uniformity</value>
+  </data>
+  <data name="Step_DeadPixelsAndUniformity_Text" xml:space="preserve">
+    <value>Go through black, white, red, green and blue: a dot that never changes is a dead or stuck pixel. On the three grey frames look for bright or dark patches and light bleed in the corners.</value>
+  </data>
+  <data name="Step_WhiteMatch_Title" xml:space="preserve">
+    <value>White matching</value>
+  </data>
+  <data name="Step_WhiteMatch_Text" xml:space="preserve">
+    <value>Open a white page on the Pixel's screen in 'Natural' color mode and place it next to the monitor. Lower the red, green and blue gain until both whites look the same temperature (never raise: brightness drops). For RGB gain, Color: Custom RGB must be selected in the monitor's OSD.</value>
+  </data>
+  <data name="Step_Gamma_Title" xml:space="preserve">
+    <value>Gamma</value>
+  </data>
+  <data name="Step_Gamma_Text" xml:space="preserve">
+    <value>Open the gamma pattern and look from 2–3 meters away or with squinted eyes. Each frame has thin black-and-white lines on the left and flat grey on the right. Find the frame where the striped area and the flat grey look equally bright (the number under the grey identifies the frame) and select the same frame below. The choice is applied at once; if you open the pattern again, the 2.2 frame should now look equal.</value>
+  </data>
+  <data name="Step_GreyBalance_Title" xml:space="preserve">
+    <value>Grey balance</value>
+  </data>
+  <data name="Step_GreyBalance_Text" xml:space="preserve">
+    <value>Open the grey balance pattern: dark, mid and light grey. Each grey should look colorless (neutral); you can compare with grey on the Pixel. If a grey looks tinted, lower that color slightly (pinkish: red or blue; greenish: green; bluish: blue). Go in small steps; it is applied when you release.</value>
+  </data>
+  <data name="Idle" xml:space="preserve">
+    <value>The wizard is off. When it starts, blue light, extra dimming and vibrance turn off for a while, and choosing profiles from the tray is disabled until the wizard ends.</value>
+  </data>
+  <data name="Start" xml:space="preserve">
+    <value>Start wizard</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Back</value>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="Finish" xml:space="preserve">
+    <value>Finish and save</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="StepCounter" xml:space="preserve">
+    <value>Step {0} / {1}</value>
+  </data>
+  <data name="WarmUpRemaining" xml:space="preserve">
+    <value>Warm-up: about {0} min left. Waiting is optional, but measurements are more accurate after warm-up.</value>
+  </data>
+  <data name="WarmUpDone" xml:space="preserve">
+    <value>Warm-up time is over; you can start tuning.</value>
+  </data>
+  <data name="OpenPattern" xml:space="preserve">
+    <value>Open pattern: {0}</value>
+  </data>
+  <data name="MonitorSettings" xml:space="preserve">
+    <value>Monitor settings (written once when you release the slider)</value>
+  </data>
+  <data name="NoDdc" xml:space="preserve">
+    <value>The monitor does not answer DDC: make this step's settings with the monitor's OSD buttons.</value>
+  </data>
+  <data name="GpuWhite_Title" xml:space="preserve">
+    <value>White matching (on the graphics card)</value>
+  </data>
+  <data name="GpuWhite_Text" xml:space="preserve">
+    <value>Without DDC, white matching is done with the graphics card's color table. You can only lower the channels (80–100%).</value>
+  </data>
+  <data name="Gamma_Label" xml:space="preserve">
+    <value>Panel gamma: the frame that looks most equal</value>
+  </data>
+  <data name="Gamma_Choice" xml:space="preserve">
+    <value>{0} · grey {1}</value>
+  </data>
+  <data name="Gamma_LastFrame" xml:space="preserve">
+    <value>You closed the pattern on this frame: {0}. If that one looked equal, select it below.</value>
+  </data>
+  <data name="Grey_Dark" xml:space="preserve">
+    <value>Dark grey</value>
+  </data>
+  <data name="Grey_Mid" xml:space="preserve">
+    <value>Mid grey</value>
+  </data>
+  <data name="Grey_Light" xml:space="preserve">
+    <value>Light grey</value>
+  </data>
+  <data name="Channel_R" xml:space="preserve">
+    <value>Red</value>
+  </data>
+  <data name="Channel_G" xml:space="preserve">
+    <value>Green</value>
+  </data>
+  <data name="Channel_B" xml:space="preserve">
+    <value>Blue</value>
+  </data>
+  <data name="GainItem" xml:space="preserve">
+    <value>{0} · {1}</value>
+  </data>
+  <data name="Status_Started" xml:space="preserve">
+    <value>The wizard started. Blue light, extra dimming and vibrance are temporarily off.</value>
+  </data>
+  <data name="Status_Finished" xml:space="preserve">
+    <value>Baseline saved; effects are back.</value>
+  </data>
+  <data name="Status_Cancelled" xml:space="preserve">
+    <value>Cancelled; settings changed by the wizard returned to their old values and effects are back.</value>
+  </data>
+  <data name="Status_CancelPartial" xml:space="preserve">
+    <value>Cancelled, but these did not return to their old values: {0}. Check them in the monitor's OSD.</value>
+  </data>
+  <data name="Status_CalibrationApplied" xml:space="preserve">
+    <value>Calibration applied to the screen.</value>
+  </data>
+  <data name="Status_CalibrationRejected" xml:space="preserve">
+    <value>Windows rejected this color table; the previous calibration stays. Try a smaller change.</value>
+  </data>
+  <data name="Status_CalibrationOutOfRange" xml:space="preserve">
+    <value>The choice is outside the allowed range; not applied.</value>
+  </data>
+  <data name="Pattern_BlackClipping" xml:space="preserve">
+    <value>Dark steps (1–25)</value>
+  </data>
+  <data name="Pattern_WhiteClipping" xml:space="preserve">
+    <value>Light steps (230–254)</value>
+  </data>
+  <data name="Pattern_Sharpness" xml:space="preserve">
+    <value>Sample text</value>
+  </data>
+  <data name="Pattern_FullRangeSteps" xml:space="preserve">
+    <value>Near-black steps (1–16)</value>
+  </data>
+  <data name="Pattern_ViewingAngle" xml:space="preserve">
+    <value>Angle bands</value>
+  </data>
+  <data name="Pattern_DeadPixels" xml:space="preserve">
+    <value>Dead pixels (black, white, red, green, blue)</value>
+  </data>
+  <data name="Pattern_Uniformity" xml:space="preserve">
+    <value>Uniformity (three greys)</value>
+  </data>
+  <data name="Pattern_WhiteField" xml:space="preserve">
+    <value>White field</value>
+  </data>
+  <data name="Pattern_Gamma" xml:space="preserve">
+    <value>Gamma (striped area and flat grey)</value>
+  </data>
+  <data name="Pattern_GreyBalance" xml:space="preserve">
+    <value>Grey balance (three greys)</value>
+  </data>
+</root>

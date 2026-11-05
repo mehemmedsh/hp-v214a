@@ -109,4 +109,25 @@
   <data name="HotKeyFailed" xml:space="preserve">
     <value>Panik kısayolu ({0}) kaydedilemedi, başka bir program kullanıyor olabilir. Panik tepsi menüsünde.</value>
   </data>
+  <data name="Profile_Day" xml:space="preserve">
+    <value>Gündüz</value>
+  </data>
+  <data name="Profile_Evening" xml:space="preserve">
+    <value>Akşam</value>
+  </data>
+  <data name="Profile_Night" xml:space="preserve">
+    <value>Gece</value>
+  </data>
+  <data name="Profile_Code" xml:space="preserve">
+    <value>Kod</value>
+  </data>
+  <data name="Profile_Film" xml:space="preserve">
+    <value>Film</value>
+  </data>
+  <data name="Profile_Game" xml:space="preserve">
+    <value>Oyun</value>
+  </data>
+  <data name="Profile_DaVinci" xml:space="preserve">
+    <value>DaVinci zaman çizelgesi</value>
+  </data>
 </root>
