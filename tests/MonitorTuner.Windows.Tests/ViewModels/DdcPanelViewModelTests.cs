@@ -212,4 +212,46 @@ public class DdcPanelViewModelTests
 
         if (error is not null) throw new InvalidOperationException("STA thread hatası", error);
     }
+
+    [Fact]
+    public void Refresh_RunsOnTheLane_AndShowsBusyUntilTheMonitorAnswers()
+    {
+        var lane = new ManualLane();
+        var panel = new StubPanel { State = new(true, [Slider(PanelSetting.Brightness, 55)], []) };
+        var vm = new DdcPanelViewModel(panel, lane);
+
+        var refresh = vm.Refresh();
+
+        Assert.False(refresh.IsCompleted); // pencere DDC yanıtını beklemez
+        Assert.Equal(0, panel.Refreshes);
+        Assert.True(vm.IsBusy);
+        Assert.False(vm.IsReady);
+        Assert.False(vm.ShowOsdInstructions); // okunurken "DDC yok" talimatı görünmez
+        lane.RunAll();
+        Assert.True(refresh.IsCompletedSuccessfully);
+        Assert.Equal(1, panel.Refreshes);
+        Assert.False(vm.IsBusy);
+        Assert.Single(vm.Items);
+    }
+
+    [Fact]
+    public void Commit_WritesOnTheLane_ThenReloads_AndStaysBusyUntilDone()
+    {
+        var lane = new ManualLane();
+        var panel = new StubPanel { State = new(true, [Slider(PanelSetting.Brightness, 55)], []) };
+        var vm = new DdcPanelViewModel(panel, lane);
+        vm.Refresh();
+        lane.RunAll();
+        vm.Items[0].Value = 40;
+
+        var commit = vm.Commit(vm.Items[0]);
+
+        Assert.Empty(panel.Sets);
+        Assert.True(vm.IsBusy);
+        lane.RunAll();
+        Assert.True(commit.IsCompletedSuccessfully);
+        Assert.Equal([(PanelSetting.Brightness, 40, false)], panel.Sets);
+        Assert.Equal(2, panel.Refreshes);
+        Assert.False(vm.IsBusy);
+    }
 }

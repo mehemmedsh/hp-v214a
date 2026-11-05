@@ -37,4 +37,7 @@
   <data name="Language_SaveFailed" xml:space="preserve">
     <value>Could not save the language: {0}</value>
   </data>
+  <data name="Working" xml:space="preserve">
+    <value>Talking to the monitor…</value>
+  </data>
 </root>

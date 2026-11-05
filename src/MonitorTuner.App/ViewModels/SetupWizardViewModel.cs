@@ -66,15 +66,20 @@ public sealed class SetupWizardViewModel : INotifyPropertyChanged
 
     private readonly ISetupWizard _wizard;
     private readonly IDdcPanel _panel;
+    private readonly IWorkLane _lane;
     private int _step;
+    private int _busy;
+    private int _loadVersion; // eski adımın geç gelen DDC okuması yeni adımın satırlarını ezmesin
     private bool _ddcAvailable = true;
     private GammaChoice? _gamma;
     private string _status = "";
 
-    public SetupWizardViewModel(ISetupWizard wizard, IDdcPanel panel)
+    /// <param name="lane">Servis çağrılarının sırası (T316): DDC okuma ve yazma arka planda, tek tek. Verilmezse hemen çalışır (testler).</param>
+    public SetupWizardViewModel(ISetupWizard wizard, IDdcPanel panel, IWorkLane? lane = null)
     {
         _wizard = wizard;
         _panel = panel;
+        _lane = lane ?? WorkLane.Inline;
         GammaChoices = [.. WizardPatterns.GammaCandidates.Select(g => new GammaChoice(g, string.Format(CultureInfo.CurrentCulture,
             Loc.Get("SetupWizard.Gamma_Choice"), g.ToString("0.0", CultureInfo.CurrentCulture), GreyLevel(g))))];
         GreyItems = [.. new[] { "Dark", "Mid", "Light" }.SelectMany(level => Channels.Select(c => new GainSliderViewModel(
@@ -82,7 +87,7 @@ public sealed class SetupWizardViewModel : INotifyPropertyChanged
             80, 125)))]; // CalibrationCurves sınırları: gri 0,8–1,25
         GpuWhiteItems = [.. Channels.Select(c => new GainSliderViewModel(Loc.Get("SetupWizard.Channel_" + c), 80, 100))]; // beyaz sadece kısar
         IsActive = wizard.IsActive;
-        if (IsActive) LoadStep();
+        if (IsActive) LoadStep().Forget();
         else Status = Loc.Get("SetupWizard.Idle");
     }
 
@@ -93,6 +98,10 @@ public sealed class SetupWizardViewModel : INotifyPropertyChanged
 
     public bool IsActive { get; private set; }
     public bool IsIdle => !IsActive;
+
+    /// <summary>Monitörle konuşuluyor (T316): düğmeler kapalı, "okunuyor" yazısı görünür; pencere donmaz.</summary>
+    public bool IsBusy => _busy > 0;
+    public bool IsReady => !IsBusy;
 
     public int StepIndex => _step;
     public WizardStep CurrentStep => _wizard.Steps[_step];
@@ -140,7 +149,7 @@ public sealed class SetupWizardViewModel : INotifyPropertyChanged
             if (value is null || value == _gamma || !IsActive) return;
             _gamma = value;
             Raise();
-            ApplyCalibration();
+            Busy(ApplyCalibration).Forget();
         }
     }
 
@@ -158,42 +167,42 @@ public sealed class SetupWizardViewModel : INotifyPropertyChanged
         }
     }
 
-    public void Start()
+    public Task Start() => Busy(async () =>
     {
         if (IsActive) return;
-        _wizard.Begin();
+        await _lane.RunAsync(_wizard.Begin);
         _step = 0;
         _gamma = null;
         foreach (var item in GreyItems.Concat(GpuWhiteItems)) item.Value = 100;
         IsActive = true;
         Status = Loc.Get("SetupWizard.Status_Started");
-        LoadStep();
-    }
+        await LoadStep();
+    }, whenBusy: false);
 
-    public void Next() => Move(1);
+    public Task Next() => Move(1);
 
-    public void Back() => Move(-1);
+    public Task Back() => Move(-1);
 
-    public void Finish()
+    public Task Finish() => Busy(async () =>
     {
         if (!IsActive) return;
-        _wizard.Finish();
+        await _lane.RunAsync(_wizard.Finish);
         IsActive = false;
         Status = Loc.Get("SetupWizard.Status_Finished");
-        LoadStep();
-    }
+        await LoadStep();
+    }, whenBusy: false);
 
-    public void Cancel()
+    public Task Cancel() => Busy(async () =>
     {
         if (!IsActive) return;
-        var failed = _wizard.Cancel();
+        var failed = await _lane.RunAsync(_wizard.Cancel);
         IsActive = false;
         Status = failed.Count == 0
             ? Loc.Get("SetupWizard.Status_Cancelled")
             : string.Format(CultureInfo.CurrentCulture, Loc.Get("SetupWizard.Status_CancelPartial"),
                 string.Join(", ", failed.Select(s => Loc.Get("DdcPanel.Setting_" + s))));
-        LoadStep();
-    }
+        await LoadStep();
+    }, whenBusy: false);
 
     public void RefreshWarmUp() => Raise(nameof(WarmUpText));
 
@@ -207,21 +216,22 @@ public sealed class SetupWizardViewModel : INotifyPropertyChanged
     }
 
     /// <summary>DDC kaydırıcısı bırakıldı: sihirbaz üzerinden tek yazma, sonra monitörden yeniden okunur.</summary>
-    public void CommitDdc(PanelItemViewModel item)
+    public Task CommitDdc(PanelItemViewModel item) => Busy(async () =>
     {
         if (!IsActive) return;
-        var result = _wizard.SetDdc(item.Setting, item.ValueToWrite);
+        var (setting, value) = (item.Setting, item.ValueToWrite);
+        var result = await _lane.RunAsync(() => _wizard.SetDdc(setting, value));
         if (result != PanelSetResult.Unchanged) Status = Loc.Get("DdcPanel.Result_" + result); // çift bırakma olayı sonucu ezmesin
-        LoadDdcItems();
-    }
+        await LoadDdcItems();
+    });
 
     /// <summary>Gri dengesi ya da GPU beyaz kaydırıcısı bırakıldı: kalibrasyon bir kez yeniden kurulur.</summary>
-    public void CommitGain(GainSliderViewModel item)
+    public Task CommitGain(GainSliderViewModel item) => Busy(async () =>
     {
-        if (IsActive) ApplyCalibration();
-    }
+        if (IsActive) await ApplyCalibration();
+    });
 
-    private void ApplyCalibration()
+    private async Task ApplyCalibration()
     {
         RgbGains Gains(int offset, IReadOnlyList<GainSliderViewModel> items) =>
             new(items[offset].Factor, items[offset + 1].Factor, items[offset + 2].Factor);
@@ -231,7 +241,8 @@ public sealed class SetupWizardViewModel : INotifyPropertyChanged
             Gains(0, GreyItems), Gains(3, GreyItems), Gains(6, GreyItems), white);
         try
         {
-            Status = Loc.Get(_wizard.SetCalibration(choices) ? "SetupWizard.Status_CalibrationApplied" : "SetupWizard.Status_CalibrationRejected");
+            var applied = await _lane.RunAsync(() => _wizard.SetCalibration(choices));
+            Status = Loc.Get(applied ? "SetupWizard.Status_CalibrationApplied" : "SetupWizard.Status_CalibrationRejected");
         }
         catch (ArgumentOutOfRangeException)
         {
@@ -239,37 +250,63 @@ public sealed class SetupWizardViewModel : INotifyPropertyChanged
         }
     }
 
-    private void Move(int delta)
+    private Task Move(int delta)
     {
-        if (!IsActive) return;
+        if (!IsActive) return Task.CompletedTask;
         var next = Math.Clamp(_step + delta, 0, _wizard.Steps.Count - 1);
-        if (next == _step) return;
+        if (next == _step) return Task.CompletedTask;
         _step = next;
-        LoadStep();
+        return Busy(LoadStep);
     }
 
-    private void LoadStep()
+    private Task LoadStep()
     {
         Patterns = IsActive ? [.. WizardPatterns.For(CurrentStep).Select(p => new PatternItem(p,
             string.Format(CultureInfo.CurrentCulture, Loc.Get("SetupWizard.OpenPattern"), Loc.Get("SetupWizard.Pattern_" + p.Kind))))] : [];
-        LoadDdcItems();
+        var load = LoadDdcItems();
         Raise(string.Empty); // bütün özellikler adıma bağlı
+        return load;
     }
 
-    private void LoadDdcItems()
+    private async Task LoadDdcItems()
     {
+        var version = ++_loadVersion;
         DdcItems.Clear();
         if (IsActive && StepSettings.TryGetValue(CurrentStep, out var settings))
         {
-            var state = _panel.Refresh();
+            var state = await _lane.RunAsync(_panel.Refresh);
+            if (version != _loadVersion) return; // bu arada adım değişti: yeni adımın okuması doldurur
             _ddcAvailable = state.Available;
             foreach (var setting in settings)
-                if (state.Settings.FirstOrDefault(s => s.Setting == setting) is { } s) DdcItems.Add(new PanelItemViewModel(s, CommitDdc));
+                if (state.Settings.FirstOrDefault(s => s.Setting == setting) is { } s) DdcItems.Add(new PanelItemViewModel(s, i => CommitDdc(i).Forget()));
         }
 
         Raise(nameof(ShowDdcItems));
         Raise(nameof(ShowNoDdc));
         Raise(nameof(ShowGpuWhite));
+    }
+
+    /// <param name="whenBusy">false: başka iş sürerken çağrı yok sayılır (Başlat'a iki kez basmak iki kez başlatmaz).</param>
+    private async Task Busy(Func<Task> work, bool whenBusy = true)
+    {
+        if (!whenBusy && IsBusy) return;
+        _busy++;
+        RaiseBusy();
+        try
+        {
+            await work();
+        }
+        finally
+        {
+            _busy--;
+            RaiseBusy();
+        }
+    }
+
+    private void RaiseBusy()
+    {
+        Raise(nameof(IsBusy));
+        Raise(nameof(IsReady));
     }
 
     private static int GreyLevel(double gamma) => (int)Math.Round(255 * Math.Pow(0.5, 1 / gamma)); // WizardPatterns.Gamma ile aynı

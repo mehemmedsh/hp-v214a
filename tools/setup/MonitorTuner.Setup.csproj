@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Kurulum dosyası (T317): paketteki "uygulama" ve "kurtarma" klasörlerini kullanıcının bilgisayarına kopyalar
+    (%LocalAppData%\Programs\MonitorTuner), masaüstüne ve Başlat menüsüne kısayol koyar, uygulamayı açar. Yönetici izni ve kayıt
+    defteri gerekmez; donanıma ve ayarlara dokunmaz. Mantık platformdan bağımsız (Installer.cs, Linux'ta testli); sadece
+    kısayol yazma Windows'a özel (ShellShortcutWriter.cs).
+    Tek dosya paket: dotnet publish tools/setup/MonitorTuner.Setup.csproj -c Release -r win-x64 -self-contained -p:PublishSingleFile=true -o <paket kökü>
+  -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>MonitorTuner-Kurulum</AssemblyName>
+    <RootNamespace>MonitorTuner.Setup</RootNamespace>
+    <ApplicationIcon>..\..\src\MonitorTuner.App\Resources\MonitorTuner.ico</ApplicationIcon>
+    <!-- Paket kökünde sadece exe kalsın (ayrı .pdb yok); sıkıştırma kurulum dosyasını küçültür. -->
+    <DebugType>embedded</DebugType>
+    <EnableCompressionInSingleFile Condition="'$(PublishSingleFile)' == 'true'">true</EnableCompressionInSingleFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="OKU.txt" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

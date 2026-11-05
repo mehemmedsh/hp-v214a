@@ -36,12 +36,24 @@ jobs:
       - name: Tüm testler
         shell: pwsh
         run: ./tools/dev/test.ps1 -Configuration Release
-      - name: Self-contained win-x64 paket
+      # Paket düzeni (T317): kökte sadece kurulum dosyası ve OKU.txt; uygulama ve kurtarma kendi klasörlerinde.
+      - name: Uygulama (paketin uygulama klasörü, ReadyToRun)
         shell: pwsh
-        run: dotnet publish src/MonitorTuner.App/MonitorTuner.App.csproj -c Release -r win-x64 --self-contained true -o artifacts/MonitorTuner-win-x64 -nologo -v q -tl:off
+        run: dotnet publish src/MonitorTuner.App/MonitorTuner.App.csproj -c Release -r win-x64 --self-contained true -o artifacts/MonitorTuner-win-x64/uygulama -nologo -v q -tl:off
       - name: Kurtarma dosyası (tek dosya, pakette kurtarma klasörü)
         shell: pwsh
         run: dotnet publish tools/recovery/MonitorTuner.Recovery.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o artifacts/MonitorTuner-win-x64/kurtarma -nologo -v q -tl:off
+      - name: Kurulum dosyası (tek dosya, paket kökünde)
+        shell: pwsh
+        run: dotnet publish tools/setup/MonitorTuner.Setup.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o artifacts/MonitorTuner-win-x64 -nologo -v q -tl:off
+      - name: Paket kökünü denetle
+        shell: pwsh
+        run: |
+          $root = Get-ChildItem artifacts/MonitorTuner-win-x64 | ForEach-Object Name | Sort-Object
+          Write-Host ($root -join ', ')
+          $expected = @('kurtarma', 'MonitorTuner-Kurulum.exe', 'OKU.txt', 'uygulama') | Sort-Object
+          if (Compare-Object $root $expected) { throw "Paket kökü beklenenden farklı" }
+          if (-not (Test-Path artifacts/MonitorTuner-win-x64/uygulama/MonitorTuner.App.exe)) { throw "uygulama/MonitorTuner.App.exe yok" }
       - uses: actions/upload-artifact@v5
         with:
           name: MonitorTuner-win-x64

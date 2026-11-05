@@ -32,7 +32,7 @@ public sealed class TrayHost : IDisposable
         _viewModel = viewModel;
         _icon = new WinForms.NotifyIcon
         {
-            Icon = System.Drawing.SystemIcons.Application,
+            Icon = AppIcon(),
             Text = Loc.Get("Tray.Tooltip"),
             ContextMenuStrip = _menu,
             Visible = true,
@@ -87,6 +87,21 @@ public sealed class TrayHost : IDisposable
         else if (item.Click is { } click)
             strip.Click += (_, _) => click();
         return strip;
+    }
+
+    /// <summary>Uygulamanın kendi simgesi (exe'ye gömülü, T316); okunamazsa Windows'un genel simgesi.</summary>
+    private static System.Drawing.Icon AppIcon()
+    {
+        try
+        {
+            if (Environment.ProcessPath is { } exe && System.Drawing.Icon.ExtractAssociatedIcon(exe) is { } icon) return icon;
+        }
+        catch (Exception ex) when (ex is ArgumentException or System.IO.IOException)
+        {
+            // genel simgeye düş
+        }
+
+        return System.Drawing.SystemIcons.Application;
     }
 
     private void Balloon(string text)

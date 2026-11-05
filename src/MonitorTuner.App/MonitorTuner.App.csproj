@@ -10,6 +10,17 @@
     <!-- Nötr dil Türkçe: Resources/Strings/*.resx Türkçedir; az ve en T502'de *.az.resx / *.en.resx. -->
     <NeutralLanguage>tr</NeutralLanguage>
     <AssemblyTitle>MonitorTuner</AssemblyTitle>
+    <!-- T316: masaüstü kısayolunda, görev çubuğunda ve tepside görünen simge. -->
+    <ApplicationIcon>Resources\MonitorTuner.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <!--
+    T316: hızlı açılış. Paket (dotnet publish -r win-x64) önceden makine koduna derlenir (ReadyToRun): açılışta kodun derlenmesi
+    beklenmez. Sadece paket için; dotnet build ve testler etkilenmez.
+  -->
+  <PropertyGroup Condition="'$(RuntimeIdentifier)' != ''">
+    <PublishReadyToRun>true</PublishReadyToRun>
+    <TieredPGO>true</TieredPGO>
   </PropertyGroup>
 
   <ItemGroup>

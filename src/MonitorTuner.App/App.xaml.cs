@@ -27,6 +27,9 @@ public partial class App : System.Windows.Application
     /// <summary>Açılış adımları ve beklenmeyen hatalar (T314 düzeltme): sessiz kapanmanın sebebi buradan okunur.</summary>
     private static readonly AppLog Log = new(AppLog.DefaultFolder(SettingsRoot), TimeProvider.System);
 
+    /// <summary>Servis çağrılarının tek sırası (T316): yavaş DDC işi arka planda, tepsi ve zamanlayıcı da aynı sıradan geçer.</summary>
+    private readonly WorkLane _lane = new();
+
     private Mutex? _singleInstance;
     private AppRuntime? _runtime;
     private TrayViewModel? _trayViewModel;
@@ -36,6 +39,7 @@ public partial class App : System.Windows.Application
     private DispatcherTimer? _timer;
     private MainWindow? _main;
     private bool _exiting;
+    private bool _tickRunning;
 
     protected override void OnStartup(StartupEventArgs e)
     {
@@ -106,15 +110,15 @@ public partial class App : System.Windows.Application
 
         try
         {
-            _trayViewModel = new TrayViewModel(runtime.QuickControls, TrayHost.HotKeyText)
+            _trayViewModel = new TrayViewModel(new LanedQuickControls(runtime.QuickControls, _lane), TrayHost.HotKeyText)
             {
                 OpenMainWindow = OpenMainWindow,
                 Exit = ExitApplication,
             };
             _tray = new TrayHost(_trayViewModel);
             Log.Write("tepsi hazır");
-            _wizardViewModel = new SetupWizardViewModel(runtime.Wizard, runtime.DdcPanel); // T315: pencere kapansa da sihirbaz durumu kalır
-            _ddcPanelViewModel = new DdcPanelViewModel(runtime.DdcPanel);
+            _wizardViewModel = new SetupWizardViewModel(runtime.Wizard, runtime.DdcPanel, _lane); // T315: pencere kapansa da sihirbaz durumu kalır
+            _ddcPanelViewModel = new DdcPanelViewModel(runtime.DdcPanel, _lane);
             if (StartupNotices.From(report) is { Count: > 0 } notices) _trayViewModel.Announce(string.Join(Environment.NewLine, notices));
 
             OpenMainWindow();
@@ -155,10 +159,20 @@ public partial class App : System.Windows.Application
         base.OnExit(e);
     }
 
-    private void OnTick(object? sender, EventArgs e)
+    /// <summary>Arka planda (T316); önceki tur bitmeden yenisi başlamaz (DDC uzun sürerse turlar birikmez).</summary>
+    private async void OnTick(object? sender, EventArgs e)
     {
-        if (_runtime is null || _exiting) return;
-        if (_runtime.Tick().ExternalTableRestored) _trayViewModel?.Announce(StartupNotices.ExternalTableRestored());
+        if (_runtime is not { } runtime || _exiting || _tickRunning) return;
+        _tickRunning = true;
+        try
+        {
+            var report = await _lane.RunAsync(runtime.Tick);
+            if (report.ExternalTableRestored && !_exiting) _trayViewModel?.Announce(StartupNotices.ExternalTableRestored());
+        }
+        finally
+        {
+            _tickRunning = false;
+        }
     }
 
     private void OpenMainWindow()
@@ -188,7 +202,7 @@ public partial class App : System.Windows.Application
         _exiting = true;
         Log.Write("kapanış");
         _timer?.Stop();
-        _runtime?.Shutdown();
+        if (_runtime is { } runtime) _lane.Run(runtime.Shutdown); // arka planda süren DDC işi bitince; ikisi aynı anda çalışmaz
         _tray?.Dispose();
         _tray = null;
         try

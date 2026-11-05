@@ -27,10 +27,14 @@
 
             <!-- Kapalıyken: sadece başlat -->
             <Button Content="{loc:Tr SetupWizard.Start}" HorizontalAlignment="Left" Padding="12,5" Margin="0,0,0,10"
-                    Click="Start_Click" Visibility="{Binding IsIdle, Converter={StaticResource BoolToVisibility}}" />
+                    Click="Start_Click" Visibility="{Binding IsIdle, Converter={StaticResource BoolToVisibility}}"
+                    IsEnabled="{Binding IsReady}" />
             <TextBlock Text="{Binding Status}" TextWrapping="Wrap" Margin="0,0,0,12" FontWeight="SemiBold" />
+            <!-- T316: monitörle konuşulurken pencere donmaz; bu yazı görünür, düğmeler kapalı -->
+            <TextBlock Text="{loc:Tr Common.Working}" Margin="0,0,0,10" Foreground="#555555"
+                       Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
 
-            <StackPanel Visibility="{Binding IsActive, Converter={StaticResource BoolToVisibility}}">
+            <StackPanel Visibility="{Binding IsActive, Converter={StaticResource BoolToVisibility}}" IsEnabled="{Binding IsReady}">
                 <TextBlock Text="{Binding StepCounter}" Foreground="#555555" />
                 <TextBlock Text="{Binding StepTitle}" FontSize="16" FontWeight="Bold" Margin="0,2,0,6" />
                 <TextBlock Text="{Binding StepText}" TextWrapping="Wrap" Margin="0,0,0,10" />

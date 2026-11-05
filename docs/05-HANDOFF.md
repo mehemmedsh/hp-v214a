@@ -115,7 +115,7 @@ Sonunda her madde için tek satır: ne yaptın.
 - **A. CI paketi (önerilen, kurulum gerekmez):** CI (GitHub'ın her push'ta kodu derleyip test eden sunucusu) her push'ta Windows paketi üretir ve 7 gün saklar.
   1. Tarayıcıda github.com/mehemmedsh/hp-v214a → **Actions** → listede test edeceğin commit'in yeşil ✓ olan **CI** çalışmasını aç.
   2. Sayfanın altındaki **Artifacts** bölümünden `MonitorTuner-win-x64`'ü indir.
-  3. İnen zip'e sağ tık → **Tümünü ayıkla**. Klasördeki `MonitorTuner.App.exe`'yi çift tıkla.
+  3. İnen zip'e sağ tık → **Tümünü ayıkla**. Klasörde sadece `MonitorTuner-Kurulum.exe`, `OKU.txt`, `uygulama` ve `kurtarma` var. **`MonitorTuner-Kurulum.exe`'yi çift tıkla** (T317): uygulama kurulur, masaüstüne **MonitorTuner** simgesi gelir ve uygulama açılır. Sonra hep masaüstündeki simgeden aç. Yeni paketi kurarken aynı dosya güncelleme (Enter) ve kaldırma (K) sorar; ayarlar kalır.
   4. "Windows bilgisayarınızı korudu" çıkarsa: **Ek bilgi** → **Yine de çalıştır** (uygulama imzasız olduğu için çıkar).
   - Komutla aynısı: `gh run list -w CI -L 3` ile çalışmanın numarasını bul, sonra `gh run download <numara> -n MonitorTuner-win-x64 -D C:\dev\paket`.
   - 7 gün geçtiyse paket silinir: Actions'ta o çalışmayı açıp **Re-run all jobs** de ya da B yolunu kullan.

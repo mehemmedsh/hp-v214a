@@ -72,15 +72,23 @@ public sealed class PanelItemViewModel(PanelSettingState state, Action<PanelItem
 
 /// <summary>
 /// DDC paneli ekranının mantığı (T305). Donanıma dokunmaz, sadece <see cref="IDdcPanel"/> ile konuşur. DDC yoksa
-/// OSD talimatını gösterir; OSD'den değişen değerleri bildirir, ezmez.
+/// OSD talimatını gösterir; OSD'den değişen değerleri bildirir, ezmez. Okuma ve yazma <see cref="IWorkLane"/>'de arka planda
+/// sırayla yapılır (T316): pencere DDC yanıtını beklerken donmaz, <see cref="IsBusy"/> süresince panel kapalı görünür.
 /// </summary>
 public sealed class DdcPanelViewModel : INotifyPropertyChanged
 {
     private readonly IDdcPanel _panel;
+    private readonly IWorkLane _lane;
     private bool _available;
     private string _status = "";
+    private int _busy;
 
-    public DdcPanelViewModel(IDdcPanel panel) => _panel = panel;
+    /// <param name="lane">Verilmezse her şey çağıranın iş parçacığında hemen çalışır (testler).</param>
+    public DdcPanelViewModel(IDdcPanel panel, IWorkLane? lane = null)
+    {
+        _panel = panel;
+        _lane = lane ?? WorkLane.Inline;
+    }
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -100,7 +108,12 @@ public sealed class DdcPanelViewModel : INotifyPropertyChanged
         }
     }
 
-    public bool ShowOsdInstructions => !_available;
+    public bool ShowOsdInstructions => !_available && !IsBusy;
+
+    /// <summary>Monitörle konuşuluyor: kaydırıcılar kapalı, "okunuyor" yazısı görünür.</summary>
+    public bool IsBusy => _busy > 0;
+
+    public bool IsReady => !IsBusy;
 
     public string Status
     {
@@ -115,30 +128,30 @@ public sealed class DdcPanelViewModel : INotifyPropertyChanged
     public string OsdText { get; } = string.Join(Environment.NewLine + Environment.NewLine,
         new[] { "Why", "Brightness", "Color", "Image", "Input", "Volume" }.Select(k => Loc.Get("DdcPanel.Osd_" + k)));
 
-    public void Refresh() => Load();
+    public Task Refresh() => Busy(Load);
 
     /// <summary>Kaydırıcı bırakıldı ya da seçim yapıldı: tek yazma.</summary>
-    public void Commit(PanelItemViewModel item)
+    public Task Commit(PanelItemViewModel item) => Busy(async () =>
     {
-        var value = item.ValueToWrite;
-        var result = _panel.Set(item.Setting, value);
+        var (setting, value) = (item.Setting, item.ValueToWrite);
+        var result = await _lane.RunAsync(() => _panel.Set(setting, value));
         if (result == PanelSetResult.NeedsInputWarning)
         {
             var accepted = ConfirmInputSwitch?.Invoke(Loc.Get("DdcPanel.InputWarning_Title"), Loc.Get("DdcPanel.InputWarning_Text")) == true;
-            if (accepted) result = _panel.Set(item.Setting, value, inputWarningAccepted: true);
+            if (accepted) result = await _lane.RunAsync(() => _panel.Set(setting, value, inputWarningAccepted: true));
         }
 
         // Aynı bırakma olayı iki kez gelirse (sürükleme + fare) "zaten bu" mesajı gerçek sonucun üstüne yazılmaz.
         if (result != PanelSetResult.Unchanged) Status = Loc.Get("DdcPanel.Result_" + result);
-        Load();
-    }
+        await Load();
+    });
 
     /// <summary>Monitörden okur. OSD'den değişen başka ayar varsa söyler (değer zaten alındı, ezilmedi).</summary>
-    private void Load()
+    private async Task Load()
     {
-        var state = _panel.Refresh();
+        var state = await _lane.RunAsync(_panel.Refresh);
         Items.Clear();
-        foreach (var setting in state.Settings) Items.Add(new PanelItemViewModel(setting, Commit));
+        foreach (var setting in state.Settings) Items.Add(new PanelItemViewModel(setting, item => Commit(item).Forget()));
         Available = state.Available;
 
         if (state.ExternallyChanged.Count > 0)
@@ -146,6 +159,28 @@ public sealed class DdcPanelViewModel : INotifyPropertyChanged
             var names = string.Join(", ", state.ExternallyChanged.Select(s => Loc.Get("DdcPanel.Setting_" + s)));
             Status = string.Format(CultureInfo.CurrentCulture, Loc.Get("DdcPanel.ExternalChange"), names);
         }
+    }
+
+    private async Task Busy(Func<Task> work)
+    {
+        _busy++;
+        RaiseBusy();
+        try
+        {
+            await work();
+        }
+        finally
+        {
+            _busy--;
+            RaiseBusy();
+        }
+    }
+
+    private void RaiseBusy()
+    {
+        Raise(nameof(IsBusy));
+        Raise(nameof(IsReady));
+        Raise(nameof(ShowOsdInstructions));
     }
 
     private void Raise([CallerMemberName] string? name = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
