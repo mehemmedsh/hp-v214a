@@ -215,7 +215,7 @@ public class SetupWizardViewModelTests
 
         vm.CommitDdc(vm.DdcItems[0]);
 
-        Assert.Contains("arka ışık", vm.Status);
+        Assert.Contains("arka ışığı", vm.Status);
     }
 
     [Fact]

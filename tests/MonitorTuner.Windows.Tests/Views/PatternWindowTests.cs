@@ -109,8 +109,11 @@ public class PatternWindowTests
 
             var image = Assert.Single(canvas.Children.OfType<Image>());
             var bitmap = Assert.IsAssignableFrom<BitmapSource>(image.Source);
-            Assert.Equal((int)Math.Round(patch.Width * Width), bitmap.PixelWidth);
-            Assert.Equal((int)Math.Round(patch.Height * Height), bitmap.PixelHeight);
+            var dpi = VisualTreeHelper.GetDpi(window); // CI'daki Windows'un ölçeklemesi %100 olmayabilir
+            Assert.Equal((int)Math.Round(patch.Width * Width * dpi.DpiScaleX), bitmap.PixelWidth);
+            Assert.Equal((int)Math.Round(patch.Height * Height * dpi.DpiScaleY), bitmap.PixelHeight);
+            Assert.Equal(bitmap.PixelWidth, image.Width * dpi.DpiScaleX, 6); // bir bit eşlem pikseli = bir ekran pikseli
+            Assert.Equal(bitmap.PixelHeight, image.Height * dpi.DpiScaleY, 6);
             Assert.Equal(Stretch.None, image.Stretch);
             Assert.Equal(BitmapScalingMode.NearestNeighbor, RenderOptions.GetBitmapScalingMode(image));
 
