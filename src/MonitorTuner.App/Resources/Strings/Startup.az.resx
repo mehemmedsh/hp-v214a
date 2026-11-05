@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Startup: Azerbaycanca çeviri (T502). Anahtarlar Türkçe Startup.resx ile aynı; yer tutucular ({0}) korunur. -->
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="NoSupportedMonitor" xml:space="preserve">
+    <value>Dəstəklənən monitor (HP P21b G4) tapılmadı. Görünən ekranlar: {0}.
+
+Heç bir ayar dəyişdirilmədi. Proqram bağlanır.</value>
+  </data>
+  <data name="NoDisplaysSeen" xml:space="preserve">
+    <value>heç bir ekran görünmədi</value>
+  </data>
+  <data name="UnreadableDisplay" xml:space="preserve">
+    <value>{0} (model oxunmadı)</value>
+  </data>
+  <data name="SeenDisplay" xml:space="preserve">
+    <value>{0} ({1})</value>
+  </data>
+  <data name="ProfileError" xml:space="preserve">
+    <value>Monitor profili oxunmadı: {0}
+
+Heç bir ayar dəyişdirilmədi. Proqram bağlanır.</value>
+  </data>
+  <data name="StartFailed" xml:space="preserve">
+    <value>Proqram başlaya bilmədi: {0}
+
+Heç bir ayar dəyişdirilmədi. Proqram bağlanır.</value>
+  </data>
+  <data name="NoFullGammaRange" xml:space="preserve">
+    <value>Administrator icazəsi verilmədi: Windows çox tünd və ya çox isti rəng cədvəllərini rədd edə bilər (əlavə qaraltma, mavi işıq, kalibrləmə). Proqramı yenidən açıb icazə versən, düzələcək.</value>
+  </data>
+  <data name="TableRejected" xml:space="preserve">
+    <value>Windows rəng cədvəlini qəbul etmədi; ekranda əvvəlki rənglər qaldı.</value>
+  </data>
+  <data name="ExternalTable" xml:space="preserve">
+    <value>Başqa proqram ekranın rənglərini dəyişdi; sənin rəng ayarın bərpa olundu.</value>
+  </data>
+  <data name="AlreadyRunning" xml:space="preserve">
+    <value>Monitor Ayarı artıq işləyir. Tapşırıqlar panelinin sağındakı ^ oxuna bas və sistem panelindəki nişanı aç. Nişan yoxdursa, proqram ilişib qala bilər: Tapşırıq meneceri-ndə MonitorTuner.App-i bağlayıb yenidən aç.</value>
+  </data>
+  <data name="Unexpected" xml:space="preserve">
+    <value>Gözlənilməz xəta: {0}
+
+Ətraflı məlumat jurnal faylındadır: {1}
+Effektlər bağlandı, kalibrləmə qaldı.</value>
+  </data>
+</root>

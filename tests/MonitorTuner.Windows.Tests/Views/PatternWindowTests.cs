@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using MonitorTuner.App.Views;
 using MonitorTuner.Services;
 
@@ -67,11 +68,15 @@ public class PatternWindowTests
                     var background = Assert.IsType<SolidColorBrush>(canvas.Background).Color;
                     Assert.Equal((frame.Background.R, frame.Background.G, frame.Background.B), (background.R, background.G, background.B));
 
+                    var solid = frame.Patches.Where(p => p.StripeColor is null).ToList();
+                    var striped = frame.Patches.Where(p => p.StripeColor is not null).ToList();
                     var rects = canvas.Children.OfType<System.Windows.Shapes.Rectangle>().ToList();
-                    Assert.Equal(frame.Patches.Count, rects.Count);
+                    var images = canvas.Children.OfType<Image>().ToList();
+                    Assert.Equal(solid.Count, rects.Count);
+                    Assert.Equal(striped.Count, images.Count);
                     for (var p = 0; p < rects.Count; p++)
                     {
-                        var patch = frame.Patches[p];
+                        var patch = solid[p];
                         var fill = Assert.IsType<SolidColorBrush>(rects[p].Fill).Color;
                         Assert.Equal((patch.Color.R, patch.Color.G, patch.Color.B), (fill.R, fill.G, fill.B));
                         Assert.Equal(Math.Round(patch.Width * Width), rects[p].Width); // tam piksel
@@ -80,10 +85,50 @@ public class PatternWindowTests
 
                     var labels = frame.Patches.Count(p => p.Level is not null);
                     var text = frame.Text is null ? 0 : 1;
-                    Assert.Equal(rects.Count + labels + text, canvas.Children.Count);
+                    Assert.Equal(rects.Count + images.Count + labels + text, canvas.Children.Count);
                 }
 
                 window.Close();
+            }
+        });
+    }
+
+    /// <summary>
+    /// T315: gamma deseninin çizgili yaması düz renk değil, satır satır (1 fiziksel piksel) siyah ve beyazdır; ölçeklenmeden
+    /// (en yakın komşu) çizilir, yoksa çizgiler griye karışır ve ışığın yarısı olmaz.
+    /// </summary>
+    [Fact]
+    public void GammaStripes_AreDrawnPixelByPixel_AlternatingRows()
+    {
+        RunOnSta(() =>
+        {
+            var pattern = WizardPatterns.For(WizardStep.Gamma).Single();
+            var window = new PatternWindow(pattern);
+            var canvas = Lay(window);
+            window.Move(0); // pencere gösterilmediği için çizimi tetikler (Loaded gelmez)
+            var patch = pattern.Frames[0].Patches.Single(p => p.StripeColor is not null);
+
+            var image = Assert.Single(canvas.Children.OfType<Image>());
+            var bitmap = Assert.IsAssignableFrom<BitmapSource>(image.Source);
+            var dpi = VisualTreeHelper.GetDpi(window); // CI'daki Windows'un ölçeklemesi %100 olmayabilir
+            Assert.Equal((int)Math.Round(patch.Width * Width * dpi.DpiScaleX), bitmap.PixelWidth);
+            Assert.Equal((int)Math.Round(patch.Height * Height * dpi.DpiScaleY), bitmap.PixelHeight);
+            Assert.Equal(bitmap.PixelWidth, image.Width * dpi.DpiScaleX, 6); // bir bit eşlem pikseli = bir ekran pikseli
+            Assert.Equal(bitmap.PixelHeight, image.Height * dpi.DpiScaleY, 6);
+            Assert.Equal(Stretch.None, image.Stretch);
+            Assert.Equal(BitmapScalingMode.NearestNeighbor, RenderOptions.GetBitmapScalingMode(image));
+
+            var stride = bitmap.PixelWidth * 4;
+            var pixels = new byte[stride * 4];
+            bitmap.CopyPixels(new Int32Rect(0, 0, bitmap.PixelWidth, 4), pixels, stride, 0);
+            for (var row = 0; row < 4; row++)
+            {
+                var expected = row % 2 == 0 ? patch.Color : patch.StripeColor!.Value;
+                foreach (var x in new[] { 0, bitmap.PixelWidth / 2, bitmap.PixelWidth - 1 })
+                {
+                    var i = row * stride + x * 4; // Bgr32
+                    Assert.Equal((expected.B, expected.G, expected.R), (pixels[i], pixels[i + 1], pixels[i + 2]));
+                }
             }
         });
     }

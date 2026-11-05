@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tray: Azerbaycanca çeviri (T502). Anahtarlar Türkçe Tray.resx ile aynı; yer tutucular ({0}) korunur. -->
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Tooltip" xml:space="preserve">
+    <value>Monitor Ayarı</value>
+  </data>
+  <data name="WizardActive" xml:space="preserve">
+    <value>Ayar sehrbazı açıqdır: profil, parlaqlıq və mavi işıq bağlıdır (panika açıqdır)</value>
+  </data>
+  <data name="Profiles" xml:space="preserve">
+    <value>Rəng profilləri</value>
+  </data>
+  <data name="Brightness" xml:space="preserve">
+    <value>Parlaqlıq</value>
+  </data>
+  <data name="Dimming" xml:space="preserve">
+    <value>Əlavə qaraltma</value>
+  </data>
+  <data name="BlueLight" xml:space="preserve">
+    <value>Mavi işıq</value>
+  </data>
+  <data name="BrightnessLevel" xml:space="preserve">
+    <value>Parlaqlıq %{0}</value>
+  </data>
+  <data name="Dimming_Light" xml:space="preserve">
+    <value>Yüngül</value>
+  </data>
+  <data name="Dimming_Medium" xml:space="preserve">
+    <value>Orta</value>
+  </data>
+  <data name="Dimming_Strong" xml:space="preserve">
+    <value>Güclü</value>
+  </data>
+  <data name="Dimming_Darkest" xml:space="preserve">
+    <value>Ən tünd (ağ %15)</value>
+  </data>
+  <data name="BlueLightOff" xml:space="preserve">
+    <value>Bağlı</value>
+  </data>
+  <data name="BlueLightKelvin" xml:space="preserve">
+    <value>{0} K</value>
+  </data>
+  <data name="Panic" xml:space="preserve">
+    <value>Panika: effektləri bağla ({0})</value>
+  </data>
+  <data name="Open" xml:space="preserve">
+    <value>Əsas pəncərəni aç</value>
+  </data>
+  <data name="Exit" xml:space="preserve">
+    <value>Çıxış</value>
+  </data>
+  <data name="Step_Brightness" xml:space="preserve">
+    <value>parlaqlıq</value>
+  </data>
+  <data name="Step_BlueLight" xml:space="preserve">
+    <value>mavi işıq</value>
+  </data>
+  <data name="Step_Vibrance" xml:space="preserve">
+    <value>canlılıq</value>
+  </data>
+  <data name="Done_Profile" xml:space="preserve">
+    <value>{0} profili tətbiq olundu.</value>
+  </data>
+  <data name="Partial_Profile" xml:space="preserve">
+    <value>{0} profili tam tətbiq olunmadı. Tətbiq olunmayan: {1}.</value>
+  </data>
+  <data name="Done_Brightness" xml:space="preserve">
+    <value>Parlaqlıq %{0} edildi.</value>
+  </data>
+  <data name="Done_Dimming" xml:space="preserve">
+    <value>Əlavə qaraltma: {0}.</value>
+  </data>
+  <data name="Done_BlueLight" xml:space="preserve">
+    <value>Mavi işıq {0} K edildi.</value>
+  </data>
+  <data name="Done_BlueLightOff" xml:space="preserve">
+    <value>Mavi işıq bağlandı.</value>
+  </data>
+  <data name="Failed" xml:space="preserve">
+    <value>Ayar tətbiq olunmadı. Monitor DDC əmrinə cavab vermir və ya yazma limitinə düşdü; bir az gözləyib yenidən cəhd edin.</value>
+  </data>
+  <data name="Blocked" xml:space="preserve">
+    <value>Ayar sehrbazı açıq olanda bu ayar bağlıdır. Sehrbazı bitirin və ya ləğv edin.</value>
+  </data>
+  <data name="NotFound" xml:space="preserve">
+    <value>Profil tapılmadı.</value>
+  </data>
+  <data name="Unexpected" xml:space="preserve">
+    <value>Gözlənilməz xəta: {0}</value>
+  </data>
+  <data name="PanicDone" xml:space="preserve">
+    <value>Panika: mavi işıq, əlavə qaraltma və canlılıq bağlandı. Kalibrləmə qaldı.</value>
+  </data>
+  <data name="PanicFailed" xml:space="preserve">
+    <value>Panika tamamlanmadı ({0}). Bəzi effektlər bağlanmamış ola bilər; qısayolu və ya menyunu yenidən basın.</value>
+  </data>
+  <data name="HotKeyFailed" xml:space="preserve">
+    <value>Panika qısayolu ({0}) qeydə alınmadı, başqa proqram istifadə edə bilər. Panika sistem paneli menyusundadır.</value>
+  </data>
+  <data name="Profile_Day" xml:space="preserve">
+    <value>Gündüz</value>
+  </data>
+  <data name="Profile_Evening" xml:space="preserve">
+    <value>Axşam</value>
+  </data>
+  <data name="Profile_Night" xml:space="preserve">
+    <value>Gecə</value>
+  </data>
+  <data name="Profile_Code" xml:space="preserve">
+    <value>Kod</value>
+  </data>
+  <data name="Profile_Film" xml:space="preserve">
+    <value>Film</value>
+  </data>
+  <data name="Profile_Game" xml:space="preserve">
+    <value>Oyun</value>
+  </data>
+  <data name="Profile_DaVinci" xml:space="preserve">
+    <value>DaVinci zaman şkalası</value>
+  </data>
+</root>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Common: İngilizce çeviri (T502). Anahtarlar Türkçe Common.resx ile aynı; yer tutucular ({0}) korunur. -->
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AppTitle" xml:space="preserve">
+    <value>Monitor Tuner</value>
+  </data>
+  <data name="HomeText" xml:space="preserve">
+    <value>Monitor settings tab: brightness, contrast, color and sharpness. Setup wizard tab: step-by-step tuning with test patterns and calibration by eye. Guide tab: seating, refresh rate setup and eye comfort. Color profiles, brightness, blue light and the panic shortcut are in the system tray icon. Closing this window keeps the app running in the tray.</value>
+  </data>
+  <data name="Language_Label" xml:space="preserve">
+    <value>Interface language</value>
+  </data>
+  <data name="Language_tr" xml:space="preserve">
+    <value>Türkçe</value>
+  </data>
+  <data name="Language_az" xml:space="preserve">
+    <value>Azərbaycanca</value>
+  </data>
+  <data name="Language_en" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="Language_Saved" xml:space="preserve">
+    <value>Language saved; it changes when the app is reopened.</value>
+  </data>
+  <data name="Language_SaveFailed" xml:space="preserve">
+    <value>Could not save the language: {0}</value>
+  </data>
+</root>

@@ -2,6 +2,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using MonitorTuner.App.Localization;
 using MonitorTuner.Services;
 
@@ -10,7 +11,7 @@ namespace MonitorTuner.App.Views;
 /// <summary>
 /// Ayar sihirbazı deseni (T312): tam ekran, ayırt edici kenarlıksız. Sadece <see cref="Pattern"/> verisini çizer; mantık yok.
 /// Kareleri kullanıcı gezer (sağ/sol ok, Boşluk); kendiliğinden değişmez ve yanıp sönmez (03-GUVENLIK.md → 7). Esc kapatır.
-/// Çizim piksel hizalıdır (yamalar tam piksele yuvarlanır). Hangi ekranda açılacağı çağıranın işi (Left/Top ayarlanır).
+/// Çizim piksel hizalıdır (yamalar tam piksele yuvarlanır; çizgili yama fiziksel piksel bit eşlemidir, T315). Hangi ekranda açılacağı çağıranın işi (Left/Top ayarlanır).
 /// </summary>
 public sealed class PatternWindow : Window
 {
@@ -72,15 +73,17 @@ public sealed class PatternWindow : Window
         var label = Luminance(frame.Background) > 128 ? Brushes.Black : new SolidColorBrush(System.Windows.Media.Color.FromRgb(160, 160, 160));
         foreach (var patch in frame.Patches)
         {
-            var rect = new System.Windows.Shapes.Rectangle
-            {
-                Width = Math.Round(patch.Width * width), Height = Math.Round(patch.Height * height),
-                Fill = Brush(patch.Color), SnapsToDevicePixels = true,
-            };
-            Place(rect, patch.X * width, patch.Y * height);
+            FrameworkElement shape = patch.StripeColor is { } stripe
+                ? Stripes(patch, stripe, width, height)
+                : new System.Windows.Shapes.Rectangle
+                {
+                    Width = Math.Round(patch.Width * width), Height = Math.Round(patch.Height * height),
+                    Fill = Brush(patch.Color), SnapsToDevicePixels = true,
+                };
+            Place(shape, patch.X * width, patch.Y * height);
             if (patch.Level is { } level)
             {
-                var text = new TextBlock { Text = level.ToString(), Foreground = label, FontSize = 10, Width = rect.Width, TextAlignment = TextAlignment.Center };
+                var text = new TextBlock { Text = level.ToString(), Foreground = label, FontSize = 10, Width = shape.Width, TextAlignment = TextAlignment.Center };
                 Place(text, patch.X * width, (patch.Y + patch.Height) * height + 4);
             }
         }
@@ -101,6 +104,46 @@ public sealed class PatternWindow : Window
         }
 
         Place(panel, 40, 40);
+    }
+
+    /// <summary>
+    /// Çizgili yama (T315, gamma deseni): satır satır 1 fiziksel piksel <see cref="PatternPatch.Color"/> ve çizgi rengi.
+    /// Bit eşlem ekranın fiziksel piksel boyutunda ve DPI'ında kurulur, ölçeklenmez (en yakın komşu): çizgiler griye karışmaz,
+    /// alan ışığın tam yarısını verir. Windows ölçeklemesi %100 değilse de her satır bir fiziksel satırdır.
+    /// </summary>
+    private Image Stripes(PatternPatch patch, Rgb stripe, double width, double height)
+    {
+        var dpi = VisualTreeHelper.GetDpi(this);
+        var pixelWidth = Math.Max(1, (int)Math.Round(patch.Width * width * dpi.DpiScaleX));
+        var pixelHeight = Math.Max(1, (int)Math.Round(patch.Height * height * dpi.DpiScaleY));
+        var image = new Image
+        {
+            Source = StripeBitmap(pixelWidth, pixelHeight, patch.Color, stripe, dpi.PixelsPerInchX, dpi.PixelsPerInchY),
+            Width = pixelWidth / dpi.DpiScaleX, Height = pixelHeight / dpi.DpiScaleY,
+            Stretch = Stretch.None, SnapsToDevicePixels = true,
+        };
+        RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.NearestNeighbor);
+        return image;
+    }
+
+    /// <summary>Çift satırlar <paramref name="first"/>, tek satırlar <paramref name="second"/> (Bgr32).</summary>
+    internal static BitmapSource StripeBitmap(int pixelWidth, int pixelHeight, Rgb first, Rgb second, double dpiX, double dpiY)
+    {
+        var stride = pixelWidth * 4;
+        var pixels = new byte[stride * pixelHeight];
+        for (var y = 0; y < pixelHeight; y++)
+        {
+            var c = y % 2 == 0 ? first : second;
+            for (var x = 0; x < pixelWidth; x++)
+            {
+                var i = y * stride + x * 4;
+                (pixels[i], pixels[i + 1], pixels[i + 2]) = (c.B, c.G, c.R);
+            }
+        }
+
+        var bitmap = BitmapSource.Create(pixelWidth, pixelHeight, dpiX, dpiY, PixelFormats.Bgr32, null, pixels, stride);
+        bitmap.Freeze();
+        return bitmap;
     }
 
     private void Place(UIElement element, double x, double y)

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Guide: İngilizce çeviri (T502). Anahtarlar Türkçe Guide.resx ile aynı; yer tutucular ({0}) korunur. -->
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="TabTitle" xml:space="preserve">
+    <value>Guide</value>
+  </data>
+  <data name="PageTitle" xml:space="preserve">
+    <value>Monitor usage and improvement guide</value>
+  </data>
+  <data name="IntroText" xml:space="preserve">
+    <value>A reference guide for getting the best picture quality, the smoothest refresh rate and the best eye comfort from your HP P21b G4 monitor.</value>
+  </data>
+  <data name="SeatingTitle" xml:space="preserve">
+    <value>1. Seating position and vertical viewing angle (TN panel)</value>
+  </data>
+  <data name="SeatingDesc" xml:space="preserve">
+    <value>The HP P21b G4 uses a 20.7-inch TN panel. On TN panels brightness and gamma change quickly with the vertical viewing angle; when your eyes are too low the top of the screen darkens and the bottom looks washed out. For the best picture:
+• Eye level: at or slightly below the top edge of the screen.
+• Viewing distance: 70–80 cm (thanks to 108 PPI text stays sharp; as distance grows the top-to-bottom angle difference drops from 28.9° to 18.3°–20.9°).
+• Tilt: try between 0° and -5° forward. Tilting the screen back darkens the top even more.
+• Height: the stand cannot be raised, so raise the chair or lower the monitor (a VESA 100 arm is the cleanest solution).</value>
+  </data>
+  <data name="SeatingDiagnosis" xml:space="preserve">
+    <value>2-minute quick check: show a flat 50% grey. Slowly move your head 10–15 cm up and down. If the difference changes clearly, the cause is the viewing angle. To confirm, take a zoomed photo of the center with your phone from 1.5–2 meters; if the difference disappears from afar it is the angle, if it stays it is backlight uniformity.</value>
+  </data>
+  <data name="HzTitle" xml:space="preserve">
+    <value>2. Refresh rate and NVIDIA custom resolution setup</value>
+  </data>
+  <data name="HzDesc" xml:space="preserve">
+    <value>The HP P21b G4's factory mode is 60 Hz. The monitor's scaler does not enforce the vertical 60 Hz limit but has a hard limit on horizontal frequency around 83.0–83.9 kHz. That is why the hardware's maximum refresh rate is 76 Hz (77 Hz is rejected). Modes are added in NVIDIA Control Panel -&gt; Change resolution -&gt; Customize -&gt; Create Custom Resolution.</value>
+  </data>
+  <data name="Hz76Details" xml:space="preserve">
+    <value>• 76 Hz (highest rate - very tight vertical): 1920x1080 @ 76 Hz | Timing: Manual | Front porch / Sync / Back porch: horizontal 48/32/80, vertical 3/5/4 | Total: 2080x1092 | Horizontal frequency: 82.99 kHz | Pixel clock: 172.62 MHz | Note: passed the NVIDIA test; verify with the frame skipping test before use.</value>
+  </data>
+  <data name="Hz75Details" xml:space="preserve">
+    <value>• 75 Hz (tight vertical): 1920x1080 @ 75 Hz | Timing: Manual | Total: 2080x1100 (vertical 3/5/12) | Horizontal frequency: 82.50 kHz | Pixel clock: 171.60 MHz | Note: passed the NVIDIA test; verify with the frame skipping test before use.</value>
+  </data>
+  <data name="Hz74Details" xml:space="preserve">
+    <value>• 74 Hz (CVT-RB - verified mode): 1920x1080 @ 74 Hz | Timing: CVT Reduced Blanking (CVT-RB) | Total: 2080x1119 | Horizontal frequency: 82.81 kHz | Pixel clock: 172.24 MHz.</value>
+  </data>
+  <data name="Hz72Details" xml:space="preserve">
+    <value>• 72 Hz (top within the standard - 24 fps film): 1920x1080 @ 72 Hz | 2080x1100 or 2080x1092 | Gives perfect sync for 24 fps movies.</value>
+  </data>
+  <data name="Hz60Details" xml:space="preserve">
+    <value>• 60 Hz (original mode): 1920x1080 @ 60 Hz (standard 2200x1125, 67.5 kHz, 148.5 MHz). The original mode is never deleted or changed.</value>
+  </data>
+  <data name="Hz50Details" xml:space="preserve">
+    <value>• 50 Hz: the 50 Hz mode already present in the monitor's EDID.</value>
+  </data>
+  <data name="TestTitle" xml:space="preserve">
+    <value>3. Frame skipping and motion stability test</value>
+  </data>
+  <data name="PhotosensitivityWarningTitle" xml:space="preserve">
+    <value>WARNING: photosensitive epilepsy and migraine</value>
+  </data>
+  <data name="PhotosensitivityWarningText" xml:space="preserve">
+    <value>These tests contain fast-moving graphics and flashing patterns. Do not run them if you have photosensitive epilepsy, migraines or a history of seizures. Stop the test immediately if you feel eye strain or discomfort.</value>
+  </data>
+  <data name="FrameSkippingDesc" xml:space="preserve">
+    <value>Frame skipping test (testufo.com/frameskipping):
+1. Open testufo.com/frameskipping in full screen.
+2. Set your phone camera to a 1/10 s exposure (or night mode).
+3. Take a photo of the moving boxes.
+4. Rule: the frames must be consecutive with no skipped frame (no black box in between). 8 consecutive frames is one example (the result measured at 74 Hz).</value>
+  </data>
+  <data name="StabilityTestDesc" xml:space="preserve">
+    <value>Motion stability test: run moving content for 20–30 minutes at the high refresh rate and watch for flicker, blackouts, edge shift or pixel noise.</value>
+  </data>
+  <data name="RtxVsrTitle" xml:space="preserve">
+    <value>4. RTX Video Super Resolution (VSR)</value>
+  </data>
+  <data name="RtxVsrDesc" xml:space="preserve">
+    <value>The RTX 3080's Tensor cores sharpen low-resolution video with AI and clean up compression blocks in browsers (Chrome, Edge) and players such as VLC.
+How to enable: NVIDIA Control Panel -&gt; Video -&gt; Adjust video image settings -&gt; RTX video enhancement -&gt; Super Resolution (choose the highest quality level).</value>
+  </data>
+  <data name="DldsrTitle" xml:space="preserve">
+    <value>5. DLDSR (Deep Learning Dynamic Super Resolution)</value>
+  </data>
+  <data name="DldsrDesc" xml:space="preserve">
+    <value>DLDSR, powered by Tensor cores, renders games above 1080p and scales them down to the screen with AI. Compared to classic DSR it gives smooth anti-aliasing and texture clarity with far less performance loss.
+How to enable: NVIDIA Control Panel -&gt; 3D Settings -&gt; Manage 3D settings -&gt; DSR - Factors -&gt; choose one of the DL factors.</value>
+  </data>
+  <data name="ClearTypeTitle" xml:space="preserve">
+    <value>6. ClearType text clarity</value>
+  </data>
+  <data name="ClearTypeDesc" xml:space="preserve">
+    <value>Run the Windows ClearType Text Tuner so that text on the 108 PPI TN panel looks sharp without color fringes at the edges.
+How: type cttune in the Windows search box to start the tuner. Turn ClearType on and follow the steps, choosing the text samples that look clearest to you.</value>
+  </data>
+  <data name="AmbientLightingTitle" xml:space="preserve">
+    <value>7. Ambient light and eye ergonomics</value>
+  </data>
+  <data name="AmbientLightingDesc" xml:space="preserve">
+    <value>• Bias lighting: place a soft, indirect light behind the monitor on the wall. Looking only at the screen in a dark room tires the eye muscles.
+• Glare control: avoid reflections of light falling directly on the screen; place the monitor at a right angle to the window.</value>
+  </data>
+  <data name="Rule202020Title" xml:space="preserve">
+    <value>8. The 20-20-20 eye rest rule</value>
+  </data>
+  <data name="Rule202020Desc" xml:space="preserve">
+    <value>To prevent digital eye strain, every 20 minutes look at a distant point for at least 20 seconds. This habit relaxes the eye's focusing muscles and prevents dry eyes.</value>
+  </data>
+  <data name="NightLightConflictTitle" xml:space="preserve">
+    <value>9. Windows Night light and f.lux conflict warning</value>
+  </data>
+  <data name="NightLightConflictDesc" xml:space="preserve">
+    <value>Windows Night light and f.lux change the graphics card's hardware gamma table. This conflicts with MonitorTuner's precise calibration and Kelvin blue light filter. For correct colors, turn Windows Night light and f.lux off.</value>
+  </data>
+</root>

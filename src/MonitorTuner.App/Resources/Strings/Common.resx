@@ -16,7 +16,25 @@
   <data name="AppTitle" xml:space="preserve">
     <value>Monitör Ayarı</value>
   </data>
-  <data name="SkeletonReady" xml:space="preserve">
-    <value>Uygulama iskeleti hazır. Özellikler sonraki görevlerde eklenecek.</value>
+  <data name="HomeText" xml:space="preserve">
+    <value>Monitör ayarları sekmesinde parlaklık, kontrast, renk ve keskinlik; Ayar sihirbazı sekmesinde desenlerle adım adım ayar ve gözle kalibrasyon; Rehber sekmesinde oturma, Hz kurulumu ve göz konforu. Renk profilleri, parlaklık, mavi ışık ve panik kısayolu sistem tepsisindeki simgede. Pencereyi kapatınca uygulama tepside çalışmaya devam eder.</value>
+  </data>
+  <data name="Language_Label" xml:space="preserve">
+    <value>Arayüz dili</value>
+  </data>
+  <data name="Language_tr" xml:space="preserve">
+    <value>Türkçe</value>
+  </data>
+  <data name="Language_az" xml:space="preserve">
+    <value>Azərbaycanca</value>
+  </data>
+  <data name="Language_en" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="Language_Saved" xml:space="preserve">
+    <value>Dil kaydedildi; uygulama yeniden açılınca değişir.</value>
+  </data>
+  <data name="Language_SaveFailed" xml:space="preserve">
+    <value>Dil kaydedilemedi: {0}</value>
   </data>
 </root>

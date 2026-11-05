@@ -32,6 +32,27 @@ public class StartupNoticesTests
     public void From_EverythingFailed_GivesEachReasonOnce() =>
         Assert.Equal(2, StartupNotices.From(new StartupReport(false, true, false)).Count);
 
+    /// <summary>T314 düzeltme: ikinci kez açınca sessizce çıkmak yerine nerede olduğu söylenir.</summary>
+    [Fact]
+    public void AlreadyRunning_PointsToTheTrayAndTaskManager()
+    {
+        var text = StartupNotices.AlreadyRunning();
+
+        Assert.Contains("tepsi", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Görev Yöneticisi", text);
+    }
+
+    /// <summary>T314 düzeltme: beklenmeyen hata yutulmaz; neden ve günlük dosyasının yolu söylenir.</summary>
+    [Fact]
+    public void Unexpected_GivesReasonAndLogPath()
+    {
+        var text = StartupNotices.Unexpected("pencere açılamadı", @"C:\x\gunluk.txt");
+
+        Assert.Contains("pencere açılamadı", text);
+        Assert.Contains(@"C:\x\gunluk.txt", text);
+        Assert.DoesNotContain("[[", text, StringComparison.Ordinal);
+    }
+
     [Fact]
     public void ExternalTableRestored_HasText() =>
         Assert.DoesNotContain("[[", StartupNotices.ExternalTableRestored(), StringComparison.Ordinal);

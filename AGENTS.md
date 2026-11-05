@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Bu repoda çalışan her ajan bu dosyayı okur: Claude Code'daki Opus ve Sonnet (`CLAUDE.md` bu dosyayı içe aktarır). Kısa ve sabit tutulur: durum ve sıradaki görev burada değil, `docs/04-FAZLAR.md`'nin ilk satırında.
+Bu repoda çalışan her ajan bu dosyayı okur: Claude Code'daki Opus (`CLAUDE.md` bu dosyayı içe aktarır). Kısa ve sabit tutulur: durum ve sıradaki görev burada değil, `docs/04-FAZLAR.md`'nin ilk satırında.
 
 ## Proje
 
@@ -11,7 +11,7 @@ HP P21b G4 monitörü (21.5", TN, 6-bit + FRC, flicker-free) için Windows uygul
 1. **Görüntü kalitesi ve göz konforu her şeyden önce gelir.** Monitör renk ve parlaklık olarak bu panelden çıkabilecek en iyi hâlde görünsün, gözü yormasın.
 2. **En yüksek hız 76 Hz** (ölçüldü). Hz modlarını kullanıcı NVIDIA özel çözünürlüğüyle ekler; uygulama modlar arasında geçer ve doğrular.
 3. **Gerekli ince ayar olsun, aşırısı olmasın.** Ayar kamerasız yapılır: gözle ve desenlerle. Bu monitörde DaVinci'de renk işi yapılmaz, sadece zaman çizelgesi; renk referansı Pixel'in ekranı.
-4. **Hızlı bitsin ama kalite düşmesin.** Her görev testlidir ve farklı bir modelce incelenir.
+4. **Hızlı bitsin ama kalite düşmesin.** Her görev testlidir. 2026-11-05'ten beri bütün görevleri tek model (Opus) yazar, ayrı inceleme yok.
 5. Arayüzün ana dili Türkçe; Azerbaycanca ve İngilizce T502'de.
 6. Kullanıcı Antigravity'den Claude Code'a yeni geçti (2026-11-03). Ona Türkçe, kısa ve adım adım anlat; teknik bir terimi ilk geçtiği yerde bir cümleyle açıkla.
 
@@ -40,15 +40,15 @@ Arayüz → Uygulama servisleri → Güvenlik → Donanım → Saf mantık. Aray
 
 ## Görev akışı
 
-- **Bir oturum, bir görev.** Yazma, inceleme ve düzeltme ayrı oturumlardır; oturum ortasında model değişmez.
-- Yazan ve inceleyen her zaman farklı model (`docs/04-FAZLAR.md` → görev tablosu).
+- **Tek model, inceleme yok** (kullanıcı kararı 2026-11-05): bütün görevleri Opus yazar; ayrı inceleme oturumu açılmaz. Kalite testlerle ve 🔧 görevlerde kullanıcının monitör testiyle korunur.
+- Bir oturumda sırayla birkaç görev yapılabilir; her görev ayrı commit'tir. Oturum ortasında model değişmez.
 - Başlamadan `git pull --rebase`. Bağımlı görevlerin hepsi ✅ veya 🔧 değilse başlama, kullanıcıya söyle.
 - Önce test, sonra kod; görev başına yaklaşık 200 satır.
-- Commit mesajı `T___: ` ile başlar. Gövdesi: ne yapıldı, neler test edildi, inceleyicinin bakması gereken 3 nokta. İnceleme buradan başlar.
-- Durum: yazan bitirince 🟨 yapar. İnceleyen ONAY verirse ✅ yapar; 🔧 görevde kullanıcı testi geçene kadar 🔧 yapar. Ders varsa `LESSONS.md` → "Geliştirme dersleri".
+- Commit mesajı `T___: ` ile başlar. Gövdesi: ne yapıldı, neler test edildi, dikkat edilmesi gereken 3 nokta (sonradan bakacak biri buradan başlar).
+- Durum: yazan bitirince derleme ve testler geçerse ✅ yapar; 🔧 görevde kullanıcının monitör testi geçene kadar 🔧 yapar. Ders varsa `LESSONS.md` → "Geliştirme dersleri".
 - Push `main`'e. Push'tan önce derle, testleri çalıştır, `git pull --rebase`. Çakışma sadece `docs/04-FAZLAR.md`'deki durum sütunundaysa iki tarafı da koru; kodda çakışma varsa dur ve kullanıcıya söyle.
 - Kullanım limiti yaklaşınca yeni göreve başlama; yarım görev bırakma.
-- Hazır metinler (kurulum, yazma, inceleme, düzeltme, yardım): `docs/05-HANDOFF.md`.
+- Hazır metinler (kurulum, yazma, düzeltme, monitör testi, yardım): `docs/05-HANDOFF.md`.
 
 ## Okuma haritası
 
@@ -57,8 +57,8 @@ Dokümanların tamamını okuma, sadece gerekeni oku. Emin olamadığın yerde i
 | Ne | Ne zaman |
 |---|---|
 | `docs/04-FAZLAR.md`: "Çalışma kuralları", kendi satırın (`T___` ile ara) ve bağımlı görevlerin durumu | Her görev |
-| `docs/02-MIMARI.md` | Her kod görevi ve inceleme |
-| `docs/03-GUVENLIK.md` | Her yazma ve inceleme (sadece metin olan T311 ve T502 hariç) |
+| `docs/02-MIMARI.md` | Her kod görevi |
+| `docs/03-GUVENLIK.md` | Her kod görevi (sadece metin olan T311 ve T502 hariç) |
 | `docs/01-OZELLIKLER.md` ve `docs/08-GORUNTU-YONTEMLERI.md`: sadece görev numarasının geçtiği bölümler | Görev numarası geçiyorsa |
 | `docs/00-DONANIM.md` → Monitör, OSD, DDC/CI | T004, T301, T305, T306, T307, T312, T313 |
 | `docs/00-DONANIM.md` → EDID, Hz tavanı | T004, T209, T311 |

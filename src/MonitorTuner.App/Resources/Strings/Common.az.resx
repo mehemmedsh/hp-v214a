@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Common: Azerbaycanca çeviri (T502). Anahtarlar Türkçe Common.resx ile aynı; yer tutucular ({0}) korunur. -->
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AppTitle" xml:space="preserve">
+    <value>Monitor Ayarı</value>
+  </data>
+  <data name="HomeText" xml:space="preserve">
+    <value>Monitor ayarları bölməsində parlaqlıq, kontrast, rəng və kəskinlik; Ayar sehrbazı bölməsində naxışlarla addım-addım ayar və gözlə kalibrləmə; Bələdçi bölməsində oturuş, Hz quraşdırılması və göz rahatlığı. Rəng profilləri, parlaqlıq, mavi işıq və panika qısayolu sistem panelindəki nişandadır. Pəncərəni bağlayanda proqram sistem panelində işləməyə davam edir.</value>
+  </data>
+  <data name="Language_Label" xml:space="preserve">
+    <value>İnterfeys dili</value>
+  </data>
+  <data name="Language_tr" xml:space="preserve">
+    <value>Türkçe</value>
+  </data>
+  <data name="Language_az" xml:space="preserve">
+    <value>Azərbaycanca</value>
+  </data>
+  <data name="Language_en" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="Language_Saved" xml:space="preserve">
+    <value>Dil yadda saxlanıldı; proqram yenidən açılanda dəyişəcək.</value>
+  </data>
+  <data name="Language_SaveFailed" xml:space="preserve">
+    <value>Dil yadda saxlanılmadı: {0}</value>
+  </data>
+</root>
