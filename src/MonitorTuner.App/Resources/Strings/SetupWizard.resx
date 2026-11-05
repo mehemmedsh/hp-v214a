@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Ayar sihirbazı 1 (T312). Nötr dil Türkçe; Azerbaycanca ve İngilizce T502'de (SetupWizard.az.resx, SetupWizard.en.resx). -->
+<!-- Ayar sihirbazı (T312, T313; sayfa T315). Nötr dil Türkçe; Azerbaycanca ve İngilizce T502'de (SetupWizard.az.resx, SetupWizard.en.resx). -->
 <root>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
@@ -69,5 +69,140 @@
   </data>
   <data name="Step_WhiteMatch_Text" xml:space="preserve">
     <value>Pixel'in ekranında 'Doğal' renk modunda beyaz bir sayfa aç ve monitörün yanına koy. İki beyaz aynı sıcaklıkta görünene kadar kırmızı, yeşil ve mavi kazancı azalt (artırma yok: parlaklık düşer). RGB kazancı için monitörün OSD'sinde Renk: Custom RGB seçili olmalı.</value>
+  </data>
+  <data name="Step_Gamma_Title" xml:space="preserve">
+    <value>Gamma</value>
+  </data>
+  <data name="Step_Gamma_Text" xml:space="preserve">
+    <value>Gamma desenini aç ve 2–3 metre geriden ya da gözlerini kısarak bak. Her karede solda ince siyah-beyaz çizgiler, sağda düz gri var. Çizgili alanla düz grinin en eşit parlaklıkta göründüğü kareyi bul (grinin altındaki sayı kareyi gösterir) ve aşağıdan aynı kareyi seç. Seçim hemen uygulanır; deseni yeniden açarsan artık 2,2 karesi eşit görünmeli.</value>
+  </data>
+  <data name="Step_GreyBalance_Title" xml:space="preserve">
+    <value>Gri dengesi</value>
+  </data>
+  <data name="Step_GreyBalance_Text" xml:space="preserve">
+    <value>Gri dengesi desenini aç: koyu, orta ve açık gri. Her gri renksiz (nötr) görünmeli; Pixel'deki griyle karşılaştırabilirsin. Bir gri renkli görünüyorsa o rengi biraz azalt (pembemsi: kırmızı ya da mavi; yeşilimsi: yeşil; mavimsi: mavi). Küçük adımlarla ilerle; bırakınca hemen uygulanır.</value>
+  </data>
+  <data name="Idle" xml:space="preserve">
+    <value>Sihirbaz kapalı. Başlatınca mavi ışık, ek karartma ve canlılık geçici kapanır ve tepsiden profil seçimi sihirbaz bitene kadar kapalı olur.</value>
+  </data>
+  <data name="Start" xml:space="preserve">
+    <value>Sihirbazı başlat</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Geri</value>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>İleri</value>
+  </data>
+  <data name="Finish" xml:space="preserve">
+    <value>Bitir ve kaydet</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>İptal</value>
+  </data>
+  <data name="StepCounter" xml:space="preserve">
+    <value>Adım {0} / {1}</value>
+  </data>
+  <data name="WarmUpRemaining" xml:space="preserve">
+    <value>Isınma: yaklaşık {0} dk kaldı. Beklemek zorunlu değil, ama ölçümler ısınmadan sonra daha doğru olur.</value>
+  </data>
+  <data name="WarmUpDone" xml:space="preserve">
+    <value>Isınma süresi doldu; ayara geçebilirsin.</value>
+  </data>
+  <data name="OpenPattern" xml:space="preserve">
+    <value>Deseni aç: {0}</value>
+  </data>
+  <data name="MonitorSettings" xml:space="preserve">
+    <value>Monitör ayarları (kaydırıcıyı bırakınca bir kez yazılır)</value>
+  </data>
+  <data name="NoDdc" xml:space="preserve">
+    <value>Monitör DDC'ye cevap vermiyor: bu adımın ayarlarını monitörün OSD düğmelerinden yap.</value>
+  </data>
+  <data name="GpuWhite_Title" xml:space="preserve">
+    <value>Beyaz eşleme (ekran kartında)</value>
+  </data>
+  <data name="GpuWhite_Text" xml:space="preserve">
+    <value>DDC olmadığı için beyaz eşleme ekran kartının renk tablosuyla yapılır. Kanalları sadece azaltabilirsin (%80–100).</value>
+  </data>
+  <data name="Gamma_Label" xml:space="preserve">
+    <value>Panel gamması: en eşit görünen kare</value>
+  </data>
+  <data name="Gamma_Choice" xml:space="preserve">
+    <value>{0} · gri {1}</value>
+  </data>
+  <data name="Gamma_LastFrame" xml:space="preserve">
+    <value>Deseni şu karede kapattın: {0}. Eşit görünen buysa aşağıdan seç.</value>
+  </data>
+  <data name="Grey_Dark" xml:space="preserve">
+    <value>Koyu gri</value>
+  </data>
+  <data name="Grey_Mid" xml:space="preserve">
+    <value>Orta gri</value>
+  </data>
+  <data name="Grey_Light" xml:space="preserve">
+    <value>Açık gri</value>
+  </data>
+  <data name="Channel_R" xml:space="preserve">
+    <value>Kırmızı</value>
+  </data>
+  <data name="Channel_G" xml:space="preserve">
+    <value>Yeşil</value>
+  </data>
+  <data name="Channel_B" xml:space="preserve">
+    <value>Mavi</value>
+  </data>
+  <data name="GainItem" xml:space="preserve">
+    <value>{0} · {1}</value>
+  </data>
+  <data name="Status_Started" xml:space="preserve">
+    <value>Sihirbaz başladı. Mavi ışık, ek karartma ve canlılık geçici olarak kapalı.</value>
+  </data>
+  <data name="Status_Finished" xml:space="preserve">
+    <value>Temel ayar kaydedildi; efektler geri geldi.</value>
+  </data>
+  <data name="Status_Cancelled" xml:space="preserve">
+    <value>İptal edildi; sihirbazın değiştirdiği ayarlar eski değerine döndü, efektler geri geldi.</value>
+  </data>
+  <data name="Status_CancelPartial" xml:space="preserve">
+    <value>İptal edildi, ama şunlar eski değerine dönmedi: {0}. Monitörün OSD'sinden kontrol et.</value>
+  </data>
+  <data name="Status_CalibrationApplied" xml:space="preserve">
+    <value>Kalibrasyon ekrana uygulandı.</value>
+  </data>
+  <data name="Status_CalibrationRejected" xml:space="preserve">
+    <value>Windows bu renk tablosunu reddetti; önceki kalibrasyon kaldı. Daha küçük bir değişiklik dene.</value>
+  </data>
+  <data name="Status_CalibrationOutOfRange" xml:space="preserve">
+    <value>Seçim izin verilen aralığın dışında; uygulanmadı.</value>
+  </data>
+  <data name="Pattern_BlackClipping" xml:space="preserve">
+    <value>Koyu basamaklar (1–25)</value>
+  </data>
+  <data name="Pattern_WhiteClipping" xml:space="preserve">
+    <value>Açık basamaklar (230–254)</value>
+  </data>
+  <data name="Pattern_Sharpness" xml:space="preserve">
+    <value>Örnek yazı</value>
+  </data>
+  <data name="Pattern_FullRangeSteps" xml:space="preserve">
+    <value>Siyaha yakın basamaklar (1–16)</value>
+  </data>
+  <data name="Pattern_ViewingAngle" xml:space="preserve">
+    <value>Açı şeritleri</value>
+  </data>
+  <data name="Pattern_DeadPixels" xml:space="preserve">
+    <value>Ölü piksel (siyah, beyaz, kırmızı, yeşil, mavi)</value>
+  </data>
+  <data name="Pattern_Uniformity" xml:space="preserve">
+    <value>Homojenlik (üç gri)</value>
+  </data>
+  <data name="Pattern_WhiteField" xml:space="preserve">
+    <value>Beyaz alan</value>
+  </data>
+  <data name="Pattern_Gamma" xml:space="preserve">
+    <value>Gamma (çizgili alan ve düz gri)</value>
+  </data>
+  <data name="Pattern_GreyBalance" xml:space="preserve">
+    <value>Gri dengesi (üç gri)</value>
   </data>
 </root>

@@ -24,6 +24,8 @@ public partial class App : System.Windows.Application
     private Mutex? _singleInstance;
     private AppRuntime? _runtime;
     private TrayViewModel? _trayViewModel;
+    private SetupWizardViewModel? _wizardViewModel;
+    private DdcPanelViewModel? _ddcPanelViewModel;
     private TrayHost? _tray;
     private DispatcherTimer? _timer;
     private MainWindow? _main;
@@ -83,6 +85,8 @@ public partial class App : System.Windows.Application
             Exit = ExitApplication,
         };
         _tray = new TrayHost(_trayViewModel);
+        _wizardViewModel = new SetupWizardViewModel(runtime.Wizard, runtime.DdcPanel); // T315: pencere kapansa da sihirbaz durumu kalır
+        _ddcPanelViewModel = new DdcPanelViewModel(runtime.DdcPanel);
         if (StartupNotices.From(report) is { Count: > 0 } notices) _trayViewModel.Announce(string.Join(Environment.NewLine, notices));
 
         OpenMainWindow();
@@ -112,7 +116,9 @@ public partial class App : System.Windows.Application
     {
         if (_main is null)
         {
-            _main = new MainWindow();
+            _main = _wizardViewModel is not null && _ddcPanelViewModel is not null
+                ? new MainWindow(_wizardViewModel, _ddcPanelViewModel)
+                : new MainWindow();
             _main.Closed += (_, _) => _main = null; // pencere kapanınca uygulama tepside çalışmaya devam eder
         }
         _main.Show();

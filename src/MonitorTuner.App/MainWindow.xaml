@@ -11,6 +11,13 @@
         <TabItem Header="{loc:Tr Common.AppTitle}">
             <TextBlock Margin="24" TextWrapping="Wrap" Text="{loc:Tr Common.SkeletonReady}" />
         </TabItem>
+        <!-- DDC paneli (T305) sihirbaz açıkken kapalı: sihirbazın iptali sadece kendi yazdığını geri alır -->
+        <TabItem x:Name="DdcTab" Header="{loc:Tr DdcPanel.TabTitle}">
+            <views:DdcPanelView x:Name="DdcView" />
+        </TabItem>
+        <TabItem x:Name="WizardTab" Header="{loc:Tr SetupWizard.TabTitle}">
+            <views:SetupWizardView x:Name="WizardView" />
+        </TabItem>
         <TabItem Header="{loc:Tr Guide.TabTitle}">
             <views:GuideView />
         </TabItem>

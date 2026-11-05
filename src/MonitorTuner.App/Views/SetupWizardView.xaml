@@ -1,0 +1,120 @@
+<UserControl x:Class="MonitorTuner.App.Views.SetupWizardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:loc="clr-namespace:MonitorTuner.App.Localization">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+        <!-- Kalibrasyon kaydırıcısı (gri dengesi, GPU beyazı): bırakınca bir kez uygulanır -->
+        <DataTemplate x:Key="GainTemplate">
+            <Grid Margin="0,0,0,8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="56" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="{Binding Title}" VerticalAlignment="Center" />
+                <Slider Grid.Column="1" Minimum="{Binding Minimum}" Maximum="{Binding Maximum}" Value="{Binding Value, Mode=TwoWay}"
+                        SmallChange="1" LargeChange="5" TickFrequency="1" IsSnapToTickEnabled="True"
+                        Thumb.DragCompleted="Gain_Released" KeyUp="Gain_Released" PreviewMouseLeftButtonUp="Gain_Released" />
+                <TextBlock Grid.Column="2" Text="{Binding ValueText}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+            </Grid>
+        </DataTemplate>
+    </UserControl.Resources>
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="16" MaxWidth="760">
+            <TextBlock Text="{loc:Tr SetupWizard.PageTitle}" FontSize="20" FontWeight="Bold" Margin="0,0,0,8" />
+            <TextBlock Text="{loc:Tr SetupWizard.Intro}" TextWrapping="Wrap" Margin="0,0,0,12" Foreground="#555555" />
+
+            <!-- Kapalıyken: sadece başlat -->
+            <Button Content="{loc:Tr SetupWizard.Start}" HorizontalAlignment="Left" Padding="12,5" Margin="0,0,0,10"
+                    Click="Start_Click" Visibility="{Binding IsIdle, Converter={StaticResource BoolToVisibility}}" />
+            <TextBlock Text="{Binding Status}" TextWrapping="Wrap" Margin="0,0,0,12" FontWeight="SemiBold" />
+
+            <StackPanel Visibility="{Binding IsActive, Converter={StaticResource BoolToVisibility}}">
+                <TextBlock Text="{Binding StepCounter}" Foreground="#555555" />
+                <TextBlock Text="{Binding StepTitle}" FontSize="16" FontWeight="Bold" Margin="0,2,0,6" />
+                <TextBlock Text="{Binding StepText}" TextWrapping="Wrap" Margin="0,0,0,10" />
+
+                <Border Background="#F4F4F4" Padding="8" CornerRadius="4" Margin="0,0,0,10"
+                        Visibility="{Binding ShowWarmUp, Converter={StaticResource BoolToVisibility}}">
+                    <TextBlock Text="{Binding WarmUpText}" TextWrapping="Wrap" />
+                </Border>
+
+                <!-- Desenler: tam ekran, kareleri kullanıcı gezer -->
+                <ItemsControl ItemsSource="{Binding Patterns}" Margin="0,0,0,6">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Content="{Binding Title}" HorizontalAlignment="Left" Padding="10,4" Margin="0,0,0,6" Click="OpenPattern_Click" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <TextBlock Text="{loc:Tr SetupWizard.PatternKeys}" Foreground="#555555" FontSize="12" Margin="0,0,0,12"
+                           Visibility="{Binding HasPatterns, Converter={StaticResource BoolToVisibility}}" />
+
+                <!-- DDC değerleri (sihirbaz üzerinden yazılır) -->
+                <GroupBox Header="{loc:Tr SetupWizard.MonitorSettings}" Padding="10" Margin="0,0,0,12"
+                          Visibility="{Binding ShowDdcItems, Converter={StaticResource BoolToVisibility}}">
+                    <ItemsControl ItemsSource="{Binding DdcItems}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,0,0,8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="200" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="48" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Text="{Binding Title}" VerticalAlignment="Center" />
+                                    <Slider Grid.Column="1" Minimum="{Binding Minimum}" Maximum="{Binding Maximum}"
+                                            Value="{Binding Value, Mode=TwoWay}" IsEnabled="{Binding IsEditable}"
+                                            SmallChange="1" LargeChange="5" TickFrequency="1" IsSnapToTickEnabled="True"
+                                            Thumb.DragCompleted="Ddc_Released" KeyUp="Ddc_Released" PreviewMouseLeftButtonUp="Ddc_Released" />
+                                    <TextBlock Grid.Column="2" Text="{Binding ValueText}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                                    <TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding LockText}"
+                                               TextWrapping="Wrap" Foreground="#856404" FontSize="12" Margin="0,2,0,0"
+                                               Visibility="{Binding HasLock, Converter={StaticResource BoolToVisibility}}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </GroupBox>
+
+                <Border Background="#FFF3CD" BorderBrush="#FFEEBA" BorderThickness="1" Padding="10" CornerRadius="4" Margin="0,0,0,12"
+                        Visibility="{Binding ShowNoDdc, Converter={StaticResource BoolToVisibility}}">
+                    <TextBlock Text="{loc:Tr SetupWizard.NoDdc}" TextWrapping="Wrap" Foreground="#856404" />
+                </Border>
+
+                <!-- DDC yoksa beyaz eşleme GPU'da -->
+                <GroupBox Header="{loc:Tr SetupWizard.GpuWhite_Title}" Padding="10" Margin="0,0,0,12"
+                          Visibility="{Binding ShowGpuWhite, Converter={StaticResource BoolToVisibility}}">
+                    <StackPanel>
+                        <TextBlock Text="{loc:Tr SetupWizard.GpuWhite_Text}" TextWrapping="Wrap" Margin="0,0,0,8" />
+                        <ItemsControl ItemsSource="{Binding GpuWhiteItems}" ItemTemplate="{StaticResource GainTemplate}" />
+                    </StackPanel>
+                </GroupBox>
+
+                <!-- Gamma -->
+                <StackPanel Margin="0,0,0,12" Visibility="{Binding IsGammaStep, Converter={StaticResource BoolToVisibility}}">
+                    <TextBlock Text="{loc:Tr SetupWizard.Gamma_Label}" Margin="0,0,0,4" />
+                    <ComboBox ItemsSource="{Binding GammaChoices}" SelectedItem="{Binding SelectedGamma, Mode=TwoWay}"
+                              HorizontalAlignment="Left" MinWidth="180" />
+                </StackPanel>
+
+                <!-- Gri dengesi -->
+                <ItemsControl ItemsSource="{Binding GreyItems}" ItemTemplate="{StaticResource GainTemplate}" Margin="0,0,0,12"
+                              Visibility="{Binding IsGreyBalanceStep, Converter={StaticResource BoolToVisibility}}" />
+
+                <!-- Gezinme, bitiş, iptal -->
+                <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                    <Button Content="{loc:Tr SetupWizard.Back}" Padding="12,5" Margin="0,0,8,0" Click="Back_Click" IsEnabled="{Binding CanGoBack}" />
+                    <Button Content="{loc:Tr SetupWizard.Next}" Padding="12,5" Margin="0,0,24,0" Click="Next_Click" IsEnabled="{Binding CanGoNext}" />
+                    <Button Content="{loc:Tr SetupWizard.Finish}" Padding="12,5" Margin="0,0,8,0" Click="Finish_Click" />
+                    <Button Content="{loc:Tr SetupWizard.Cancel}" Padding="12,5" Click="Cancel_Click" />
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
