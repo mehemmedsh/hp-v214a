@@ -358,4 +358,41 @@ public class SetupWizardViewModelTests
         vm.Start(); // ikinci Begin yok
         Assert.Empty(wizard.Calls);
     }
+
+    [Fact]
+    public void Start_TwiceWhileTheLaneIsBusy_BeginsOnce_AndButtonsAreOffMeanwhile()
+    {
+        var lane = new ManualLane();
+        var wizard = new StubWizard();
+        var vm = new SetupWizardViewModel(wizard, new StubPanel(), lane);
+
+        var first = vm.Start();
+        vm.Start(); // çift tıklama
+
+        Assert.True(vm.IsBusy);
+        Assert.False(vm.IsReady);
+        Assert.False(vm.IsActive);
+        lane.RunAll();
+        Assert.True(first.IsCompletedSuccessfully);
+        Assert.Equal(["begin"], wizard.Calls);
+        Assert.True(vm.IsActive);
+        Assert.False(vm.IsBusy);
+    }
+
+    [Fact]
+    public void Next_LateDdcReadOfThePreviousStep_DoesNotFillTheNewStep()
+    {
+        var lane = new ManualLane();
+        var vm = new SetupWizardViewModel(new StubWizard(), new StubPanel(), lane);
+        vm.Start();
+        lane.RunAll();
+
+        vm.Next(); // siyah/beyaz kırpma: kontrast ve parlaklık okunacak
+        vm.Next(); // okuma gelmeden keskinliğe geçildi
+        lane.RunAll();
+
+        Assert.Equal(WizardStep.Sharpness, vm.CurrentStep);
+        Assert.Equal([PanelSetting.Sharpness], vm.DdcItems.Select(i => i.Setting));
+        Assert.False(vm.IsBusy);
+    }
 }

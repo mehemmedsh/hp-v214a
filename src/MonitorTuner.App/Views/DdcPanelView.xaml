@@ -12,7 +12,10 @@
             <TextBlock Text="{loc:Tr DdcPanel.BrightnessHint}" TextWrapping="Wrap" Margin="0,0,0,12" Foreground="#555555" />
 
             <Button Content="{loc:Tr DdcPanel.Refresh}" HorizontalAlignment="Left" Padding="10,4" Margin="0,0,0,10"
-                    Click="Refresh_Click" />
+                    Click="Refresh_Click" IsEnabled="{Binding IsReady}" />
+            <!-- T316: monitörle konuşulurken pencere donmaz; bu yazı görünür, kaydırıcılar kapalı -->
+            <TextBlock Text="{loc:Tr Common.Working}" Margin="0,0,0,10" Foreground="#555555"
+                       Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
             <TextBlock Text="{Binding Status}" TextWrapping="Wrap" Margin="0,0,0,10" FontWeight="SemiBold" />
 
             <!-- DDC yoksa: OSD talimatı -->
@@ -24,7 +27,7 @@
                 </StackPanel>
             </Border>
 
-            <ItemsControl ItemsSource="{Binding Items}">
+            <ItemsControl ItemsSource="{Binding Items}" IsEnabled="{Binding IsReady}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Grid Margin="0,0,0,12">

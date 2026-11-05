@@ -37,4 +37,7 @@
   <data name="Language_SaveFailed" xml:space="preserve">
     <value>Dil kaydedilemedi: {0}</value>
   </data>
+  <data name="Working" xml:space="preserve">
+    <value>Monitörle konuşuluyor…</value>
+  </data>
 </root>
