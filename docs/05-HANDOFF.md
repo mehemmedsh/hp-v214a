@@ -123,6 +123,8 @@ Sonunda her madde için tek satır: ne yaptın.
 
 Uygulamayı sadece sen açarsın; ajanlar açmaz.
 
+**Açılmıyorsa:** uygulama her açılışı `%AppData%\MonitorTuner\logs\gunluk.txt`'ye yazar (Dosya Gezgini'nin adres çubuğuna `%AppData%\MonitorTuner\logs` yaz). Dosyadaki son satırları bir oturuma yapıştır. Dosya hiç yoksa uygulama hiç başlamamıştır: Windows engellemiştir (Akıllı Uygulama Denetimi; Olay Görüntüleyicisi → Uygulamalar ve Hizmet Günlükleri → Microsoft → Windows → CodeIntegrity → Operational, olay 3077).
+
 **Monitörde kalan kontroller** (kod beklemez):
 - 75 Hz (2080×1100) ve 76 Hz (2080×1092): Windows aktif sinyal, DDC AE = 7500 / 7600 ve testufo kare atlama. **T209'dan önce.**
 - DDC 14 kodunun eşlemesi: OSD'de her renk ön ayarını sırayla seç, ControlMyMonitor'da 14'ün değerini oku (12–15 ve tahmin edilen 2, 4, 8, 11). **T004'ten önce.**

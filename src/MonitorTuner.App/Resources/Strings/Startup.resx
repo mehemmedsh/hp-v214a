@@ -46,4 +46,13 @@ Hiçbir ayar değiştirilmedi. Uygulama kapanıyor.</value>
   <data name="ExternalTable" xml:space="preserve">
     <value>Başka bir program ekran renklerini değiştirdi; senin renk ayarın geri yüklendi.</value>
   </data>
+  <data name="AlreadyRunning" xml:space="preserve">
+    <value>Monitör Ayarı zaten çalışıyor. Görev çubuğunun sağındaki ^ okuna tıkla ve tepsi simgesini aç. Simge yoksa uygulama takılmış olabilir: Görev Yöneticisi'nde MonitorTuner.App'i sonlandırıp yeniden aç.</value>
+  </data>
+  <data name="Unexpected" xml:space="preserve">
+    <value>Beklenmeyen hata: {0}
+
+Ayrıntı günlük dosyasında: {1}
+Efektler kapatıldı, kalibrasyon kaldı.</value>
+  </data>
 </root>

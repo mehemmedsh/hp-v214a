@@ -24,6 +24,9 @@ public partial class App : System.Windows.Application
 
     private static readonly string SettingsRoot = JsonSettingsStore.DefaultRoot();
 
+    /// <summary>Açılış adımları ve beklenmeyen hatalar (T314 düzeltme): sessiz kapanmanın sebebi buradan okunur.</summary>
+    private static readonly AppLog Log = new(AppLog.DefaultFolder(SettingsRoot), TimeProvider.System);
+
     private Mutex? _singleInstance;
     private AppRuntime? _runtime;
     private TrayViewModel? _trayViewModel;
@@ -38,17 +41,24 @@ public partial class App : System.Windows.Application
     {
         base.OnStartup(e);
         ShutdownMode = ShutdownMode.OnExplicitShutdown;
+        Log.Write($"açılış: sürüm {typeof(App).Assembly.GetName().Version}, Windows {Environment.OSVersion.Version}, klasör {AppContext.BaseDirectory}");
+        DispatcherUnhandledException += OnUnhandledUiException;
+        AppDomain.CurrentDomain.UnhandledException += (_, args) =>
+            Log.Error("arka plan", args.ExceptionObject as Exception ?? new Exception(args.ExceptionObject?.ToString()));
 
         // Arayüz dili (T502): seçilmedikçe Türkçe, Windows'un dilinden bağımsız. İlk iletiden önce ayarlanır.
         var language = CultureInfo.GetCultureInfo(LanguagePreference.Load(SettingsRoot));
         CultureInfo.DefaultThreadCurrentUICulture = language;
         CultureInfo.CurrentUICulture = language;
+        Log.Write("dil: " + language.Name);
 
         _singleInstance = new Mutex(initiallyOwned: true, @"Local\MonitorTuner.SingleInstance", out var first);
         if (!first)
         {
             _singleInstance.Dispose();
             _singleInstance = null;
+            Log.Write("ikinci örnek: uygulama zaten çalışıyor, çıkılıyor");
+            System.Windows.MessageBox.Show(StartupNotices.AlreadyRunning(), Loc.Get("Common.AppTitle"), MessageBoxButton.OK, MessageBoxImage.Information);
             Shutdown(0); // zaten çalışıyor: tepsideki örnek kullanılır
             return;
         }
@@ -60,17 +70,22 @@ public partial class App : System.Windows.Application
         }
         catch (InvalidProfileException ex)
         {
+            Log.Error("monitör profili", ex);
             Fail(StartupNotices.ProfileError(ex.Message));
             return;
         }
         catch (Exception ex)
         {
+            Log.Error("bağlama", ex);
             Fail(StartupNotices.StartFailed(ex.Message));
             return;
         }
 
+        Log.Write("görülen ekranlar: " + string.Join("; ", launch.Monitors.Select(m => $"{m.Model} {m.Connection} {m.Display.Value}")));
+
         if (launch.Runtime is not { } runtime)
         {
+            Log.Write("desteklenen monitör yok");
             Fail(StartupNotices.NoSupportedMonitor(launch.Monitors));
             return;
         }
@@ -80,26 +95,52 @@ public partial class App : System.Windows.Application
         try
         {
             report = runtime.Start();
+            Log.Write($"Start: {report}");
         }
         catch (Exception ex)
         {
+            Log.Error("Start", ex);
             Fail(StartupNotices.StartFailed(ex.Message));
             return;
         }
 
-        _trayViewModel = new TrayViewModel(runtime.QuickControls, TrayHost.HotKeyText)
+        try
         {
-            OpenMainWindow = OpenMainWindow,
-            Exit = ExitApplication,
-        };
-        _tray = new TrayHost(_trayViewModel);
-        _wizardViewModel = new SetupWizardViewModel(runtime.Wizard, runtime.DdcPanel); // T315: pencere kapansa da sihirbaz durumu kalır
-        _ddcPanelViewModel = new DdcPanelViewModel(runtime.DdcPanel);
-        if (StartupNotices.From(report) is { Count: > 0 } notices) _trayViewModel.Announce(string.Join(Environment.NewLine, notices));
+            _trayViewModel = new TrayViewModel(runtime.QuickControls, TrayHost.HotKeyText)
+            {
+                OpenMainWindow = OpenMainWindow,
+                Exit = ExitApplication,
+            };
+            _tray = new TrayHost(_trayViewModel);
+            Log.Write("tepsi hazır");
+            _wizardViewModel = new SetupWizardViewModel(runtime.Wizard, runtime.DdcPanel); // T315: pencere kapansa da sihirbaz durumu kalır
+            _ddcPanelViewModel = new DdcPanelViewModel(runtime.DdcPanel);
+            if (StartupNotices.From(report) is { Count: > 0 } notices) _trayViewModel.Announce(string.Join(Environment.NewLine, notices));
 
-        OpenMainWindow();
+            OpenMainWindow();
+            Log.Write("ana pencere açıldı");
+        }
+        catch (Exception ex)
+        {
+            Log.Error("tepsi ve pencere", ex);
+            Fail(StartupNotices.Unexpected(ex.Message, Log.FilePath));
+            return;
+        }
+
         _timer = new DispatcherTimer(TickInterval, DispatcherPriority.Background, OnTick, Dispatcher);
         _timer.Start();
+    }
+
+    /// <summary>
+    /// Arayüzde yakalanmayan hata: günlüğe yazılır, kullanıcıya söylenir ve uygulama güvenli kapanır (efektler kalkar, kalibrasyon
+    /// kalır). Bilinmeyen bir durumda çalışmaya devam etmek yerine kullanıcının bilinen ayarına dönülür.
+    /// </summary>
+    private void OnUnhandledUiException(object sender, DispatcherUnhandledExceptionEventArgs e)
+    {
+        e.Handled = true;
+        Log.Error("arayüz", e.Exception);
+        if (_exiting) return;
+        Fail(StartupNotices.Unexpected(e.Exception.Message, Log.FilePath));
     }
 
     protected override void OnSessionEnding(SessionEndingCancelEventArgs e)
@@ -145,6 +186,7 @@ public partial class App : System.Windows.Application
     {
         if (_exiting) return;
         _exiting = true;
+        Log.Write("kapanış");
         _timer?.Stop();
         _runtime?.Shutdown();
         _tray?.Dispose();
@@ -161,10 +203,20 @@ public partial class App : System.Windows.Application
         _singleInstance = null;
     }
 
+    /// <summary>Önce güvenli kapanış (efektler kalkar), sonra ileti. Kapanışın kendi hatası da günlüğe yazılır, yutulmaz ama uygulamayı düşürmez.</summary>
     private void Fail(string message)
     {
+        Log.Write("çıkış iletisi: " + message.ReplaceLineEndings(" "));
+        try
+        {
+            Cleanup();
+        }
+        catch (Exception ex)
+        {
+            Log.Error("kapanış", ex);
+        }
+
         System.Windows.MessageBox.Show(message, Loc.Get("Common.AppTitle"), MessageBoxButton.OK, MessageBoxImage.Warning);
-        Cleanup();
         Shutdown(1);
     }
 }

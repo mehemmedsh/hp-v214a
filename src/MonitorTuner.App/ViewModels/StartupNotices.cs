@@ -39,5 +39,11 @@ public static class StartupNotices
 
     public static string StartFailed(string reason) => Format("Startup.StartFailed", reason);
 
+    /// <summary>Uygulama zaten çalışıyor (tek örnek): tepsiye ya da takıldıysa Görev Yöneticisi'ne yönlendirir.</summary>
+    public static string AlreadyRunning() => Loc.Get("Startup.AlreadyRunning");
+
+    /// <summary>Beklenmeyen hata: neden ve ayrıntının yazıldığı günlük dosyası.</summary>
+    public static string Unexpected(string reason, string logPath) => Format("Startup.Unexpected", reason, logPath);
+
     private static string Format(string key, params object[] args) => string.Format(CultureInfo.CurrentCulture, Loc.Get(key), args);
 }

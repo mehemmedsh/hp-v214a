@@ -46,4 +46,13 @@ Heç bir ayar dəyişdirilmədi. Proqram bağlanır.</value>
   <data name="ExternalTable" xml:space="preserve">
     <value>Başqa proqram ekranın rənglərini dəyişdi; sənin rəng ayarın bərpa olundu.</value>
   </data>
+  <data name="AlreadyRunning" xml:space="preserve">
+    <value>Monitor Ayarı artıq işləyir. Tapşırıqlar panelinin sağındakı ^ oxuna bas və sistem panelindəki nişanı aç. Nişan yoxdursa, proqram ilişib qala bilər: Tapşırıq meneceri-ndə MonitorTuner.App-i bağlayıb yenidən aç.</value>
+  </data>
+  <data name="Unexpected" xml:space="preserve">
+    <value>Gözlənilməz xəta: {0}
+
+Ətraflı məlumat jurnal faylındadır: {1}
+Effektlər bağlandı, kalibrləmə qaldı.</value>
+  </data>
 </root>

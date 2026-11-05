@@ -46,4 +46,13 @@ No setting was changed. The app is closing.</value>
   <data name="ExternalTable" xml:space="preserve">
     <value>Another program changed the screen colors; your color settings were restored.</value>
   </data>
+  <data name="AlreadyRunning" xml:space="preserve">
+    <value>Monitor Tuner is already running. Click the ^ arrow at the right of the taskbar and open the tray icon. If there is no icon, the app may be stuck: end MonitorTuner.App in Task Manager and open it again.</value>
+  </data>
+  <data name="Unexpected" xml:space="preserve">
+    <value>Unexpected error: {0}
+
+Details are in the log file: {1}
+Effects were turned off; calibration was kept.</value>
+  </data>
 </root>
