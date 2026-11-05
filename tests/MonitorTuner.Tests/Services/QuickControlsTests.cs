@@ -189,6 +189,18 @@ public class QuickControlsTests
         Assert.Equal(QuickOutcome.Partial, s.Quick.SelectProfile("Akşam").Outcome);
     }
 
+    /// <summary>Ton eğrisi (T320) ertelendiyse ya da başarısızsa da "uygulandı" denmez.</summary>
+    [Theory]
+    [InlineData(ProfileStep.Deferred)]
+    [InlineData(ProfileStep.Failed)]
+    public void SelectProfile_ToneNotOnScreen_IsPartial(ProfileStep tone)
+    {
+        var s = new Setup();
+        s.Profiles.Result = new ProfileApplyResult("Film", ProfileStep.Applied, ProfileStep.Applied, ProfileStep.Applied, tone);
+
+        Assert.Equal(QuickOutcome.Partial, s.Quick.SelectProfile("Film").Outcome);
+    }
+
     [Fact]
     public void SelectProfile_WhileWizardIsActive_IsBlockedAndWritesNothing()
     {

@@ -10,7 +10,7 @@ Bu uygulama monitörün, ekran kartının ve Windows'un ekran ayarlarına yazıy
 2. **Firmware'e yazma yok.** EDID override da yazılmaz; Hz modlarını kullanıcı NVIDIA panelinden ekler.
 3. **Orijinal 60 Hz mod hiçbir zaman silinmez veya değiştirilmez.**
 4. **Her donanım ve sistem ayarı yazması bir geri alma noktası oluşturur** ve Güvenlik katmanından geçer.
-5. **Her görüntü efekti tek kısayolla kapanır.** Panik kısayolu mavi ışığı, ek karartmayı ve canlılığı kapatır; kalibrasyon kalır.
+5. **Her görüntü efekti tek kısayolla kapanır.** Panik kısayolu mavi ışığı, ek karartmayı, ton eğrisini (sinema gamması, canlı kontrast; T320) ve canlılığı kapatır; kalibrasyon kalır. Yeni bir efekt eklenirse paniğe de eklenir.
 
 ## 2. Hz güvenliği
 

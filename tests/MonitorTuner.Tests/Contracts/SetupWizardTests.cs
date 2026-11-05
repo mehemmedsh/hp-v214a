@@ -93,6 +93,19 @@ public class SetupWizardTests
         public void Shutdown() => throw new NotSupportedException();
     }
 
+    /// <summary>Ton eğrisi (T320): sihirbaz askıya alır ve geri getirir; çağrıların sırası tutulur.</summary>
+    private sealed class StubTone : IToneControl
+    {
+        public ToneStyle Style { get; private set; } = ToneStyle.Cinema; // kullanıcı sinema tonundaydı
+        public bool IsSuspended { get; private set; }
+        public int SuspendCalls { get; private set; }
+        public int ResumeCalls { get; private set; }
+        public bool Set(ToneStyle style) => throw new NotSupportedException();
+        public bool Disable() => throw new NotSupportedException();
+        public bool Suspend() { SuspendCalls++; IsSuspended = true; return true; }
+        public bool Resume() { ResumeCalls++; IsSuspended = false; return true; }
+    }
+
     /// <summary>Gerçek parlaklık servisiyle: başta kaydırıcı ek karartma bölümünde (arka ışık 0, GPU karartıyor).</summary>
     private sealed class DimmedRig
     {
@@ -102,7 +115,7 @@ public class SetupWizardTests
             Ddc = new DirectDdcControl(Monitor, Profile);
             Brightness_ = new BrightnessControl(Ddc, Pipeline, new DimmingPlanner());
             var panel = new DdcPanel(Profile, Ddc, BlueLight, Store, Key, ConnectionType.Hdmi, () => Brightness_.DimmingActive);
-            Wizard = new SetupWizard(panel, Brightness_, BlueLight, Nvidia, Pipeline, new CalibrationCurves(), Store, Key, new FakeTimeProvider());
+            Wizard = new SetupWizard(panel, Brightness_, BlueLight, Nvidia, new StubTone(), Pipeline, new CalibrationCurves(), Store, Key, new FakeTimeProvider());
 
             Brightness_.Commit(0.1);
             Assert.True(Brightness_.DimmingActive);
@@ -132,13 +145,14 @@ public class SetupWizardTests
         /// <summary>Aynı sahte donanım ve depoyla yeni bir sihirbaz (uygulama yeniden açıldı).</summary>
         public SetupWizard New() => new(
             new DdcPanel(Profile, Ddc, BlueLight, Store, Key, ConnectionType.Hdmi, () => Brightness_.DimmingActive),
-            Brightness_, BlueLight, Nvidia, Pipeline, new CalibrationCurves(), Store, Key, Time);
+            Brightness_, BlueLight, Nvidia, Tone, Pipeline, new CalibrationCurves(), Store, Key, Time);
 
         public FakeDdcMonitor Monitor { get; }
         public DirectDdcControl Ddc { get; }
         public StubBlueLight BlueLight { get; } = new();
         public StubBrightness Brightness_ { get; } = new();
         public StubNvidia Nvidia { get; } = new();
+        public StubTone Tone { get; } = new();
         public RecordingPipeline Pipeline { get; } = new();
         public FakeStore Store { get; } = new();
         public FakeTimeProvider Time { get; } = new();
@@ -524,5 +538,27 @@ public class SetupWizardTests
         rig.Wizard.Begin();
         rig.Wizard.Cancel();
         Assert.Equal((2, 2), (rig.Nvidia.SuspendCalls, rig.Nvidia.ResumeCalls));
+    }
+
+    /// <summary>
+    /// Ton eğrisi (T320) sihirbazda kapalı: gamma desenleri sinema eğrisiyle ölçülseydi kalibrasyon o eğriyi "düzeltirdi".
+    /// Begin askıya alır, bitince ya da iptalde geri gelir; ikinci Begin bir şey yapmaz.
+    /// </summary>
+    [Fact]
+    public void ToneCurve_IsSuspendedWhileWizardRuns_AndResumedOnFinishAndCancel()
+    {
+        var rig = new Rig();
+        rig.Wizard.Begin();
+        rig.Wizard.Begin();
+        Assert.True(rig.Tone.IsSuspended);
+        Assert.Equal((1, 0), (rig.Tone.SuspendCalls, rig.Tone.ResumeCalls));
+
+        rig.Wizard.Finish();
+        Assert.False(rig.Tone.IsSuspended);
+        Assert.Equal((1, 1), (rig.Tone.SuspendCalls, rig.Tone.ResumeCalls));
+
+        rig.Wizard.Begin();
+        rig.Wizard.Cancel();
+        Assert.Equal((2, 2), (rig.Tone.SuspendCalls, rig.Tone.ResumeCalls));
     }
 }

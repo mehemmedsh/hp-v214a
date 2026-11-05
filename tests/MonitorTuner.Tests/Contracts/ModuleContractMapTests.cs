@@ -24,6 +24,7 @@ public class ModuleContractMapTests
         ["Kelvin hesaplayıcı"] = [typeof(IKelvinCalculator)],
         ["Karartma planlayıcı"] = [typeof(IDimmingPlanner)],
         ["Gözle kalibrasyon"] = [typeof(ICalibrationCurves)],
+        ["Ton eğrisi"] = [typeof(IToneCurves), typeof(IToneControl)],
         ["Renk profilleri"] = [typeof(IColorProfiles)],
         ["Ayar sihirbazı"] = [typeof(ISetupWizard)],
         ["Kurtarma"] = [typeof(IRecovery)],

@@ -70,6 +70,9 @@
   <data name="Step_Vibrance" xml:space="preserve">
     <value>vibrance</value>
   </data>
+  <data name="Step_Tone" xml:space="preserve">
+    <value>tone curve</value>
+  </data>
   <data name="Done_Profile" xml:space="preserve">
     <value>{0} profile applied.</value>
   </data>

@@ -21,7 +21,7 @@ HP P21b G4 monitörü (21.5", TN, 6-bit + FRC, flicker-free) için Windows uygul
 2. Firmware'e yazma yok. EDID override yazılmaz; Hz modlarını kullanıcı NVIDIA panelinden ekler.
 3. Orijinal 60 Hz mod silinmez, değiştirilmez.
 4. Her donanım ve sistem yazması geri alma noktası oluşturur ve Güvenlik katmanından geçer.
-5. Panik kısayolu bütün efektleri (mavi ışık, ek karartma, canlılık) kapatır; kalibrasyon kalır.
+5. Panik kısayolu bütün efektleri (mavi ışık, ek karartma, ton eğrisi, canlılık) kapatır; kalibrasyon kalır.
 
 Ayrıca: DDC 04/05/08 ve E6–FF'ye yazılmaz; GPU renk tablosunu sadece renk boru hattı yazar; ek karartma beyazı en fazla %15'e indirir; GPU'nun güç, saat, voltaj ve fan ayarlarına dokunulmaz.
 

@@ -60,7 +60,8 @@ Yöntemlerin ayrıntısı: `08-GORUNTU-YONTEMLERI.md`.
 - Sonuç "temel ayar" olarak kaydedilir; renk profilleri bunun üstüne çalışır.
 
 ### 3.3 Renk boru hattı · T302
-- GPU renk tablosunun tek sahibi. Katman sırası: **kalibrasyon → mavi ışık (GPU kısmı) → ek karartma**, ardından dithering.
+- GPU renk tablosunun tek sahibi. Katman sırası: **ton eğrisi → kalibrasyon → mavi ışık (GPU kısmı) → ek karartma**, ardından dithering.
+- **Ton eğrisi (T320):** Standart (kalibrasyonun gamma 2.2'si), **Sinema** (filmlerin hazırlandığı gamma 2.4; siyaha yakın gölgeler korunur) ya da **canlı kontrast** (hafif S eğrisi). Modlar seçer; panik kapatır, ayar sihirbazı sırasında kapalı.
 - Başka bir program (oyun, Windows Gece ışığı, f.lux, NVIDIA masaüstü renk ayarları) tabloyu değiştirirse tespit eder, kullanıcının tablosunu geri yükler ve uyarır.
 - Derin karartma ve çok sıcak renkler için Windows'un tablo aralığı kaydını açar (tek seferlik yönetici onayı, geri alınabilir).
 

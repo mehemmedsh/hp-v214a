@@ -28,6 +28,7 @@ public static class ProfileText
         var names = new List<string>();
         if (profile.Brightness is ProfileStep.Failed or ProfileStep.Deferred) names.Add(Loc.Get("Tray.Step_Brightness"));
         if (profile.BlueLight is ProfileStep.Failed or ProfileStep.Deferred) names.Add(Loc.Get("Tray.Step_BlueLight"));
+        if (profile.Tone is ProfileStep.Failed or ProfileStep.Deferred) names.Add(Loc.Get("Tray.Step_Tone"));
         if (profile.Vibrance is ProfileStep.Failed or ProfileStep.Deferred) names.Add(Loc.Get("Tray.Step_Vibrance"));
         return string.Join(", ", names);
     }

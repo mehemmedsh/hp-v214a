@@ -128,11 +128,12 @@ public class ColorProfilesTests
         Assert.True(rig.Pipeline.Apply());
         var calibrationOnly = rig.Hw.Gpu.Read(Display);
 
-        // Kullanıcı üç efekti de açtı: ek karartma (0,1 < 0,2), mavi ışık ve canlılık.
+        // Kullanıcı dört efekti de açtı: ek karartma (0,1 < 0,2), mavi ışık, sinema tonu (T320) ve canlılık.
         rig.Hw.Clock.Advance(TimeSpan.FromMinutes(2));
-        Assert.True(rig.Profiles.Apply(new ColorProfile("Hepsi", false, 0.1, 3400, 70)).Success);
+        Assert.True(rig.Profiles.Apply(new ColorProfile("Hepsi", false, 0.1, 3400, 70, ToneStyle.Cinema)).Success);
         Assert.True(rig.Brightness.DimmingActive);
         Assert.Equal(3400, rig.BlueLight.Kelvin);
+        Assert.Equal(ToneStyle.Cinema, rig.Tone.Style);
         Assert.Equal(70, rig.Hw.Nvidia.Read(Display)!.Value.Vibrance);
         Assert.NotEqual(calibrationOnly, rig.Hw.Gpu.Read(Display));
         var backlight = rig.Hw.Monitor.Read(Display, Backlight);
@@ -142,6 +143,7 @@ public class ColorProfilesTests
 
         Assert.False(rig.Brightness.DimmingActive);
         Assert.Equal(KelvinCalculator.OffKelvin, rig.BlueLight.Kelvin);
+        Assert.Equal(ToneStyle.Standard, rig.Tone.Style);
         Assert.Equal(FakeNvidiaSettings.DriverDefault.Vibrance, rig.Hw.Nvidia.Read(Display)!.Value.Vibrance);
         Assert.Equal(calibrationOnly, rig.Hw.Gpu.Read(Display)); // tabloda yalnız kalibrasyon kaldı
         Assert.NotEqual(GammaRamp.Identity, rig.Hw.Gpu.Read(Display)); // kalibrasyon silinmedi
@@ -167,6 +169,29 @@ public class ColorProfilesTests
         Assert.Equal(KelvinCalculator.OffKelvin, rig.BlueLight.Kelvin);
     }
 
+    /// <summary>
+    /// Sinema tonu (T320) kalibrasyonun önünde durur: ekrandaki tablo "ton → kalibrasyon"dur. Tonu Standart olan profil
+    /// eğriyi kaldırır, tabloda yine yalnız kalibrasyon kalır.
+    /// </summary>
+    [Fact]
+    public void Apply_CinemaTone_GoesInFrontOfTheCalibration_AndAStandardProfileRemovesIt()
+    {
+        var rig = new Rig();
+        var calibration = GammaRamps.Scale(new RgbGains(0.95, 1.0, 0.9));
+        rig.Pipeline.SetLayer(ColorLayer.Calibration, calibration);
+        Assert.True(rig.Pipeline.Apply());
+        var calibrationOnly = rig.Hw.Gpu.Read(Display);
+
+        Assert.True(rig.Profiles.Apply(new ColorProfile("Sinema deneme", false, 0.5, KelvinCalculator.OffKelvin, null, ToneStyle.Cinema)).Success);
+
+        var expected = new GammaTableCombiner().Combine([new ToneCurves().Build(ToneStyle.Cinema)!, calibration]);
+        Assert.Equal(expected, rig.Hw.Gpu.Read(Display));
+
+        rig.Hw.Clock.Advance(TimeSpan.FromMinutes(2));
+        Assert.True(rig.Profiles.Apply(new ColorProfile("Düz", false, 0.5, KelvinCalculator.OffKelvin, null)).Success);
+        Assert.Equal(calibrationOnly, rig.Hw.Gpu.Read(Display));
+    }
+
     // ---- Doğrulama ----
 
     private static void AssertValuesWritten(Rig rig, ColorProfile profile)
@@ -180,6 +205,7 @@ public class ColorProfilesTests
         }
 
         if (profile.Kelvin is { } kelvin) Assert.Equal(kelvin, rig.BlueLight.Kelvin);
+        Assert.Equal(profile.Tone, rig.Tone.Style); // her profilin tonu var; önceki profilin tonu taşınmaz
 
         // Kullanıcının değeri sürücü varsayılanı (%50): profilde canlılık yoksa oraya dönülür.
         Assert.Equal(profile.Vibrance ?? FakeNvidiaSettings.DriverDefault.Vibrance, rig.Hw.Nvidia.Read(Display)!.Value.Vibrance);
@@ -204,7 +230,8 @@ public class ColorProfilesTests
             Ddc = new DdcControl(Display, Hw.Monitor, Safety, Profile, Hw.Clock);
             Brightness = new BrightnessControl(Ddc, Pipeline, new DimmingPlanner());
             BlueLight = new BlueLightFilter(Profile, Ddc, Pipeline, new KelvinCalculator(), new NoConflicts(), Hw.Clock, Settings, Key);
-            Profiles = new ColorProfiles(Brightness, BlueLight, Nvidia, Settings, Key);
+            Tone = new ToneControl(Pipeline, new ToneCurves());
+            Profiles = new ColorProfiles(Brightness, BlueLight, Nvidia, Tone, Settings, Key);
         }
 
         public FakeHardware Hw { get; }
@@ -214,6 +241,7 @@ public class ColorProfilesTests
         public DdcControl Ddc { get; }
         public BrightnessControl Brightness { get; }
         public BlueLightFilter BlueLight { get; }
+        public ToneControl Tone { get; }
         public ColorProfiles Profiles { get; }
         public MemorySettings Settings { get; } = new();
 

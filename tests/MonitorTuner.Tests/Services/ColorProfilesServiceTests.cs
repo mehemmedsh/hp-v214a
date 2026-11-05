@@ -105,6 +105,31 @@ public class ColorProfilesServiceTests
         public void Shutdown() => throw new NotSupportedException();
     }
 
+    private sealed class FakeTone(List<string> log) : IToneControl
+    {
+        public bool Result { get; set; } = true;
+        public bool Suspended { get; set; }
+        public ToneStyle Style { get; private set; }
+        public bool IsSuspended => Suspended;
+
+        public bool Set(ToneStyle style)
+        {
+            log.Add($"tone:{style}");
+            Style = style;
+            return Result && !Suspended;
+        }
+
+        public bool Disable()
+        {
+            log.Add("tone:off");
+            Style = ToneStyle.Standard;
+            return true;
+        }
+
+        public bool Suspend() => throw new NotSupportedException();
+        public bool Resume() => throw new NotSupportedException();
+    }
+
     private sealed class FakeStore(List<string> log) : ISettingsStore
     {
         public Dictionary<string, object> Sections { get; } = [];
@@ -126,6 +151,7 @@ public class ColorProfilesServiceTests
         public FakeBrightness Brightness { get; }
         public FakeBlueLight BlueLight { get; }
         public FakeNvidia Nvidia { get; }
+        public FakeTone Tone { get; }
         public FakeStore Store { get; }
         public ColorProfiles Profiles { get; private set; }
 
@@ -134,6 +160,7 @@ public class ColorProfilesServiceTests
             Brightness = new FakeBrightness(Log);
             BlueLight = new FakeBlueLight(Log);
             Nvidia = new FakeNvidia(Log);
+            Tone = new FakeTone(Log);
             Store = new FakeStore(Log);
             Profiles = Create();
         }
@@ -141,7 +168,7 @@ public class ColorProfilesServiceTests
         /// <summary>Aynı depoyla yeni örnek: uygulama yeniden açıldı.</summary>
         public ColorProfiles Reopen() => Profiles = Create();
 
-        private ColorProfiles Create() => new(Brightness, BlueLight, Nvidia, Store, Key);
+        private ColorProfiles Create() => new(Brightness, BlueLight, Nvidia, Tone, Store, Key);
 
         public ColorProfile Built(string name) => Profiles.Profiles.Single(p => p.Name == name);
     }
@@ -215,9 +242,14 @@ public class ColorProfilesServiceTests
                                            || f.Contains("Refresh", StringComparison.OrdinalIgnoreCase)
                                            || f.Contains("Mode", StringComparison.OrdinalIgnoreCase));
 
+        // Ton servisi (T320) yalnız ton katmanına yazar; kalibrasyona ve ekran modlarına ulaşmaz.
         var dependencies = typeof(ColorProfiles).GetConstructors().Single().GetParameters().Select(p => p.ParameterType);
         Assert.Equal(
-            new[] { typeof(IBrightnessControl), typeof(IBlueLightFilter), typeof(INvidiaControl), typeof(ISettingsStore), typeof(MonitorKey) },
+            new[]
+            {
+                typeof(IBrightnessControl), typeof(IBlueLightFilter), typeof(INvidiaControl), typeof(IToneControl),
+                typeof(ISettingsStore), typeof(MonitorKey),
+            },
             dependencies);
     }
 
@@ -241,16 +273,51 @@ public class ColorProfilesServiceTests
     // ---- Uygulama ----
 
     [Fact]
-    public void Apply_Day_CommitsBrightness_SetsKelvin_ResetsVibrance_OnceEach_InThatOrder()
+    public void Apply_Day_CommitsBrightness_SetsKelvin_StandardTone_ResetsVibrance_OnceEach_InThatOrder()
     {
         var rig = new Rig();
         var day = rig.Built("Gündüz");
 
         var result = rig.Profiles.Apply(day);
 
-        Assert.Equal([Brightness(day.Brightness!.Value), $"kelvin:{day.Kelvin}", "vibrance:reset"], rig.Log);
+        Assert.Equal([Brightness(day.Brightness!.Value), $"kelvin:{day.Kelvin}", "tone:Standard", "vibrance:reset"], rig.Log);
         Assert.True(result.Success);
-        Assert.Equal(new ProfileApplyResult("Gündüz", ProfileStep.Applied, ProfileStep.Applied, ProfileStep.Applied), result);
+        Assert.True(result.Complete);
+        Assert.Equal(
+            new ProfileApplyResult("Gündüz", ProfileStep.Applied, ProfileStep.Applied, ProfileStep.Applied, ProfileStep.Applied), result);
+    }
+
+    /// <summary>Profilin tonu (T320) ton servisine gider; askıdaysa ertelenir, reddedilirse başarısız sayılır, diğerleri yine uygulanır.</summary>
+    [Fact]
+    public void Apply_Tone_IsSet_DeferredWhileSuspended_FailedWhenRejected()
+    {
+        var rig = new Rig();
+        var cinema = User("Sinema deneme") with { Tone = ToneStyle.Cinema };
+
+        Assert.Equal(ProfileStep.Applied, rig.Profiles.Apply(cinema).Tone);
+        Assert.Equal(ToneStyle.Cinema, rig.Tone.Style);
+
+        rig.Tone.Suspended = true;
+        var deferred = rig.Profiles.Apply(cinema);
+        Assert.Equal(ProfileStep.Deferred, deferred.Tone);
+        Assert.True(deferred.Success);
+        Assert.False(deferred.Complete);
+
+        rig.Tone.Suspended = false;
+        rig.Tone.Result = false;
+        var failed = rig.Profiles.Apply(cinema);
+        Assert.Equal(ProfileStep.Failed, failed.Tone);
+        Assert.False(failed.Success);
+        Assert.Contains("vibrance:reset", rig.Log[^1]); // ton başarısız olsa da canlılık uygulandı
+    }
+
+    /// <summary>Elle bozulmuş kayıttaki bilinmeyen ton geçersizdir: hiçbir şey yazılmaz.</summary>
+    [Fact]
+    public void Validate_RejectsUnknownTone()
+    {
+        var rig = new Rig();
+        Assert.Throws<ArgumentException>(() => rig.Profiles.Apply(User("Bozuk") with { Tone = (ToneStyle)7 }));
+        Assert.Empty(rig.Log);
     }
 
     [Theory]
@@ -293,11 +360,15 @@ public class ColorProfilesServiceTests
             Assert.Equal(1, rig.Log.Count(e => e.StartsWith("brightness:", StringComparison.Ordinal)));
             Assert.Equal(1, rig.Log.Count(e => e.StartsWith("kelvin:", StringComparison.Ordinal)));
             Assert.Equal(1, rig.Log.Count(e => e.StartsWith("vibrance:", StringComparison.Ordinal)));
-            Assert.Equal(3, rig.Log.Count);
+            Assert.Equal(1, rig.Log.Count(e => e.StartsWith("tone:", StringComparison.Ordinal)));
+            Assert.Equal(4, rig.Log.Count);
         }
     }
 
-    /// <summary>null parlaklık ve null Kelvin: profil o ayara dokunmaz.</summary>
+    /// <summary>
+    /// null parlaklık ve null Kelvin: profil o ayara dokunmaz. Ton bir efekttir (canlılık gibi): profilde yoksa Standart, yani
+    /// önceki profilin sinema eğrisi kapanır.
+    /// </summary>
     [Fact]
     public void Apply_NullBrightnessAndKelvin_TouchNeitherBacklightNorBlueLight()
     {
@@ -305,8 +376,10 @@ public class ColorProfilesServiceTests
 
         var result = rig.Profiles.Apply(User("Sadece canlılık", brightness: null, kelvin: null, vibrance: 70));
 
-        Assert.Equal(["vibrance:70"], rig.Log);
-        Assert.Equal(new ProfileApplyResult("Sadece canlılık", ProfileStep.Skipped, ProfileStep.Skipped, ProfileStep.Applied), result);
+        Assert.Equal(["tone:Standard", "vibrance:70"], rig.Log);
+        Assert.Equal(
+            new ProfileApplyResult("Sadece canlılık", ProfileStep.Skipped, ProfileStep.Skipped, ProfileStep.Applied, ProfileStep.Applied),
+            result);
     }
 
     [Fact]
@@ -316,11 +389,13 @@ public class ColorProfilesServiceTests
         rig.Brightness.Applied = false; // ör. DDC yazma sınırı
         rig.BlueLight.Applied = false;
         rig.Nvidia.SetResult = false;
+        rig.Tone.Result = false;
 
-        var result = rig.Profiles.Apply(User("Hepsi", 0.5, 4000, 70));
+        var result = rig.Profiles.Apply(User("Hepsi", 0.5, 4000, 70) with { Tone = ToneStyle.Contrast });
 
-        Assert.Equal([Brightness(0.5), "kelvin:4000", "vibrance:70"], rig.Log); // biri bozulunca ötekiler atlanmaz
-        Assert.Equal(new ProfileApplyResult("Hepsi", ProfileStep.Failed, ProfileStep.Failed, ProfileStep.Failed), result);
+        Assert.Equal([Brightness(0.5), "kelvin:4000", "tone:Contrast", "vibrance:70"], rig.Log); // biri bozulunca ötekiler atlanmaz
+        Assert.Equal(
+            new ProfileApplyResult("Hepsi", ProfileStep.Failed, ProfileStep.Failed, ProfileStep.Failed, ProfileStep.Failed), result);
         Assert.False(result.Success);
     }
 
@@ -488,9 +563,9 @@ public class ColorProfilesServiceTests
 
     // ---- Panik (T310 arayüzü bağlar; servis tarafı) ----
 
-    /// <summary>Panik: ek karartma, mavi ışık ve canlılık kapanır. Kalibrasyona dokunacak bir bağımlılık yok.</summary>
+    /// <summary>Panik: ek karartma, mavi ışık, ton eğrisi (T320) ve canlılık kapanır. Kalibrasyona dokunacak bir bağımlılık yok.</summary>
     [Fact]
-    public void PanicOff_TurnsOffDimmingBlueLightAndVibrance_Only()
+    public void PanicOff_TurnsOffDimmingBlueLightToneAndVibrance_Only()
     {
         var rig = new Rig();
         rig.Profiles.Apply(rig.Built("Film"));
@@ -498,7 +573,8 @@ public class ColorProfilesServiceTests
 
         rig.Profiles.PanicOff();
 
-        Assert.Equal(["dimming:off", "bluelight:off", "vibrance:reset"], rig.Log);
+        Assert.Equal(["dimming:off", "bluelight:off", "tone:off", "vibrance:reset"], rig.Log);
+        Assert.Equal(ToneStyle.Standard, rig.Tone.Style);
         Assert.Equal(KelvinCalculator.OffKelvin, rig.BlueLight.Kelvin);
         Assert.Null(rig.Nvidia.Vibrance);
     }
@@ -508,11 +584,12 @@ public class ColorProfilesServiceTests
     public void PanicOff_StillTurnsOffTheRest_WhenOneThrows()
     {
         var log = new List<string>();
-        var profiles = new ColorProfiles(new ThrowingBrightness(), new FakeBlueLight(log), new FakeNvidia(log), new FakeStore(log), Key);
+        var profiles = new ColorProfiles(
+            new ThrowingBrightness(), new FakeBlueLight(log), new FakeNvidia(log), new FakeTone(log), new FakeStore(log), Key);
 
         Assert.Throws<InvalidOperationException>(profiles.PanicOff);
 
-        Assert.Equal(["bluelight:off", "vibrance:reset"], log);
+        Assert.Equal(["bluelight:off", "tone:off", "vibrance:reset"], log);
     }
 
     private sealed class ThrowingBrightness : IBrightnessControl

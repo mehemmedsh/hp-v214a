@@ -162,14 +162,14 @@ Akşamları göz rahatlığı için işe yarar. Uyku için tek başına beklenen
 ```
 İçerik
   → Windows masaüstü
-  → GPU renk tablosu: kalibrasyon → mavi ışık (GPU kısmı) → ek karartma → dithering
+  → GPU renk tablosu: ton eğrisi (T320) → kalibrasyon → mavi ışık (GPU kısmı) → ek karartma → dithering
   → HDMI (Full RGB)
   → Monitör: RGB kazancı (beyaz noktası + mavi ışık, monitör kısmı) → arka ışık (parlaklık) → panel
 ```
 
 **Kurallar**
 - GPU renk tablosunun tek sahibi uygulamadır. Başka bir program (oyun, Windows Gece ışığı, f.lux, NVIDIA masaüstü renk ayarları) tabloyu değiştirirse bu tespit edilir. Kullanıcının seçtiği tablo geri yüklenir (Kural 1, 2. istisna) ve çakışan program için uyarı verilir.
-- Ayar sihirbazı sırasında mavi ışık, ek karartma ve canlılık geçici olarak kapanır.
+- Ayar sihirbazı sırasında mavi ışık, ek karartma, ton eğrisi ve canlılık geçici olarak kapanır.
 - Uygulama normal kapanırken tabloda sadece kalibrasyon kalır, efektler kaldırılır. Çökerse kurtarma dosyası tabloyu sıfırlar; uygulama yeniden açılınca tabloyu kontrol eder.
 - Kaldırmada tablo sıfırlanır ve kayıt değeri eski haline döner.
 - **Arka uç:** Windows gamma tablosu.

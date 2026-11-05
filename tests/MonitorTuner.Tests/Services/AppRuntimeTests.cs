@@ -174,6 +174,44 @@ public sealed class AppRuntimeTests : IDisposable
         Assert.True(IsIdentity(hardware.Gpu.Read(FakeHardware.Display)));
     }
 
+    /// <summary>Panik ton eğrisini de kapatır (T320): sinema eğrisi açıkken basılınca tabloda efekt kalmaz.</summary>
+    [Fact]
+    public void Panic_AlsoTurnsTheToneCurveOff()
+    {
+        var hardware = new FakeHardware();
+        var runtime = Runtime(hardware);
+        runtime.Start();
+        Assert.True(runtime.Tone.Set(ToneStyle.Cinema));
+        Assert.False(IsIdentity(hardware.Gpu.Read(FakeHardware.Display)));
+
+        Assert.Equal(QuickOutcome.Done, runtime.QuickControls.Panic().Outcome);
+
+        Assert.Equal(ToneStyle.Standard, runtime.Tone.Style);
+        Assert.True(IsIdentity(hardware.Gpu.Read(FakeHardware.Display)));
+    }
+
+    /// <summary>
+    /// Sihirbaz gamma desenlerini tonsuz panelde gösterir (T320); iptalde kullanıcının sinema tonu geri gelir. Sinema eğrisiyle
+    /// ölçülseydi kalibrasyon o eğriyi "düzeltip" sinema tonunu kalıcı olarak bozardı.
+    /// </summary>
+    [Fact]
+    public void Wizard_ShowsTheRawPanelWithoutTheToneCurve_AndCancelBringsItBack()
+    {
+        var hardware = new FakeHardware();
+        var runtime = Runtime(hardware);
+        runtime.Start();
+        runtime.Tone.Set(ToneStyle.Cinema);
+        var withTone = hardware.Gpu.Read(FakeHardware.Display);
+
+        runtime.Wizard.Begin();
+        Assert.True(IsIdentity(hardware.Gpu.Read(FakeHardware.Display)));
+        Assert.True(runtime.Tone.IsSuspended);
+
+        runtime.Wizard.Cancel();
+        Assert.Equal(withTone, hardware.Gpu.Read(FakeHardware.Display));
+        Assert.Equal(ToneStyle.Cinema, runtime.Tone.Style);
+    }
+
     // --- Açılış ---
 
     [Fact]
@@ -330,6 +368,7 @@ public sealed class AppRuntimeTests : IDisposable
         var calibration = hardware.Gpu.Read(FakeHardware.Display); // yalnız kalibrasyon katmanı varken ekrandaki tablo
         first.BlueLight.SetKelvin(3400);
         first.Brightness.Commit(0.05);
+        first.Tone.Set(ToneStyle.Cinema);
         Assert.NotEqual(calibration, hardware.Gpu.Read(FakeHardware.Display));
 
         first.Shutdown();

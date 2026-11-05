@@ -70,6 +70,9 @@
   <data name="Step_Vibrance" xml:space="preserve">
     <value>canlılıq</value>
   </data>
+  <data name="Step_Tone" xml:space="preserve">
+    <value>ton əyrisi</value>
+  </data>
   <data name="Done_Profile" xml:space="preserve">
     <value>{0} profili tətbiq olundu.</value>
   </data>

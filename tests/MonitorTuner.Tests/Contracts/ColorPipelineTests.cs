@@ -42,6 +42,28 @@ public class ColorPipelineTests
         Assert.Equal(2, rig.Hw.Gpu.Writes.Count);
     }
 
+    /// <summary>
+    /// Ton katmanı (T320) kalibrasyonun önündedir: içerik önce ton eğrisinden geçer, kalibrasyon onu panelde gösterir
+    /// (ton → kalibrasyon → mavi ışık → ek karartma). Kapanışta ton da kalkar, yalnız kalibrasyon kalır.
+    /// </summary>
+    [Fact]
+    public void Apply_PutsToneBeforeCalibration_AndShutdownRemovesIt()
+    {
+        var rig = new Rig();
+        var tone = new ToneCurves().Build(ToneStyle.Cinema)!;
+        rig.Pipeline.SetLayer(ColorLayer.Dimming, Dim);
+        rig.Pipeline.SetLayer(ColorLayer.Calibration, Calibration);
+        rig.Pipeline.SetLayer(ColorLayer.Tone, tone);
+
+        Assert.True(rig.Pipeline.Apply());
+
+        Assert.Equal(Combiner.Combine([tone, Calibration, Dim]), rig.Hw.Gpu.Read(Display));
+        Assert.NotEqual(Combiner.Combine([Calibration, tone, Dim]), rig.Hw.Gpu.Read(Display));
+
+        rig.Pipeline.Shutdown();
+        Assert.Equal(Calibration, rig.Hw.Gpu.Read(Display));
+    }
+
     /// <summary>Tablo zaten ekrandaysa (açılışta birim tablo) yazılmaz.</summary>
     [Fact]
     public void Apply_WithoutLayers_DoesNotRewriteIdentityTable()
