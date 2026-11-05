@@ -79,6 +79,7 @@ Yöntemlerin ayrıntısı: `08-GORUNTU-YONTEMLERI.md`.
 ### 3.7 Renk profilleri (presetler) · T308
 - **Gündüz**, **Akşam**, **Gece** (mavi ışık + düşük parlaklık), **Kod**, **Film** ve **Oyun** (canlılık açık), **DaVinci zaman çizelgesi** (nötr, efektsiz). Kullanıcı yenilerini ekleyebilir.
 - Sadece kullanıcı seçince uygulanır; Hz'e dokunmaz.
+- Ana pencerenin ilk sekmesinde "Görüntü modları" olarak tek tıkla; her modun ne için olduğu ve ne ayarladığı yazar. Yanında "En iyi görüntü için" üç adım: Neutral (ya da sihirbaz için Custom RGB) ve keskinlik 4, ayar sihirbazı, Gündüz modu (T319). Tepsiden de seçilir.
 
 ### 3.8 Rehber · T311
 - Oturma ve açı (TN'de en etkili iyileştirme), ortam ışığı, 20-20-20 kuralı, ClearType, RTX Video Super Resolution, DLDSR; Hz kurulumu ve testleri.

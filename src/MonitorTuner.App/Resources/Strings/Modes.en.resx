@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Picture modes (T319), English. -->
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Title" xml:space="preserve">
+    <value>Picture modes</value>
+  </data>
+  <data name="Intro" xml:space="preserve">
+    <value>Click a mode: brightness, blue light and color vibrance are set together. It does not touch the refresh rate, the calibration or the monitor's color preset.</value>
+  </data>
+  <data name="Recommended" xml:space="preserve">
+    <value>recommended</value>
+  </data>
+  <data name="BestTitle" xml:space="preserve">
+    <value>For the best picture (once)</value>
+  </data>
+  <data name="BestStep1" xml:space="preserve">
+    <value>1. Monitor settings tab: Color preset Neutral (6500K, the most accurate built-in one); Custom RGB if you will run the setup wizard. Sharpness 4 (factory).</value>
+  </data>
+  <data name="BestStep2" xml:space="preserve">
+    <value>2. Setup wizard: matches the white to the Pixel's screen and sets gamma 2.2 and grey balance by eye with patterns. This gives the most accurate color.</value>
+  </data>
+  <data name="BestStep3" xml:space="preserve">
+    <value>3. Day mode for everyday use; Evening in the evening, Night in a dark room.</value>
+  </data>
+  <data name="Done" xml:space="preserve">
+    <value>{0} mode applied.</value>
+  </data>
+  <data name="Partial" xml:space="preserve">
+    <value>{0} mode could not be fully applied. Not applied: {1}.</value>
+  </data>
+  <data name="Blocked" xml:space="preserve">
+    <value>Modes are off while the setup wizard is open. Finish or cancel the wizard.</value>
+  </data>
+  <data name="NotFound" xml:space="preserve">
+    <value>Mode not found.</value>
+  </data>
+  <data name="Failed" xml:space="preserve">
+    <value>{0} mode could not be applied.</value>
+  </data>
+  <data name="Unexpected" xml:space="preserve">
+    <value>Unexpected error: {0}</value>
+  </data>
+  <data name="Purpose_Day" xml:space="preserve">
+    <value>The most accurate picture for daytime and everyday work: no effects, 6500K white.</value>
+  </data>
+  <data name="Purpose_Evening" xml:space="preserve">
+    <value>Evening: warmer white (3400K), slightly lower brightness; less eye strain.</value>
+  </data>
+  <data name="Purpose_Night" xml:space="preserve">
+    <value>Dark room and before bed: very warm white (2700K), low brightness.</value>
+  </data>
+  <data name="Purpose_Code" xml:space="preserve">
+    <value>Long reading and code: slightly warm white (5000K); white pages don't glare.</value>
+  </data>
+  <data name="Purpose_Film" xml:space="preserve">
+    <value>Movies and video: more vivid colors (NVIDIA vibrance) to offset the TN panel's washed-out look; not accurate color.</value>
+  </data>
+  <data name="Purpose_Game" xml:space="preserve">
+    <value>Games: a little brighter and more vivid colors.</value>
+  </data>
+  <data name="Purpose_DaVinci" xml:space="preserve">
+    <value>DaVinci timeline: neutral, no effects; color decisions are made on the phone.</value>
+  </data>
+  <data name="Value_Backlight" xml:space="preserve">
+    <value>Backlight {0}%</value>
+  </data>
+  <data name="Value_Dimming" xml:space="preserve">
+    <value>Backlight 0 + extra dimming</value>
+  </data>
+  <data name="Value_BlueLightOff" xml:space="preserve">
+    <value>Blue light off (6500K)</value>
+  </data>
+  <data name="Value_Kelvin" xml:space="preserve">
+    <value>Blue light {0}K</value>
+  </data>
+  <data name="Value_Vibrance" xml:space="preserve">
+    <value>Vibrance {0}%</value>
+  </data>
+  <data name="Value_VibranceOff" xml:space="preserve">
+    <value>No vibrance</value>
+  </data>
+</root>

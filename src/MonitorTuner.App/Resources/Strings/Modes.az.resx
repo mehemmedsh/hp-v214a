@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Görüntü rejimləri (T319), Azərbaycanca. -->
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Title" xml:space="preserve">
+    <value>Görüntü rejimləri</value>
+  </data>
+  <data name="Intro" xml:space="preserve">
+    <value>Bir rejimə tıkla: parlaqlıq, mavi işıq və rəng canlılığı birlikdə ayarlanır. Hz-ə, kalibrləməyə və monitorun rəng rejiminə toxunmur.</value>
+  </data>
+  <data name="Recommended" xml:space="preserve">
+    <value>tövsiyə olunur</value>
+  </data>
+  <data name="BestTitle" xml:space="preserve">
+    <value>Ən yaxşı görüntü üçün (bir dəfə)</value>
+  </data>
+  <data name="BestStep1" xml:space="preserve">
+    <value>1. Monitor ayarları bölməsi: Rəng rejimi Neutral (6500K, hazırların ən dəqiqi); ayar sehrbazını edəcəksənsə Custom RGB. Kəskinlik 4 (zavod).</value>
+  </data>
+  <data name="BestStep2" xml:space="preserve">
+    <value>2. Ayar sehrbazı: ağı Pixel-in ekranına uyğunlaşdırır, qamma 2.2-ni və boz balansını gözlə və naxışlarla ayarlayır. Ən dəqiq rəng budur.</value>
+  </data>
+  <data name="BestStep3" xml:space="preserve">
+    <value>3. Gündəlik istifadədə Gündüz rejimi; axşam Axşam, qaranlıq otaqda Gecə.</value>
+  </data>
+  <data name="Done" xml:space="preserve">
+    <value>{0} rejimi tətbiq olundu.</value>
+  </data>
+  <data name="Partial" xml:space="preserve">
+    <value>{0} rejimi tam tətbiq olunmadı. Tətbiq olunmayan: {1}.</value>
+  </data>
+  <data name="Blocked" xml:space="preserve">
+    <value>Ayar sehrbazı açıq olanda rejimlər bağlıdır. Sehrbazı bitir və ya ləğv et.</value>
+  </data>
+  <data name="NotFound" xml:space="preserve">
+    <value>Rejim tapılmadı.</value>
+  </data>
+  <data name="Failed" xml:space="preserve">
+    <value>{0} rejimi tətbiq olunmadı.</value>
+  </data>
+  <data name="Unexpected" xml:space="preserve">
+    <value>Gözlənilməz xəta: {0}</value>
+  </data>
+  <data name="Purpose_Day" xml:space="preserve">
+    <value>Gündüz və gündəlik iş üçün ən dəqiq görüntü: effekt yoxdur, ağ 6500K.</value>
+  </data>
+  <data name="Purpose_Evening" xml:space="preserve">
+    <value>Axşam: ağ istiləşir (3400K), parlaqlıq bir az azalır; göz daha az yorulur.</value>
+  </data>
+  <data name="Purpose_Night" xml:space="preserve">
+    <value>Qaranlıq otaq və yatmazdan əvvəl: çox isti ağ (2700K), aşağı parlaqlıq.</value>
+  </data>
+  <data name="Purpose_Code" xml:space="preserve">
+    <value>Uzun oxu və kod: bir az isti ağ (5000K); ağ səhifə gözü qamaşdırmır.</value>
+  </data>
+  <data name="Purpose_Film" xml:space="preserve">
+    <value>Film və video: rənglər daha canlı (NVIDIA canlılığı), TN panelin solğun rəngini kompensasiya edir; dəqiq rəng deyil.</value>
+  </data>
+  <data name="Purpose_Game" xml:space="preserve">
+    <value>Oyun: bir az daha parlaq və canlı rənglər.</value>
+  </data>
+  <data name="Purpose_DaVinci" xml:space="preserve">
+    <value>DaVinci zaman şkalası: neytral və effektsiz; rəng qərarı telefonda verilir.</value>
+  </data>
+  <data name="Value_Backlight" xml:space="preserve">
+    <value>Arxa işıq %{0}</value>
+  </data>
+  <data name="Value_Dimming" xml:space="preserve">
+    <value>Arxa işıq 0 + əlavə qaraltma</value>
+  </data>
+  <data name="Value_BlueLightOff" xml:space="preserve">
+    <value>Mavi işıq bağlı (6500K)</value>
+  </data>
+  <data name="Value_Kelvin" xml:space="preserve">
+    <value>Mavi işıq {0}K</value>
+  </data>
+  <data name="Value_Vibrance" xml:space="preserve">
+    <value>Canlılıq %{0}</value>
+  </data>
+  <data name="Value_VibranceOff" xml:space="preserve">
+    <value>Canlılıq yoxdur</value>
+  </data>
+</root>

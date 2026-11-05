@@ -7,17 +7,60 @@
         Width="820" Height="680"
         MinWidth="640" MinHeight="480"
         WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+    </Window.Resources>
     <TabControl>
         <TabItem Header="{loc:Tr Common.AppTitle}">
-            <StackPanel Margin="24" MaxWidth="700" HorizontalAlignment="Left">
-                <TextBlock Text="{loc:Tr Common.AppTitle}" FontSize="20" FontWeight="Bold" Margin="0,0,0,8" />
-                <TextBlock Text="{loc:Tr Common.HomeText}" TextWrapping="Wrap" Margin="0,0,0,20" />
-                <!-- Dil (T502): her dil kendi adıyla; yeni dil yeniden açılınca görünür -->
-                <TextBlock Text="{loc:Tr Common.Language_Label}" Margin="0,0,0,4" />
-                <ComboBox x:Name="LanguageBox" MinWidth="200" HorizontalAlignment="Left" DisplayMemberPath="Title"
-                          SelectionChanged="Language_Changed" />
-                <TextBlock x:Name="LanguageNote" TextWrapping="Wrap" Margin="0,6,0,0" Foreground="#555555" />
-            </StackPanel>
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <StackPanel Margin="24" MaxWidth="700" HorizontalAlignment="Left">
+                    <TextBlock Text="{loc:Tr Common.AppTitle}" FontSize="20" FontWeight="Bold" Margin="0,0,0,8" />
+                    <TextBlock Text="{loc:Tr Common.HomeText}" TextWrapping="Wrap" Margin="0,0,0,16" />
+
+                    <!-- T319: en iyi görüntü için bir kezlik adımlar (araştırma: 00-DONANIM.md → Renk ön ayarları) -->
+                    <Border Background="#EEF5FB" BorderBrush="#C9DFF0" BorderThickness="1" CornerRadius="4" Padding="12" Margin="0,0,0,16">
+                        <StackPanel>
+                            <TextBlock Text="{loc:Tr Modes.BestTitle}" FontWeight="Bold" Margin="0,0,0,4" />
+                            <TextBlock Text="{loc:Tr Modes.BestStep1}" TextWrapping="Wrap" Margin="0,0,0,2" />
+                            <TextBlock Text="{loc:Tr Modes.BestStep2}" TextWrapping="Wrap" Margin="0,0,0,2" />
+                            <TextBlock Text="{loc:Tr Modes.BestStep3}" TextWrapping="Wrap" />
+                        </StackPanel>
+                    </Border>
+
+                    <!-- T319: görüntü modları (renk profilleri, T308) tek tıkla; sihirbaz açıkken kapalı -->
+                    <StackPanel x:Name="ModesPanel" Margin="0,0,0,16">
+                        <TextBlock Text="{loc:Tr Modes.Title}" FontSize="16" FontWeight="Bold" Margin="0,0,0,4" />
+                        <TextBlock Text="{loc:Tr Modes.Intro}" TextWrapping="Wrap" Foreground="#555555" Margin="0,0,0,8" />
+                        <TextBlock Text="{loc:Tr Common.Working}" Foreground="#555555" Margin="0,0,0,6"
+                                   Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
+                        <TextBlock Text="{Binding Status}" TextWrapping="Wrap" FontWeight="SemiBold" Margin="0,0,0,8" />
+                        <ItemsControl ItemsSource="{Binding Modes}" IsEnabled="{Binding IsReady}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button Click="Mode_Click" HorizontalContentAlignment="Stretch" Padding="10,6" Margin="0,0,0,6">
+                                        <StackPanel>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding Title}" FontWeight="Bold" />
+                                                <TextBlock Text="{loc:Tr Modes.Recommended}" Foreground="#1E6B2E" FontWeight="SemiBold" Margin="8,0,0,0"
+                                                           Visibility="{Binding Recommended, Converter={StaticResource BoolToVisibility}}" />
+                                            </StackPanel>
+                                            <TextBlock Text="{Binding Purpose}" TextWrapping="Wrap" Margin="0,2,0,0"
+                                                       Visibility="{Binding HasPurpose, Converter={StaticResource BoolToVisibility}}" />
+                                            <TextBlock Text="{Binding Values}" TextWrapping="Wrap" Foreground="#555555" FontSize="12" Margin="0,2,0,0" />
+                                        </StackPanel>
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+
+                    <!-- Dil (T502): her dil kendi adıyla; yeni dil yeniden açılınca görünür -->
+                    <TextBlock Text="{loc:Tr Common.Language_Label}" Margin="0,0,0,4" />
+                    <ComboBox x:Name="LanguageBox" MinWidth="200" HorizontalAlignment="Left" DisplayMemberPath="Title"
+                              SelectionChanged="Language_Changed" />
+                    <TextBlock x:Name="LanguageNote" TextWrapping="Wrap" Margin="0,6,0,0" Foreground="#555555" />
+                </StackPanel>
+            </ScrollViewer>
         </TabItem>
         <!-- DDC paneli (T305) sihirbaz açıkken kapalı: sihirbazın iptali sadece kendi yazdığını geri alır -->
         <TabItem x:Name="DdcTab" Header="{loc:Tr DdcPanel.TabTitle}">

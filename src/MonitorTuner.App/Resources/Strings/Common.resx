@@ -17,7 +17,7 @@
     <value>Monitör Ayarı</value>
   </data>
   <data name="HomeText" xml:space="preserve">
-    <value>Monitör ayarları sekmesinde parlaklık, kontrast, renk ve keskinlik; Ayar sihirbazı sekmesinde desenlerle adım adım ayar ve gözle kalibrasyon; Rehber sekmesinde oturma, Hz kurulumu ve göz konforu. Renk profilleri, parlaklık, mavi ışık ve panik kısayolu sistem tepsisindeki simgede. Pencereyi kapatınca uygulama tepside çalışmaya devam eder.</value>
+    <value>Görüntü modları aşağıda: birine tıkla, hemen uygulanır. Monitör ayarları sekmesinde parlaklık, kontrast, renk ön ayarı ve keskinlik; Ayar sihirbazı sekmesinde desenlerle adım adım ayar ve gözle kalibrasyon; Rehber sekmesinde oturma, Hz kurulumu ve göz konforu. Modlar, parlaklık, mavi ışık ve panik kısayolu sistem tepsisindeki simgede de var. Pencereyi kapatınca uygulama tepside çalışmaya devam eder.</value>
   </data>
   <data name="Language_Label" xml:space="preserve">
     <value>Arayüz dili</value>

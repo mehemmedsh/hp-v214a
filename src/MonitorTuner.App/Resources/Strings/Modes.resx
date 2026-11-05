@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Görüntü modları (T319): ana sekmede tek tıkla renk profilleri ve en iyi görüntü için adımlar. Nötr dil Türkçe. -->
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Title" xml:space="preserve">
+    <value>Görüntü modları</value>
+  </data>
+  <data name="Intro" xml:space="preserve">
+    <value>Bir moda tıkla: parlaklık, mavi ışık ve renk canlılığı birlikte ayarlanır. Hz'e, kalibrasyona ve monitörün renk ön ayarına dokunmaz.</value>
+  </data>
+  <data name="Recommended" xml:space="preserve">
+    <value>önerilen</value>
+  </data>
+  <data name="BestTitle" xml:space="preserve">
+    <value>En iyi görüntü için (bir kez)</value>
+  </data>
+  <data name="BestStep1" xml:space="preserve">
+    <value>1. Monitör ayarları sekmesi: Renk ön ayarı Neutral (6500K, hazırların en doğrusu); ayar sihirbazını yapacaksan Custom RGB. Keskinlik 4 (fabrika).</value>
+  </data>
+  <data name="BestStep2" xml:space="preserve">
+    <value>2. Ayar sihirbazı: beyazı Pixel'in ekranına eşler, gamma 2.2'yi ve gri dengesini gözle ve desenlerle ayarlar. En doğru renk budur.</value>
+  </data>
+  <data name="BestStep3" xml:space="preserve">
+    <value>3. Günlük kullanımda Gündüz modu; akşam Akşam, karanlık odada Gece.</value>
+  </data>
+  <data name="Done" xml:space="preserve">
+    <value>{0} modu uygulandı.</value>
+  </data>
+  <data name="Partial" xml:space="preserve">
+    <value>{0} modu tam uygulanamadı. Uygulanmayan: {1}.</value>
+  </data>
+  <data name="Blocked" xml:space="preserve">
+    <value>Ayar sihirbazı açıkken modlar kapalı. Sihirbazı bitir ya da iptal et.</value>
+  </data>
+  <data name="NotFound" xml:space="preserve">
+    <value>Mod bulunamadı.</value>
+  </data>
+  <data name="Failed" xml:space="preserve">
+    <value>{0} modu uygulanamadı.</value>
+  </data>
+  <data name="Unexpected" xml:space="preserve">
+    <value>Beklenmeyen hata: {0}</value>
+  </data>
+  <data name="Purpose_Day" xml:space="preserve">
+    <value>Gündüz ve günlük iş için en doğru görüntü: efekt yok, beyaz 6500K.</value>
+  </data>
+  <data name="Purpose_Evening" xml:space="preserve">
+    <value>Akşam: beyaz ısınır (3400K), parlaklık biraz düşer; göz daha az yorulur.</value>
+  </data>
+  <data name="Purpose_Night" xml:space="preserve">
+    <value>Karanlık oda ve yatmadan önce: çok sıcak beyaz (2700K), düşük parlaklık.</value>
+  </data>
+  <data name="Purpose_Code" xml:space="preserve">
+    <value>Uzun okuma ve kod: hafif sıcak beyaz (5000K); beyaz sayfa göz kamaştırmaz.</value>
+  </data>
+  <data name="Purpose_Film" xml:space="preserve">
+    <value>Film ve video: renkler daha canlı (NVIDIA canlılığı), TN panelin soluk rengini telafi eder; doğru renk değil.</value>
+  </data>
+  <data name="Purpose_Game" xml:space="preserve">
+    <value>Oyun: biraz daha parlak ve canlı renkler.</value>
+  </data>
+  <data name="Purpose_DaVinci" xml:space="preserve">
+    <value>DaVinci zaman çizelgesi: nötr ve efektsiz; renk kararı telefonda verilir.</value>
+  </data>
+  <data name="Value_Backlight" xml:space="preserve">
+    <value>Arka ışık %{0}</value>
+  </data>
+  <data name="Value_Dimming" xml:space="preserve">
+    <value>Arka ışık 0 + ek karartma</value>
+  </data>
+  <data name="Value_BlueLightOff" xml:space="preserve">
+    <value>Mavi ışık kapalı (6500K)</value>
+  </data>
+  <data name="Value_Kelvin" xml:space="preserve">
+    <value>Mavi ışık {0}K</value>
+  </data>
+  <data name="Value_Vibrance" xml:space="preserve">
+    <value>Canlılık %{0}</value>
+  </data>
+  <data name="Value_VibranceOff" xml:space="preserve">
+    <value>Canlılık yok</value>
+  </data>
+</root>

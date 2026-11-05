@@ -35,6 +35,7 @@ public partial class App : System.Windows.Application
     private TrayViewModel? _trayViewModel;
     private SetupWizardViewModel? _wizardViewModel;
     private DdcPanelViewModel? _ddcPanelViewModel;
+    private ModesViewModel? _modesViewModel;
     private TrayHost? _tray;
     private DispatcherTimer? _timer;
     private MainWindow? _main;
@@ -119,6 +120,7 @@ public partial class App : System.Windows.Application
             Log.Write("tepsi hazır");
             _wizardViewModel = new SetupWizardViewModel(runtime.Wizard, runtime.DdcPanel, _lane); // T315: pencere kapansa da sihirbaz durumu kalır
             _ddcPanelViewModel = new DdcPanelViewModel(runtime.DdcPanel, _lane);
+            _modesViewModel = new ModesViewModel(runtime.QuickControls, _lane); // T319: ana sekmede görüntü modları
             if (StartupNotices.From(report) is { Count: > 0 } notices) _trayViewModel.Announce(string.Join(Environment.NewLine, notices));
 
             OpenMainWindow();
@@ -179,8 +181,8 @@ public partial class App : System.Windows.Application
     {
         if (_main is null)
         {
-            _main = _wizardViewModel is not null && _ddcPanelViewModel is not null
-                ? new MainWindow(_wizardViewModel, _ddcPanelViewModel, SettingsRoot)
+            _main = _wizardViewModel is not null && _ddcPanelViewModel is not null && _modesViewModel is not null
+                ? new MainWindow(_wizardViewModel, _ddcPanelViewModel, _modesViewModel, SettingsRoot)
                 : new MainWindow();
             _main.Closed += (_, _) => _main = null; // pencere kapanınca uygulama tepside çalışmaya devam eder
         }

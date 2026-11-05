@@ -19,15 +19,22 @@ public partial class MainWindow : Window
 
     private string? _settingsRoot;
     private bool _loadingLanguage;
+    private ModesViewModel? _modes;
 
     public MainWindow() => InitializeComponent();
 
+    /// <param name="modes">Ana sekmedeki görüntü modları (T319); pencere her açıldığında liste yeniden kurulur.</param>
     /// <param name="settingsRoot">Dil seçiminin saklandığı ayar kökü (<see cref="LanguagePreference"/>).</param>
-    public MainWindow(SetupWizardViewModel wizard, DdcPanelViewModel ddcPanel, string settingsRoot) : this()
+    public MainWindow(SetupWizardViewModel wizard, DdcPanelViewModel ddcPanel, ModesViewModel modes, string settingsRoot) : this()
     {
         WizardView.DataContext = wizard;
         DdcView.DataContext = ddcPanel;
         DdcTab.SetBinding(IsEnabledProperty, new Binding(nameof(SetupWizardViewModel.IsIdle)) { Source = wizard });
+
+        _modes = modes;
+        modes.Reload();
+        ModesPanel.DataContext = modes;
+        ModesPanel.SetBinding(IsEnabledProperty, new Binding(nameof(SetupWizardViewModel.IsIdle)) { Source = wizard });
 
         _settingsRoot = settingsRoot;
         _loadingLanguage = true;
@@ -35,6 +42,13 @@ public partial class MainWindow : Window
         LanguageBox.ItemsSource = items;
         LanguageBox.SelectedItem = items.Single(i => i.Code == LanguagePreference.Load(settingsRoot));
         _loadingLanguage = false;
+    }
+
+    /// <summary>Moda tıklandı (T319): tek uygulama, arka planda; sonuç modların altında yazar.</summary>
+    private void Mode_Click(object sender, RoutedEventArgs e)
+    {
+        if (_modes is null || (sender as FrameworkElement)?.DataContext is not ModeItem mode) return;
+        _modes.Apply(mode).Forget();
     }
 
     private void Language_Changed(object sender, SelectionChangedEventArgs e)

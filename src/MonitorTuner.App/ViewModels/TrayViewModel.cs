@@ -100,18 +100,7 @@ public sealed class TrayViewModel(IQuickControls quick, string hotKeyText)
         Notify(result.Outcome == QuickOutcome.Done ? doneText : Generic(result));
     });
 
-    /// <summary>
-    /// Hazır profillerin adı Türkçe sabittir (servis bu adla bulur); arayüzde çevirisi görünür (T502). Kullanıcı profili
-    /// kullanıcının verdiği adla kalır.
-    /// </summary>
-    private static readonly IReadOnlyDictionary<string, string> BuiltInKeys = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
-    {
-        ["Gündüz"] = "Day", ["Akşam"] = "Evening", ["Gece"] = "Night", ["Kod"] = "Code",
-        ["Film"] = "Film", ["Oyun"] = "Game", ["DaVinci zaman çizelgesi"] = "DaVinci",
-    };
-
-    private static string DisplayName(string name) =>
-        BuiltInKeys.TryGetValue(name, out var key) ? Loc.Get("Tray.Profile_" + key) : name;
+    private static string DisplayName(string name) => ProfileText.DisplayName(name);
 
     private static string Generic(QuickResult result) => result.Outcome switch
     {
@@ -120,16 +109,7 @@ public sealed class TrayViewModel(IQuickControls quick, string hotKeyText)
         _ => Loc.Get("Tray.Failed"),
     };
 
-    /// <summary>Uygulanamayan ya da ertelenen (ekranda henüz olmayan) ayarların adları.</summary>
-    private static string NotApplied(ProfileApplyResult? profile)
-    {
-        if (profile is null) return "";
-        var names = new List<string>();
-        if (profile.Brightness is ProfileStep.Failed or ProfileStep.Deferred) names.Add(Loc.Get("Tray.Step_Brightness"));
-        if (profile.BlueLight is ProfileStep.Failed or ProfileStep.Deferred) names.Add(Loc.Get("Tray.Step_BlueLight"));
-        if (profile.Vibrance is ProfileStep.Failed or ProfileStep.Deferred) names.Add(Loc.Get("Tray.Step_Vibrance"));
-        return string.Join(", ", names);
-    }
+    private static string NotApplied(ProfileApplyResult? profile) => ProfileText.NotApplied(profile);
 
     // Tepsi tıklaması işlenmeyen istisnayla uygulamayı düşürmesin; hata kullanıcıya söylenir.
     private void Guard(Action action)
