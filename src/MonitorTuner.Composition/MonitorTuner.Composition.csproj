@@ -11,4 +11,10 @@
     <ProjectReference Include="..\MonitorTuner.Hardware\MonitorTuner.Hardware.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- Monitör profilleri uygulamayla birlikte gelir (tek dosya, self-contained paket); depodaki profiles/ klasörü tek kaynak. -->
+    <EmbeddedResource Include="..\..\profiles\*.json" LogicalName="profiles/%(Filename)%(Extension)" />
+    <InternalsVisibleTo Include="MonitorTuner.Windows.Tests" />
+  </ItemGroup>
+
 </Project>

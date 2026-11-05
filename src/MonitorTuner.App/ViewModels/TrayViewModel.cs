@@ -131,6 +131,9 @@ public sealed class TrayViewModel(IQuickControls quick, string hotKeyText)
         }
     }
 
+    /// <summary>Zamanlayıcının uyarıları (ör. başka program renk tablosunu değiştirdi): tepsi balonuyla gösterilir, hiçbir ayara dokunmaz.</summary>
+    public void Announce(string text) => Notify(text);
+
     private void Notify(string text) => Notified?.Invoke(text);
 
     private static string Format(string key, params object[] args) => string.Format(CultureInfo.CurrentCulture, Loc.Get(key), args);

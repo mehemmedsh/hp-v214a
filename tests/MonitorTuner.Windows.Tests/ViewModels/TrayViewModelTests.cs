@@ -256,3 +256,29 @@ public class TrayViewModelTests
     public void TrayHostTexts_ExistInTurkish(string key) =>
         Assert.DoesNotContain("[[", MonitorTuner.App.Localization.Loc.Get(key), StringComparison.Ordinal);
 }
+
+public class TrayViewModelAnnounceTests
+{
+    private sealed class NoQuick : IQuickControls
+    {
+        public bool Enabled => true;
+        public IReadOnlyList<ColorProfile> Profiles => [];
+        public QuickResult SelectProfile(string name) => throw new NotSupportedException();
+        public QuickResult SetBrightness(double slider) => throw new NotSupportedException();
+        public QuickResult SetBlueLight(int kelvin) => throw new NotSupportedException();
+        public QuickResult Panic() => throw new NotSupportedException();
+    }
+
+    /// <summary>T314: zamanlayıcının uyarıları (başka program renk tablosunu değiştirdi) tepsi balonuyla gider; bir ayar değişmez.</summary>
+    [Fact]
+    public void Announce_RaisesNotified_WithoutTouchingAnyService()
+    {
+        var vm = new TrayViewModel(new NoQuick(), "Ctrl+Alt+Shift+P");
+        var notes = new List<string>();
+        vm.Notified += notes.Add;
+
+        vm.Announce("merhaba");
+
+        Assert.Equal(["merhaba"], notes);
+    }
+}

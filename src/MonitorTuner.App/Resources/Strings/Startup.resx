@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Uygulama açılışı ve zamanlayıcı iletileri (T314). Nötr dil Türkçe. -->
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="NoSupportedMonitor" xml:space="preserve">
+    <value>Desteklenen monitör (HP P21b G4) bulunamadı. Görülen ekranlar: {0}.
+
+Hiçbir ayar değiştirilmedi. Uygulama kapanıyor.</value>
+  </data>
+  <data name="NoDisplaysSeen" xml:space="preserve">
+    <value>hiç ekran görülemedi</value>
+  </data>
+  <data name="UnreadableDisplay" xml:space="preserve">
+    <value>{0} (model okunamadı)</value>
+  </data>
+  <data name="SeenDisplay" xml:space="preserve">
+    <value>{0} ({1})</value>
+  </data>
+  <data name="ProfileError" xml:space="preserve">
+    <value>Monitör profili okunamadı: {0}
+
+Hiçbir ayar değiştirilmedi. Uygulama kapanıyor.</value>
+  </data>
+  <data name="StartFailed" xml:space="preserve">
+    <value>Uygulama başlatılamadı: {0}
+
+Hiçbir ayar değiştirilmedi. Uygulama kapanıyor.</value>
+  </data>
+  <data name="NoFullGammaRange" xml:space="preserve">
+    <value>Yönetici onayı verilmedi: Windows çok koyu ya da çok sıcak renk tablolarını reddedebilir (ek karartma, mavi ışık, kalibrasyon). Uygulamayı yeniden açıp onay verirsen düzelir.</value>
+  </data>
+  <data name="TableRejected" xml:space="preserve">
+    <value>Windows renk tablosunu kabul etmedi; ekranda önceki renkler kaldı.</value>
+  </data>
+  <data name="ExternalTable" xml:space="preserve">
+    <value>Başka bir program ekran renklerini değiştirdi; senin renk ayarın geri yüklendi.</value>
+  </data>
+</root>

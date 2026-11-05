@@ -10,4 +10,9 @@
     <ProjectReference Include="..\MonitorTuner.Hardware.Abstractions\MonitorTuner.Hardware.Abstractions.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- Yapı boyutları ve çözümleme yardımcıları Windows testlerinde denenir. -->
+    <InternalsVisibleTo Include="MonitorTuner.Windows.Tests" />
+  </ItemGroup>
+
 </Project>
