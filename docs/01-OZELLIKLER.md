@@ -28,6 +28,7 @@ HP P21b G4 + RTX 3080 için özellik listesi (2026-10-30'da daraltıldı). **Hed
 - Windows 11 görünümü (açık/koyu tema sistemden). Solda gezinme: Görüntü modları, Monitör ayarları, Ayar sihirbazı, Rehber, Ayarlar; altında monitör, bağlantı ve şu anki Hz.
 - Görüntü modları gruplu kartlar hâlinde; ekrandaki mod işaretli ve adıyla yazılı.
 - Hızlı ayarlar (T323): parlaklık (arka ışık, sonra ek karartma) ve mavi ışık kaydırıcıları (bırakınca bir kez yazılır) ve panik düğmesi.
+- Mola hatırlatıcısı (T324, Ayarlar, varsayılan kapalı): 20 dakika ekrana bakınca tepsiden "20 saniye 6 metre uzağa bak"; 5 dakika uzak kalınca sayaç sıfırlanır, film ve oyun modlarında araya girmez.
 
 ### 1.7 Sistem tepsisi ve kısayollar · T310
 - Tepsiden renk profili, mavi ışık, parlaklık ve karartma.

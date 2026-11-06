@@ -32,6 +32,12 @@ public class ScreenshotTests
         public QuickResult Panic() => new(QuickOutcome.Done);
     }
 
+    private sealed class OffBreaks : IBreakReminder
+    {
+        public bool Enabled { get; set; }
+        public bool Tick(TimeSpan idle, bool paused) => false;
+    }
+
     [Fact]
     public void MainWindowPages_AreCaptured_WhenAskedFor()
     {
@@ -71,6 +77,7 @@ public class ScreenshotTests
         ((FrameworkElement)window.FindName("QuickPanel")).DataContext = quick;
         ((FrameworkElement)window.FindName("ShellPanel")).DataContext = shell;
         ((FrameworkElement)window.FindName("SettingsPage")).DataContext = shell;
+        ((FrameworkElement)window.FindName("BreakCard")).DataContext = new BreakReminderViewModel(new OffBreaks());
         ((ListBox)window.FindName("Nav")).SelectedItem = window.FindName("Nav" + page);
 
         window.Show();
