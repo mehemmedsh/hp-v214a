@@ -336,6 +336,26 @@
                             </Grid>
                         </Border>
 
+                        <!-- Mola hatırlatıcısı (T324): varsayılan kapalı, ekran ayarına dokunmaz -->
+                        <Border x:Name="BreakCard" Style="{StaticResource CardBorder}" Margin="0,12,0,0">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Style="{StaticResource Glyph}" Text="{x:Static vm:Glyphs.Eye}" VerticalAlignment="Top" Margin="0,2,0,0" />
+                                <StackPanel Grid.Column="1" Margin="14,0,12,0">
+                                    <TextBlock Text="{loc:Tr Shell.Break_Title}" Style="{DynamicResource BodyStrongTextBlockStyle}" />
+                                    <TextBlock Text="{loc:Tr Shell.Break_Text}" TextWrapping="Wrap" Margin="0,2,0,0"
+                                               Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                                    <TextBlock Text="{Binding Status}" TextWrapping="Wrap" Foreground="{DynamicResource SystemFillColorCautionBrush}" />
+                                </StackPanel>
+                                <CheckBox Grid.Column="2" Content="{loc:Tr Shell.Break_On}" IsChecked="{Binding Enabled, Mode=TwoWay}"
+                                          VerticalAlignment="Center" />
+                            </Grid>
+                        </Border>
+
                         <Border Style="{StaticResource CardBorder}" Margin="0,12,0,0">
                             <Grid>
                                 <Grid.ColumnDefinitions>

@@ -40,4 +40,16 @@
   <data name="Connection_Unknown" xml:space="preserve">
     <value>bağlantı bilinmir</value>
   </data>
+  <data name="Break_Title" xml:space="preserve">
+    <value>Fasilə xatırladıcısı (20-20-20)</value>
+  </data>
+  <data name="Break_On" xml:space="preserve">
+    <value>Açıq</value>
+  </data>
+  <data name="Break_Text" xml:space="preserve">
+    <value>20 dəqiqə ekrana baxanda sinidən xatırladır: 20 saniyə 6 metr uzağa bax. 5 dəqiqə ekrandan uzaq qalsan sayğac sıfırlanır; film və oyun rejimlərində araya girmir. Araşdırmada xatırlatma ilə göz yorğunluğu əlamətləri azaldı.</value>
+  </data>
+  <data name="Break_SaveFailed" xml:space="preserve">
+    <value>Yadda saxlanmadı: {0}</value>
+  </data>
 </root>

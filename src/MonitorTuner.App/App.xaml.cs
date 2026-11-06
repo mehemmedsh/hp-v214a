@@ -38,6 +38,7 @@ public partial class App : System.Windows.Application
     private ModesViewModel? _modesViewModel;
     private ShellViewModel? _shellViewModel;
     private QuickSettingsViewModel? _quickSettingsViewModel;
+    private BreakReminderViewModel? _breakReminderViewModel;
     private TrayHost? _tray;
     private DispatcherTimer? _timer;
     private MainWindow? _main;
@@ -124,6 +125,7 @@ public partial class App : System.Windows.Application
             _ddcPanelViewModel = new DdcPanelViewModel(runtime.DdcPanel, _lane);
             _modesViewModel = new ModesViewModel(runtime.QuickControls, _lane); // T319: ana sekmede görüntü modları
             _quickSettingsViewModel = new QuickSettingsViewModel(runtime.QuickControls, _lane); // T323: parlaklık, mavi ışık, panik
+            _breakReminderViewModel = new BreakReminderViewModel(runtime.Breaks); // T324: Ayarlar'daki mola hatırlatıcısı
             // T322: kenar çubuğunda monitör, bağlantı, şu anki Hz (Windows'tan, sırada okunur) ve sürüm
             _shellViewModel = new ShellViewModel(runtime.Monitor.Model, runtime.Monitor.Connection,
                 () => runtime.RefreshRates.CurrentRefreshHz, AppVersion(), _lane);
@@ -176,6 +178,10 @@ public partial class App : System.Windows.Application
         {
             var report = await _lane.RunAsync(runtime.Tick);
             if (report.ExternalTableRestored && !_exiting) _trayViewModel?.Announce(StartupNotices.ExternalTableRestored());
+
+            // T324: mola hatırlatıcısı (açıksa). Film ve oyun modunda araya girmez; ekran ayarına dokunmaz, sadece balon.
+            var watching = BreakReminder.IsWatchingOrPlaying(runtime.QuickControls.Active, runtime.QuickControls.Profiles);
+            if (!_exiting && runtime.Breaks.Tick(UserIdle.Get(), watching)) _trayViewModel?.Announce(Loc.Get("Tray.BreakReminder"));
         }
         finally
         {
@@ -191,8 +197,9 @@ public partial class App : System.Windows.Application
         if (_main is null)
         {
             _main = _wizardViewModel is not null && _ddcPanelViewModel is not null && _modesViewModel is not null
-                    && _quickSettingsViewModel is not null && _shellViewModel is not null
-                ? new MainWindow(_wizardViewModel, _ddcPanelViewModel, _modesViewModel, _quickSettingsViewModel, _shellViewModel, SettingsRoot)
+                    && _quickSettingsViewModel is not null && _shellViewModel is not null && _breakReminderViewModel is not null
+                ? new MainWindow(_wizardViewModel, _ddcPanelViewModel, _modesViewModel, _quickSettingsViewModel, _shellViewModel,
+                    _breakReminderViewModel, SettingsRoot)
                 : new MainWindow();
             _main.Closed += (_, _) => _main = null; // pencere kapanınca uygulama tepside çalışmaya devam eder
         }

@@ -33,11 +33,13 @@ public partial class MainWindow : Window
     /// <param name="modes">Görüntü modları (T319, T322); pencere her açıldığında ve öne geldiğinde liste ve etkin mod yenilenir.</param>
     /// <param name="quick">Modlar sayfasındaki parlaklık, mavi ışık ve panik (T323).</param>
     /// <param name="shell">Kenar çubuğundaki monitör, Hz ve sürüm bilgisi (T322).</param>
+    /// <param name="breaks">Ayarlar sayfasındaki mola hatırlatıcısı anahtarı (T324).</param>
     /// <param name="settingsRoot">Dil seçiminin saklandığı ayar kökü (<see cref="LanguagePreference"/>).</param>
     public MainWindow(
         SetupWizardViewModel wizard, DdcPanelViewModel ddcPanel, ModesViewModel modes, QuickSettingsViewModel quick, ShellViewModel shell,
-        string settingsRoot) : this()
+        BreakReminderViewModel breaks, string settingsRoot) : this()
     {
+        BreakCard.DataContext = breaks;
         WizardView.DataContext = wizard;
         DdcView.DataContext = ddcPanel;
         NavMonitor.SetBinding(IsEnabledProperty, new Binding(nameof(SetupWizardViewModel.IsIdle)) { Source = wizard });

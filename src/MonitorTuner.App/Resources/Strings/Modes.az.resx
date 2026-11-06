@@ -131,7 +131,7 @@
     <value>24 fps filmlər 60 Hz-də ilişir; ekranı 72 Hz-ə keçirsən, hər kadr bərabər müddət görünür (72 Hz əvvəlcə NVIDIA-da əlavə olunmalıdır: Bələdçi, bölmə 2). Rejimlər Hz-ə toxunmur.</value>
   </data>
   <data name="GroupHint_Comfort" xml:space="preserve">
-    <value>Gözü ən çox ekranın otaqdan çox parlaq olması yorur: ağ səhifə yanındakı divardan parlaq görünməsin. Hər 20 dəqiqədən bir 20 saniyə 6 metr uzağa bax (20-20-20).</value>
+    <value>Gözü ən çox ekranın otaqdan çox parlaq olması yorur: ağ səhifə yanındakı divardan parlaq görünməsin. Hər 20 dəqiqədən bir 20 saniyə 6 metr uzağa bax (20-20-20); Parametrlərdəki fasilə xatırladıcısı bunu xatırladır.</value>
   </data>
   <data name="Value_ToneCinema" xml:space="preserve">
     <value>Kino tonu (qamma 2.4)</value>

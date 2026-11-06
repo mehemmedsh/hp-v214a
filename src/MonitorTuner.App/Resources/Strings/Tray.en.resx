@@ -151,4 +151,7 @@
   <data name="Profile_ComfortNight" xml:space="preserve">
     <value>Comfort · Night</value>
   </data>
+  <data name="BreakReminder" xml:space="preserve">
+    <value>You have been at the screen for 20 minutes: look 6 m away for 20 seconds and blink a few times (20-20-20).</value>
+  </data>
 </root>

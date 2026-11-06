@@ -131,7 +131,7 @@
     <value>24 fps filmler 60 Hz'de takılır; ekranı 72 Hz'e alırsan her kare eşit süre görünür (72 Hz önce NVIDIA'da eklenmeli: Rehber, bölüm 2). Modlar Hz'e dokunmaz.</value>
   </data>
   <data name="GroupHint_Comfort" xml:space="preserve">
-    <value>Gözü en çok, ekranın odadan çok parlak olması yorar: beyaz sayfa yanındaki duvardan parlak durmasın. Her 20 dakikada 20 saniye 6 metre uzağa bak (20-20-20).</value>
+    <value>Gözü en çok, ekranın odadan çok parlak olması yorar: beyaz sayfa yanındaki duvardan parlak durmasın. Her 20 dakikada 20 saniye 6 metre uzağa bak (20-20-20); Ayarlar'daki mola hatırlatıcısı bunu hatırlatır.</value>
   </data>
   <data name="Value_ToneCinema" xml:space="preserve">
     <value>Sinema tonu (gamma 2.4)</value>

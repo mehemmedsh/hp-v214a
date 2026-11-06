@@ -44,8 +44,9 @@ public sealed class AppRuntime
     private AppRuntime(
         MonitorInfo monitor, MonitorProfile profile, IColorPipeline pipeline, INvidiaControl nvidia, IBrightnessControl brightness,
         IBlueLightFilter blueLight, IToneControl tone, IDdcPanel ddcPanel, IRefreshRatePanel refreshRates, ISetupWizard wizard,
-        IColorProfiles profiles, IQuickControls quickControls)
+        IColorProfiles profiles, IQuickControls quickControls, IBreakReminder breaks)
     {
+        Breaks = breaks;
         (Monitor, Profile, _pipeline, _nvidia) = (monitor, profile, pipeline, nvidia);
         (Brightness, BlueLight, Tone, DdcPanel, RefreshRates) = (brightness, blueLight, tone, ddcPanel, refreshRates);
         (Wizard, Profiles, QuickControls) = (wizard, profiles, quickControls);
@@ -66,6 +67,9 @@ public sealed class AppRuntime
 
     /// <summary>Tepsi ve ana pencerenin ortak giriş noktası (profil seçimi, parlaklık, mavi ışık, panik).</summary>
     public IQuickControls QuickControls { get; }
+
+    /// <summary>İsteğe bağlı 20-20-20 mola hatırlatıcısı (T324); ekran ayarına dokunmaz.</summary>
+    public IBreakReminder Breaks { get; }
 
     /// <summary>
     /// Bağlı ekranlardan bir profille eşleşen ilkini seçer ve servisleri kurar. Eşleşme yoksa runtime null döner; o ekranlara
@@ -111,7 +115,10 @@ public sealed class AppRuntime
         var refreshRates = new RefreshRatePanel(display, profile, ports.Modes, ddc, safety, store, key);
         var quick = new QuickControls(colorProfiles, brightness, blueLight, wizard);
 
-        return new AppRuntime(monitor, profile, pipeline, nvidia, brightness, blueLight, tone, panel, refreshRates, wizard, colorProfiles, quick);
+        var breaks = new BreakReminder(store, key, time);
+
+        return new AppRuntime(
+            monitor, profile, pipeline, nvidia, brightness, blueLight, tone, panel, refreshRates, wizard, colorProfiles, quick, breaks);
     }
 
     /// <summary>

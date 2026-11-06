@@ -40,4 +40,16 @@
   <data name="Connection_Unknown" xml:space="preserve">
     <value>connection unknown</value>
   </data>
+  <data name="Break_Title" xml:space="preserve">
+    <value>Break reminder (20-20-20)</value>
+  </data>
+  <data name="Break_On" xml:space="preserve">
+    <value>On</value>
+  </data>
+  <data name="Break_Text" xml:space="preserve">
+    <value>After 20 minutes at the screen it reminds you from the tray: look 6 m away for 20 seconds. Staying away from the screen for 5 minutes resets the count; it does not interrupt cinema and game modes. In research, reminders reduced eye strain symptoms.</value>
+  </data>
+  <data name="Break_SaveFailed" xml:space="preserve">
+    <value>Could not be saved: {0}</value>
+  </data>
 </root>

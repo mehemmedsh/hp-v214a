@@ -126,6 +126,7 @@ public sealed class AppRuntimeTests : IDisposable
         Assert.Contains(runtime.Profiles.Profiles, p => p.Name == "Gündüz" || p.BuiltIn);
         Assert.Equal(runtime.Profiles.Profiles.Count, runtime.QuickControls.Profiles.Count);
         Assert.True(runtime.QuickControls.Enabled);                                 // sihirbaz kapalı
+        Assert.False(runtime.Breaks.Enabled);                                       // mola hatırlatıcısı varsayılan kapalı (T324)
         Assert.False(runtime.Wizard.IsActive);
         Assert.Null(runtime.Wizard.LoadBaseline());
     }

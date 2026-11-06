@@ -40,4 +40,16 @@
   <data name="Connection_Unknown" xml:space="preserve">
     <value>bağlantı bilinmiyor</value>
   </data>
+  <data name="Break_Title" xml:space="preserve">
+    <value>Mola hatırlatıcısı (20-20-20)</value>
+  </data>
+  <data name="Break_On" xml:space="preserve">
+    <value>Açık</value>
+  </data>
+  <data name="Break_Text" xml:space="preserve">
+    <value>20 dakika ekrana bakınca tepsiden hatırlatır: 20 saniye 6 metre uzağa bak. 5 dakika ekrandan uzak kalırsan sayaç sıfırlanır; film ve oyun modlarında araya girmez. Araştırmada hatırlatmayla göz yorgunluğu belirtileri azaldı.</value>
+  </data>
+  <data name="Break_SaveFailed" xml:space="preserve">
+    <value>Kaydedilemedi: {0}</value>
+  </data>
 </root>

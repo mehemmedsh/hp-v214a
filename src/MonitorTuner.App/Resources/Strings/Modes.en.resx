@@ -131,7 +131,7 @@
     <value>24 fps movies judder at 60 Hz; at 72 Hz every frame is shown for the same time (add 72 Hz in NVIDIA first: Guide, section 2). Modes don't touch the refresh rate.</value>
   </data>
   <data name="GroupHint_Comfort" xml:space="preserve">
-    <value>What tires the eyes most is a screen much brighter than the room: a white page should not look brighter than the wall next to it. Every 20 minutes look 6 m away for 20 seconds (20-20-20).</value>
+    <value>What tires the eyes most is a screen much brighter than the room: a white page should not look brighter than the wall next to it. Every 20 minutes look 6 m away for 20 seconds (20-20-20); the break reminder in Settings reminds you.</value>
   </data>
   <data name="Value_ToneCinema" xml:space="preserve">
     <value>Cinema tone (gamma 2.4)</value>

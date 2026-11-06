@@ -151,4 +151,7 @@
   <data name="Profile_ComfortNight" xml:space="preserve">
     <value>Konfor · Gece</value>
   </data>
+  <data name="BreakReminder" xml:space="preserve">
+    <value>20 dakikadır ekrandasın: 20 saniye boyunca 6 metre uzağa bak ve birkaç kez göz kırp (20-20-20).</value>
+  </data>
 </root>
