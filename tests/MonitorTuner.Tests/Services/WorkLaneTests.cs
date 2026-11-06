@@ -134,6 +134,8 @@ public class WorkLaneTests
         public bool Enabled => true;
         public IReadOnlyList<ColorProfile> Profiles => [];
         public ActiveMode? Active { get; set; }
+        public double? ReadBrightness() => 0.6;
+        public int BlueLightKelvin => 6500;
 
         public QuickResult SelectProfile(string name) => Record("SelectProfile " + name);
         public QuickResult SetBrightness(double slider) => Record("SetBrightness " + slider.ToString(System.Globalization.CultureInfo.InvariantCulture));

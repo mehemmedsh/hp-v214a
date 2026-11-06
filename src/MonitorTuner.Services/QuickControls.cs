@@ -36,6 +36,15 @@ public interface IQuickControls
     /// </summary>
     ActiveMode? Active { get; }
 
+    /// <summary>
+    /// Parlaklık kaydırıcısının yeri (T323): arka ışık monitörden okunur (yavaş: arayüz sırada çağırır), ek karartma açıksa son
+    /// bırakılan yer. null: DDC yok ya da okunamadı. Hiçbir şey yazmaz; sihirbaz sırasında da okunabilir.
+    /// </summary>
+    double? ReadBrightness();
+
+    /// <summary>Mavi ışık filtresinin şu anki sıcaklığı (6500 = kapalı). Sadece okur.</summary>
+    int BlueLightKelvin { get; }
+
     QuickResult SelectProfile(string name);
 
     /// <summary>Tek kaydırıcı (0–1), <see cref="IBrightnessControl.Commit"/>.</summary>
@@ -64,6 +73,10 @@ public sealed class QuickControls(
     public IReadOnlyList<ColorProfile> Profiles => profiles.Profiles;
 
     public ActiveMode? Active => _active;
+
+    public double? ReadBrightness() => brightness.ReadSlider();
+
+    public int BlueLightKelvin => blueLight.Kelvin;
 
     public QuickResult SelectProfile(string name)
     {

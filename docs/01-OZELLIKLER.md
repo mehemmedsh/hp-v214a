@@ -27,6 +27,7 @@ HP P21b G4 + RTX 3080 için özellik listesi (2026-10-30'da daraltıldı). **Hed
 ### 1.6 Ana pencere · T322
 - Windows 11 görünümü (açık/koyu tema sistemden). Solda gezinme: Görüntü modları, Monitör ayarları, Ayar sihirbazı, Rehber, Ayarlar; altında monitör, bağlantı ve şu anki Hz.
 - Görüntü modları gruplu kartlar hâlinde; ekrandaki mod işaretli ve adıyla yazılı.
+- Hızlı ayarlar (T323): parlaklık (arka ışık, sonra ek karartma) ve mavi ışık kaydırıcıları (bırakınca bir kez yazılır) ve panik düğmesi.
 
 ### 1.7 Sistem tepsisi ve kısayollar · T310
 - Tepsiden renk profili, mavi ışık, parlaklık ve karartma.

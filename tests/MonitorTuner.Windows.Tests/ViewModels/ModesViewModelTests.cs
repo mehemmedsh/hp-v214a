@@ -20,6 +20,8 @@ public class ModesViewModelTests
 
         public IReadOnlyList<ColorProfile> Profiles => List;
         public ActiveMode? Active { get; set; }
+        public double? ReadBrightness() => 0.6;
+        public int BlueLightKelvin => 6500;
 
         public Action<string>? OnSelect { get; set; }
 

@@ -116,6 +116,11 @@ public sealed class LanedQuickControls(IQuickControls inner, IWorkLane lane) : I
     /// <summary>Sadece okur (tek başvuru ataması); sırayı beklemez.</summary>
     public ActiveMode? Active => inner.Active;
 
+    /// <summary>DDC okuması: sırada (arka planda süren yazmayla aynı anda değil).</summary>
+    public double? ReadBrightness() => lane.Run(inner.ReadBrightness);
+
+    public int BlueLightKelvin => inner.BlueLightKelvin;
+
     public QuickResult SelectProfile(string name) => lane.Run(() => inner.SelectProfile(name));
 
     public QuickResult SetBrightness(double slider) => lane.Run(() => inner.SetBrightness(slider));

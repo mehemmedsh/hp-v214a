@@ -58,6 +58,9 @@ public sealed class ModesViewModel : INotifyPropertyChanged
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
+    /// <summary>Bir mod uygulandı (tam ya da kısmen; T323): hızlı ayar kaydırıcıları yeni değerleri okur.</summary>
+    public event Action? Applied;
+
     public ObservableCollection<ModeItem> Modes { get; } = [];
 
     /// <summary>Kartlar gruplarıyla (T322), <see cref="ColorProfiles.GroupOrder"/> sırasında; boş grup yok.</summary>
@@ -155,6 +158,7 @@ public sealed class ModesViewModel : INotifyPropertyChanged
                 _ => Format("Modes.Failed", mode.Title),
             };
             Reload(); // etkin mod işareti (T322)
+            if (result.Outcome is QuickOutcome.Done or QuickOutcome.Partial) Applied?.Invoke();
         }
         catch (Exception ex)
         {

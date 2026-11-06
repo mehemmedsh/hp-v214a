@@ -26,7 +26,7 @@
     <value>Ən yaxşı görüntü üçün (bir dəfə)</value>
   </data>
   <data name="BestStep1" xml:space="preserve">
-    <value>1. Monitor ayarları bölməsi: Rəng rejimi Neutral (6500K, hazırların ən dəqiqi); ayar sehrbazını edəcəksənsə Custom RGB. Kəskinlik 4 (zavod).</value>
+    <value>1. Monitor ayarları səhifəsi: Rəng rejimi Neutral (6500K, hazırların ən dəqiqi); ayar sehrbazını edəcəksənsə Custom RGB. Kəskinlik 4 (zavod).</value>
   </data>
   <data name="BestStep2" xml:space="preserve">
     <value>2. Ayar sehrbazı: ağı Pixel-in ekranına uyğunlaşdırır, qamma 2.2-ni və boz balansını gözlə və naxışlarla ayarlayır. Ən dəqiq rəng budur.</value>
@@ -150,5 +150,35 @@
   </data>
   <data name="ActiveBadge" xml:space="preserve">
     <value>aktiv</value>
+  </data>
+  <data name="Quick_Title" xml:space="preserve">
+    <value>Sürətli ayarlar</value>
+  </data>
+  <data name="Quick_Brightness" xml:space="preserve">
+    <value>Parlaqlıq</value>
+  </data>
+  <data name="Quick_BlueLight" xml:space="preserve">
+    <value>Mavi işıq</value>
+  </data>
+  <data name="Quick_Backlight" xml:space="preserve">
+    <value>Arxa işıq %{0}</value>
+  </data>
+  <data name="Quick_Dimming" xml:space="preserve">
+    <value>Əlavə qaraltma: ağ %{0}</value>
+  </data>
+  <data name="Quick_BlueLightOff" xml:space="preserve">
+    <value>Bağlı (6500K)</value>
+  </data>
+  <data name="Quick_Kelvin" xml:space="preserve">
+    <value>{0}K</value>
+  </data>
+  <data name="Quick_Panic" xml:space="preserve">
+    <value>Panik: effektləri bağla</value>
+  </data>
+  <data name="Quick_Hint" xml:space="preserve">
+    <value>Sürgü buraxılanda bir dəfə yazılır. Sürüşdürərkən monitora yazılmır. Rejim seçəndə bunlar da dəyişir; əllə dəyişəndə ekrandakı rejim "əllə dəyişdi" olur.</value>
+  </data>
+  <data name="Quick_NoDdc" xml:space="preserve">
+    <value>Monitorun parlaqlığı oxunmadı (DDC/CI bağlı ola bilər): parlaqlığı monitorun menyusundan ayarla.</value>
   </data>
 </root>

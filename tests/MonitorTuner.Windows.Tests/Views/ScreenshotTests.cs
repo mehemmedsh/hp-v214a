@@ -24,6 +24,8 @@ public class ScreenshotTests
         public bool Enabled => true;
         public IReadOnlyList<ColorProfile> Profiles { get; } = [.. ColorProfiles.BuiltIns, new("Benim", false, 0.45, 5000, null)];
         public ActiveMode? Active { get; set; } = new("Sinema", Adjusted: false);
+        public double? ReadBrightness() => 0.6;
+        public int BlueLightKelvin => 6500;
         public QuickResult SelectProfile(string name) => new(QuickOutcome.Done);
         public QuickResult SetBrightness(double slider) => new(QuickOutcome.Done);
         public QuickResult SetBlueLight(int kelvin) => new(QuickOutcome.Done);
@@ -64,6 +66,9 @@ public class ScreenshotTests
         var shell = new ShellViewModel("HP P21b G4", ConnectionType.Hdmi, () => 76, "1.0.0");
         shell.Refresh();
         ((FrameworkElement)window.FindName("ModesPanel")).DataContext = modes;
+        var quick = new QuickSettingsViewModel(new StubQuick());
+        quick.Load();
+        ((FrameworkElement)window.FindName("QuickPanel")).DataContext = quick;
         ((FrameworkElement)window.FindName("ShellPanel")).DataContext = shell;
         ((FrameworkElement)window.FindName("SettingsPage")).DataContext = shell;
         ((ListBox)window.FindName("Nav")).SelectedItem = window.FindName("Nav" + page);

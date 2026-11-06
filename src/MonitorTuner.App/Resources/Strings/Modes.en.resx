@@ -26,7 +26,7 @@
     <value>For the best picture (once)</value>
   </data>
   <data name="BestStep1" xml:space="preserve">
-    <value>1. Monitor settings tab: Color preset Neutral (6500K, the most accurate built-in one); Custom RGB if you will run the setup wizard. Sharpness 4 (factory).</value>
+    <value>1. Monitor settings page: Color preset Neutral (6500K, the most accurate built-in one); Custom RGB if you will run the setup wizard. Sharpness 4 (factory).</value>
   </data>
   <data name="BestStep2" xml:space="preserve">
     <value>2. Setup wizard: matches the white to the Pixel's screen and sets gamma 2.2 and grey balance by eye with patterns. This gives the most accurate color.</value>
@@ -150,5 +150,35 @@
   </data>
   <data name="ActiveBadge" xml:space="preserve">
     <value>active</value>
+  </data>
+  <data name="Quick_Title" xml:space="preserve">
+    <value>Quick settings</value>
+  </data>
+  <data name="Quick_Brightness" xml:space="preserve">
+    <value>Brightness</value>
+  </data>
+  <data name="Quick_BlueLight" xml:space="preserve">
+    <value>Blue light</value>
+  </data>
+  <data name="Quick_Backlight" xml:space="preserve">
+    <value>Backlight {0}%</value>
+  </data>
+  <data name="Quick_Dimming" xml:space="preserve">
+    <value>Extra dimming: white {0}%</value>
+  </data>
+  <data name="Quick_BlueLightOff" xml:space="preserve">
+    <value>Off (6500K)</value>
+  </data>
+  <data name="Quick_Kelvin" xml:space="preserve">
+    <value>{0}K</value>
+  </data>
+  <data name="Quick_Panic" xml:space="preserve">
+    <value>Panic: turn effects off</value>
+  </data>
+  <data name="Quick_Hint" xml:space="preserve">
+    <value>Written once when you release the slider; nothing is written while dragging. Picking a mode changes these too; changing them by hand marks the mode on screen as "changed by hand".</value>
+  </data>
+  <data name="Quick_NoDdc" xml:space="preserve">
+    <value>The monitor's brightness could not be read (DDC/CI may be off): set brightness in the monitor's menu.</value>
   </data>
 </root>

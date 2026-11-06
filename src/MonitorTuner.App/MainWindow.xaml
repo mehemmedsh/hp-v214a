@@ -36,6 +36,7 @@
         <Style x:Key="ModeCard" TargetType="Button">
             <Setter Property="Cursor" Value="Hand" />
             <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
             <Setter Property="VerticalContentAlignment" Value="Top" />
             <Setter Property="Template">
@@ -172,6 +173,73 @@
                                                Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
                                 </StackPanel>
                             </Grid>
+                        </Border>
+
+                        <!-- Hızlı ayarlar (T323): sürüklerken yazılmaz, bırakınca tek yazma; sihirbaz açıkken kapalı -->
+                        <Border x:Name="QuickPanel" Style="{StaticResource CardBorder}" Margin="0,0,12,24">
+                            <StackPanel>
+                                <Grid Margin="0,0,0,12">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{loc:Tr Modes.Quick_Title}" Style="{DynamicResource BodyStrongTextBlockStyle}" VerticalAlignment="Center" />
+                                    <Button Grid.Column="1" Click="Panic_Click" Padding="12,5" IsEnabled="{Binding IsReady}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Style="{StaticResource Glyph}" Text="{x:Static vm:Glyphs.Panic}" FontSize="14"
+                                                       Foreground="{DynamicResource SystemFillColorCautionBrush}" />
+                                            <TextBlock Text="{loc:Tr Modes.Quick_Panic}" Margin="8,0,0,0" VerticalAlignment="Center" />
+                                        </StackPanel>
+                                    </Button>
+                                </Grid>
+                                <Grid IsEnabled="{Binding IsReady}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="104" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="176" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Style="{StaticResource Glyph}" Text="{x:Static vm:Glyphs.Day}" />
+                                    <TextBlock Grid.Column="1" Text="{loc:Tr Modes.Quick_Brightness}" Margin="10,0,0,0" VerticalAlignment="Center" />
+                                    <!-- Tek kaydırıcı: 0,2 üstü arka ışık, altı ek karartma (beyaz en az %15) -->
+                                    <Slider Grid.Column="2" Minimum="0" Maximum="1" SmallChange="0.01" LargeChange="0.05" VerticalAlignment="Center"
+                                            Value="{Binding Brightness, Mode=TwoWay}" IsEnabled="{Binding BrightnessAvailable}"
+                                            AutomationProperties.Name="{loc:Tr Modes.Quick_Brightness}"
+                                            Thumb.DragCompleted="Brightness_Released" KeyUp="Brightness_Released" PreviewMouseLeftButtonUp="Brightness_Released" />
+                                    <TextBlock Grid.Column="3" Text="{Binding BrightnessText}" Margin="14,0,0,0" VerticalAlignment="Center"
+                                               Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+
+                                    <TextBlock Grid.Row="1" Style="{StaticResource Glyph}" Text="{x:Static vm:Glyphs.BlueLight}" Margin="0,14,0,0" />
+                                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{loc:Tr Modes.Quick_BlueLight}" Margin="10,14,0,0" VerticalAlignment="Center" />
+                                    <!-- Sola kapalı (6500K), sağa doğru daha sıcak (1900K'ye kadar); sınırlar sabit (bağlansaydı değer kırpılırdı) -->
+                                    <Slider Grid.Row="1" Grid.Column="2" Minimum="1900" Maximum="6500" SmallChange="100" LargeChange="500" IsDirectionReversed="True"
+                                            Margin="0,14,0,0" VerticalAlignment="Center" Value="{Binding Kelvin, Mode=TwoWay}"
+                                            AutomationProperties.Name="{loc:Tr Modes.Quick_BlueLight}"
+                                            Thumb.DragCompleted="Kelvin_Released" KeyUp="Kelvin_Released" PreviewMouseLeftButtonUp="Kelvin_Released" />
+                                    <TextBlock Grid.Row="1" Grid.Column="3" Text="{Binding KelvinText}" Margin="14,14,0,0" VerticalAlignment="Center"
+                                               Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                                </Grid>
+                                <TextBlock Text="{loc:Tr Modes.Quick_NoDdc}" TextWrapping="Wrap" Margin="0,10,0,0"
+                                           Foreground="{DynamicResource SystemFillColorCautionBrush}">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding BrightnessAvailable}" Value="False">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                                <TextBlock Text="{Binding Status}" TextWrapping="Wrap" Margin="0,8,0,0" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                                <TextBlock Text="{loc:Tr Modes.Quick_Hint}" TextWrapping="Wrap" FontSize="12" Margin="0,6,0,0"
+                                           Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+                            </StackPanel>
                         </Border>
 
                         <!-- Gruplar ve kartlar; sihirbaz açıkken ya da bir mod uygulanırken kapalı -->

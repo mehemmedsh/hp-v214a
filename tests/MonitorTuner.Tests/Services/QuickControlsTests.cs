@@ -46,7 +46,8 @@ public class QuickControlsTests
             return new BrightnessState(new DimmingPlan(0, 1), Applied, null);
         }
 
-        public double? ReadSlider() => throw new NotSupportedException();
+        public double? SliderOnMonitor { get; set; } = 0.6;
+        public double? ReadSlider() => SliderOnMonitor;
         public bool DisableDimming() => throw new NotSupportedException();
         public bool Suspend() => throw new NotSupportedException();
         public bool Resume() => throw new NotSupportedException();
@@ -181,6 +182,24 @@ public class QuickControlsTests
         s.Quick.Panic();
 
         Assert.Null(s.Quick.Active);
+    }
+
+    // ---- Okuma (T323): hızlı ayar kaydırıcılarının yeri; hiçbir şey yazmaz ----
+
+    [Fact]
+    public void ReadBrightness_AndBlueLightKelvin_OnlyRead()
+    {
+        var s = new Setup();
+        s.Brightness.SliderOnMonitor = 0.42;
+        s.BlueLight.SetKelvin(4500);
+        s.Log.Clear();
+
+        Assert.Equal(0.42, s.Quick.ReadBrightness());
+        Assert.Equal(4500, s.Quick.BlueLightKelvin);
+        Assert.Empty(s.Log);
+
+        s.Wizard.Active = true; // okumak sihirbaz sırasında da zararsız
+        Assert.Equal(0.42, s.Quick.ReadBrightness());
     }
 
     // ---- Etkin mi ----

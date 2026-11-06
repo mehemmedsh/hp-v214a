@@ -22,6 +22,7 @@ public partial class MainWindow : Window
     private bool _loadingLanguage;
     private ModesViewModel? _modes;
     private ShellViewModel? _shell;
+    private QuickSettingsViewModel? _quick;
 
     public MainWindow()
     {
@@ -30,10 +31,12 @@ public partial class MainWindow : Window
     }
 
     /// <param name="modes">Görüntü modları (T319, T322); pencere her açıldığında ve öne geldiğinde liste ve etkin mod yenilenir.</param>
+    /// <param name="quick">Modlar sayfasındaki parlaklık, mavi ışık ve panik (T323).</param>
     /// <param name="shell">Kenar çubuğundaki monitör, Hz ve sürüm bilgisi (T322).</param>
     /// <param name="settingsRoot">Dil seçiminin saklandığı ayar kökü (<see cref="LanguagePreference"/>).</param>
     public MainWindow(
-        SetupWizardViewModel wizard, DdcPanelViewModel ddcPanel, ModesViewModel modes, ShellViewModel shell, string settingsRoot) : this()
+        SetupWizardViewModel wizard, DdcPanelViewModel ddcPanel, ModesViewModel modes, QuickSettingsViewModel quick, ShellViewModel shell,
+        string settingsRoot) : this()
     {
         WizardView.DataContext = wizard;
         DdcView.DataContext = ddcPanel;
@@ -43,6 +46,13 @@ public partial class MainWindow : Window
         modes.Reload();
         ModesPanel.DataContext = modes;
         ModesPanel.SetBinding(IsEnabledProperty, new Binding(nameof(SetupWizardViewModel.IsIdle)) { Source = wizard });
+
+        // Hızlı ayarlar (T323): mod seçince kaydırıcılar yeni değerleri okur, elle değişince ekrandaki mod "elle değişti" olur.
+        _quick = quick;
+        QuickPanel.DataContext = quick;
+        quick.Changed += modes.RefreshActive;
+        modes.Applied += () => quick.Load().Forget();
+        quick.Load().Forget();
 
         _shell = shell;
         ShellPanel.DataContext = shell;
@@ -61,6 +71,7 @@ public partial class MainWindow : Window
         Activated += (_, _) =>
         {
             _modes?.RefreshActive(); // sadece etkin mod değiştiyse kartları yeniden kurar (ilk tıklama kaybolmasın)
+            if (_quick is { IsBusy: false }) _quick.Load().Forget(); // tepsiden değişmiş olabilir; sadece okur
             _shell?.Refresh().Forget();
         };
     }
@@ -87,6 +98,13 @@ public partial class MainWindow : Window
         if (_modes is null || (sender as FrameworkElement)?.DataContext is not ModeItem mode) return;
         _modes.Apply(mode).Forget();
     }
+
+    /// <summary>Parlaklık kaydırıcısı bırakıldı (sürükleme bitti, tuş ya da tıklama): değer değiştiyse tek yazma.</summary>
+    private void Brightness_Released(object sender, RoutedEventArgs e) => _quick?.CommitBrightness().Forget();
+
+    private void Kelvin_Released(object sender, RoutedEventArgs e) => _quick?.CommitKelvin().Forget();
+
+    private void Panic_Click(object sender, RoutedEventArgs e) => _quick?.Panic().Forget();
 
     private void Language_Changed(object sender, SelectionChangedEventArgs e)
     {

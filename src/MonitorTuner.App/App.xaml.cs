@@ -37,6 +37,7 @@ public partial class App : System.Windows.Application
     private DdcPanelViewModel? _ddcPanelViewModel;
     private ModesViewModel? _modesViewModel;
     private ShellViewModel? _shellViewModel;
+    private QuickSettingsViewModel? _quickSettingsViewModel;
     private TrayHost? _tray;
     private DispatcherTimer? _timer;
     private MainWindow? _main;
@@ -122,6 +123,7 @@ public partial class App : System.Windows.Application
             _wizardViewModel = new SetupWizardViewModel(runtime.Wizard, runtime.DdcPanel, _lane); // T315: pencere kapansa da sihirbaz durumu kalır
             _ddcPanelViewModel = new DdcPanelViewModel(runtime.DdcPanel, _lane);
             _modesViewModel = new ModesViewModel(runtime.QuickControls, _lane); // T319: ana sekmede görüntü modları
+            _quickSettingsViewModel = new QuickSettingsViewModel(runtime.QuickControls, _lane); // T323: parlaklık, mavi ışık, panik
             // T322: kenar çubuğunda monitör, bağlantı, şu anki Hz (Windows'tan, sırada okunur) ve sürüm
             _shellViewModel = new ShellViewModel(runtime.Monitor.Model, runtime.Monitor.Connection,
                 () => runtime.RefreshRates.CurrentRefreshHz, AppVersion(), _lane);
@@ -188,8 +190,9 @@ public partial class App : System.Windows.Application
     {
         if (_main is null)
         {
-            _main = _wizardViewModel is not null && _ddcPanelViewModel is not null && _modesViewModel is not null && _shellViewModel is not null
-                ? new MainWindow(_wizardViewModel, _ddcPanelViewModel, _modesViewModel, _shellViewModel, SettingsRoot)
+            _main = _wizardViewModel is not null && _ddcPanelViewModel is not null && _modesViewModel is not null
+                    && _quickSettingsViewModel is not null && _shellViewModel is not null
+                ? new MainWindow(_wizardViewModel, _ddcPanelViewModel, _modesViewModel, _quickSettingsViewModel, _shellViewModel, SettingsRoot)
                 : new MainWindow();
             _main.Closed += (_, _) => _main = null; // pencere kapanınca uygulama tepside çalışmaya devam eder
         }
