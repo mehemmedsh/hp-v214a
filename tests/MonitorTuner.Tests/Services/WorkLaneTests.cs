@@ -133,6 +133,7 @@ public class WorkLaneTests
         public List<string> Calls { get; } = [];
         public bool Enabled => true;
         public IReadOnlyList<ColorProfile> Profiles => [];
+        public ActiveMode? Active { get; set; }
 
         public QuickResult SelectProfile(string name) => Record("SelectProfile " + name);
         public QuickResult SetBrightness(double slider) => Record("SetBrightness " + slider.ToString(System.Globalization.CultureInfo.InvariantCulture));

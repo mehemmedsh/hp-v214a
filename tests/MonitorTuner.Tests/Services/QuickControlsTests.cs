@@ -109,6 +109,80 @@ public class QuickControlsTests
         }
     }
 
+    // ---- Etkin mod (T322): ana pencere ve tepsi hangi modun ekranda olduğunu gösterir ----
+
+    [Fact]
+    public void Active_IsNone_UntilAModeIsSelected_ManualSettingsDoNotPickOne()
+    {
+        var s = new Setup();
+        Assert.Null(s.Quick.Active);
+
+        s.Quick.SetBrightness(0.5);
+        s.Quick.SetBlueLight(5000);
+
+        Assert.Null(s.Quick.Active);
+    }
+
+    /// <summary>Seçilen mod etkin olur (kısmen uygulandıysa da: arayüz eksikleri ayrıca söyler); ad servisteki sabit addır.</summary>
+    [Fact]
+    public void SelectProfile_MakesTheModeActive_EvenWhenPartial()
+    {
+        var s = new Setup();
+
+        s.Quick.SelectProfile("sinema");
+        Assert.Equal(new ActiveMode("Sinema", Adjusted: false), s.Quick.Active);
+
+        s.Profiles.Result = new ProfileApplyResult("Film", ProfileStep.Applied, ProfileStep.Failed, ProfileStep.Applied);
+        s.Quick.SelectProfile("Film");
+        Assert.Equal(new ActiveMode("Film", Adjusted: false), s.Quick.Active);
+    }
+
+    /// <summary>Mod seçildikten sonra parlaklık ya da mavi ışık elle değişirse mod "elle değiştirildi" olur; yeniden seçmek temizler.</summary>
+    [Fact]
+    public void ManualBrightnessOrBlueLight_MarksTheActiveModeAdjusted()
+    {
+        var s = new Setup();
+        s.Quick.SelectProfile("Sinema");
+
+        s.Quick.SetBlueLight(5000);
+        Assert.Equal(new ActiveMode("Sinema", Adjusted: true), s.Quick.Active);
+
+        s.Quick.SelectProfile("Sinema");
+        Assert.False(s.Quick.Active!.Adjusted);
+
+        s.Quick.SetBrightness(0.4);
+        Assert.True(s.Quick.Active!.Adjusted);
+    }
+
+    /// <summary>Ekranda bir şey değişmediyse etkin mod da değişmez: engellenen, bulunamayan ve yazılamayan seçimler.</summary>
+    [Fact]
+    public void BlockedNotFoundOrFailed_LeaveTheActiveModeAlone()
+    {
+        var s = new Setup();
+        s.Quick.SelectProfile("Sinema");
+
+        s.Quick.SelectProfile("Yok");
+        s.Brightness.Applied = false;
+        s.Quick.SetBrightness(0.3);
+        s.Wizard.Active = true;
+        s.Quick.SelectProfile("Film");
+        s.Quick.SetBlueLight(3400);
+
+        Assert.Equal(new ActiveMode("Sinema", Adjusted: false), s.Quick.Active);
+    }
+
+    /// <summary>Panik efektleri kapatır: ekranda artık hiçbir mod yoktur.</summary>
+    [Fact]
+    public void Panic_ClearsTheActiveMode()
+    {
+        var s = new Setup();
+        s.Quick.SelectProfile("Sinema");
+
+        s.Quick.Panic();
+
+        Assert.Null(s.Quick.Active);
+    }
+
     // ---- Etkin mi ----
 
     [Fact]

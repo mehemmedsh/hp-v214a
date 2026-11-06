@@ -3,16 +3,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:loc="clr-namespace:MonitorTuner.App.Localization">
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-        <StackPanel Margin="16" MaxWidth="760">
+        <StackPanel Margin="32,28,32,32" MaxWidth="820" HorizontalAlignment="Left">
             <!-- Başlık ve Tanıtım -->
-            <TextBlock Text="{loc:Tr Guide.PageTitle}" FontSize="20" FontWeight="Bold" Margin="0,0,0,8" />
-            <TextBlock Text="{loc:Tr Guide.IntroText}" TextWrapping="Wrap" Margin="0,0,0,16" Foreground="#555555" />
+            <TextBlock Text="{loc:Tr Guide.PageTitle}" Style="{DynamicResource TitleTextBlockStyle}" Margin="0,0,0,8" />
+            <TextBlock Text="{loc:Tr Guide.IntroText}" TextWrapping="Wrap" Margin="0,0,0,16" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
 
             <!-- 1. Oturma ve Açı -->
             <GroupBox Header="{loc:Tr Guide.SeatingTitle}" Margin="0,0,0,14" Padding="10">
                 <StackPanel>
                     <TextBlock Text="{loc:Tr Guide.SeatingDesc}" TextWrapping="Wrap" Margin="0,0,0,8" />
-                    <Border Background="#F4F4F4" Padding="8" CornerRadius="4">
+                    <Border Background="{DynamicResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}" BorderThickness="1" Padding="8" CornerRadius="4">
                         <TextBlock Text="{loc:Tr Guide.SeatingDiagnosis}" TextWrapping="Wrap" />
                     </Border>
                 </StackPanel>
@@ -22,22 +22,22 @@
             <GroupBox Header="{loc:Tr Guide.HzTitle}" Margin="0,0,0,14" Padding="10">
                 <StackPanel>
                     <TextBlock Text="{loc:Tr Guide.HzDesc}" TextWrapping="Wrap" Margin="0,0,0,8" />
-                    <Border Background="#F9F9F9" BorderBrush="#E0E0E0" BorderThickness="1" Padding="8" Margin="0,0,0,6" CornerRadius="4">
+                    <Border Background="{DynamicResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}" BorderThickness="1" Padding="8" Margin="0,0,0,6" CornerRadius="4">
                         <TextBlock Text="{loc:Tr Guide.Hz76Details}" TextWrapping="Wrap" FontWeight="SemiBold" />
                     </Border>
-                    <Border Background="#F9F9F9" BorderBrush="#E0E0E0" BorderThickness="1" Padding="8" Margin="0,0,0,6" CornerRadius="4">
+                    <Border Background="{DynamicResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}" BorderThickness="1" Padding="8" Margin="0,0,0,6" CornerRadius="4">
                         <TextBlock Text="{loc:Tr Guide.Hz75Details}" TextWrapping="Wrap" />
                     </Border>
-                    <Border Background="#F9F9F9" BorderBrush="#E0E0E0" BorderThickness="1" Padding="8" Margin="0,0,0,6" CornerRadius="4">
+                    <Border Background="{DynamicResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}" BorderThickness="1" Padding="8" Margin="0,0,0,6" CornerRadius="4">
                         <TextBlock Text="{loc:Tr Guide.Hz74Details}" TextWrapping="Wrap" />
                     </Border>
-                    <Border Background="#F9F9F9" BorderBrush="#E0E0E0" BorderThickness="1" Padding="8" Margin="0,0,0,6" CornerRadius="4">
+                    <Border Background="{DynamicResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}" BorderThickness="1" Padding="8" Margin="0,0,0,6" CornerRadius="4">
                         <TextBlock Text="{loc:Tr Guide.Hz72Details}" TextWrapping="Wrap" />
                     </Border>
-                    <Border Background="#F9F9F9" BorderBrush="#E0E0E0" BorderThickness="1" Padding="8" Margin="0,0,0,6" CornerRadius="4">
+                    <Border Background="{DynamicResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}" BorderThickness="1" Padding="8" Margin="0,0,0,6" CornerRadius="4">
                         <TextBlock Text="{loc:Tr Guide.Hz60Details}" TextWrapping="Wrap" />
                     </Border>
-                    <Border Background="#F9F9F9" BorderBrush="#E0E0E0" BorderThickness="1" Padding="8" CornerRadius="4">
+                    <Border Background="{DynamicResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}" BorderThickness="1" Padding="8" CornerRadius="4">
                         <TextBlock Text="{loc:Tr Guide.Hz50Details}" TextWrapping="Wrap" />
                     </Border>
                 </StackPanel>
@@ -47,10 +47,10 @@
             <GroupBox Header="{loc:Tr Guide.TestTitle}" Margin="0,0,0,14" Padding="10">
                 <StackPanel>
                     <!-- Işığa Duyarlılık Uyarısı -->
-                    <Border Background="#FFF3CD" BorderBrush="#FFEEBA" BorderThickness="1" Padding="10" Margin="0,0,0,10" CornerRadius="4">
+                    <Border Background="{DynamicResource SystemFillColorCautionBackgroundBrush}" BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}" BorderThickness="1" Padding="10" Margin="0,0,0,10" CornerRadius="4">
                         <StackPanel>
-                            <TextBlock Text="{loc:Tr Guide.PhotosensitivityWarningTitle}" FontWeight="Bold" Foreground="#856404" Margin="0,0,0,4" />
-                            <TextBlock Text="{loc:Tr Guide.PhotosensitivityWarningText}" TextWrapping="Wrap" Foreground="#856404" />
+                            <TextBlock Text="{loc:Tr Guide.PhotosensitivityWarningTitle}" FontWeight="Bold" Foreground="{DynamicResource TextFillColorPrimaryBrush}" Margin="0,0,0,4" />
+                            <TextBlock Text="{loc:Tr Guide.PhotosensitivityWarningText}" TextWrapping="Wrap" Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
                         </StackPanel>
                     </Border>
                     <TextBlock Text="{loc:Tr Guide.FrameSkippingDesc}" TextWrapping="Wrap" Margin="0,0,0,8" />

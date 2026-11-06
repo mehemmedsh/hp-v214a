@@ -104,7 +104,7 @@ public sealed class WorkLane : IWorkLane
 
 /// <summary>
 /// Tepsinin <see cref="IQuickControls"/>'ü sıradan geçer (T316): arka planda bir DDC okuması sürerken tepsiden parlaklık seçilirse
-/// okuma bitince yazılır, ikisi aynı anda çalışmaz. <see cref="Enabled"/> ve <see cref="Profiles"/> sadece okur, sırayı beklemez
+/// okuma bitince yazılır, ikisi aynı anda çalışmaz. <see cref="Enabled"/>, <see cref="Profiles"/> ve <see cref="Active"/> sadece okur, sırayı beklemez
 /// (menü her açılışta okunur; ayar deposu kendi kilidiyle okunur).
 /// </summary>
 public sealed class LanedQuickControls(IQuickControls inner, IWorkLane lane) : IQuickControls
@@ -112,6 +112,9 @@ public sealed class LanedQuickControls(IQuickControls inner, IWorkLane lane) : I
     public bool Enabled => inner.Enabled;
 
     public IReadOnlyList<ColorProfile> Profiles => inner.Profiles;
+
+    /// <summary>Sadece okur (tek başvuru ataması); sırayı beklemez.</summary>
+    public ActiveMode? Active => inner.Active;
 
     public QuickResult SelectProfile(string name) => lane.Run(() => inner.SelectProfile(name));
 

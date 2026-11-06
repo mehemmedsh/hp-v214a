@@ -10,6 +10,12 @@ public enum QuickOutcome { Done, Partial, Failed, Blocked, NotFound }
 public sealed record QuickResult(QuickOutcome Outcome, ProfileApplyResult? Profile = null, string? Error = null);
 
 /// <summary>
+/// Ekranda olan mod (T322): son seçilen profil (servisteki sabit adıyla). <paramref name="Adjusted"/>: seçimden sonra parlaklık
+/// ya da mavi ışık elle değiştirildi, ekranda artık tam o mod yok.
+/// </summary>
+public sealed record ActiveMode(string Name, bool Adjusted);
+
+/// <summary>
 /// Hızlı denetimler (T310): sistem tepsisinin ve ana penceredeki profil seçiminin ortak girişi. Arayüz donanıma ve renk
 /// servislerine doğrudan değil, buradan ulaşır; böylece "sihirbaz açıkken kapalı" kuralı tek yerde durur.
 /// </summary>
@@ -23,6 +29,12 @@ public interface IQuickControls
 
     /// <summary>Hazır ve kullanıcı profilleri.</summary>
     IReadOnlyList<ColorProfile> Profiles { get; }
+
+    /// <summary>
+    /// Ekranda olan mod (T322); null: henüz seçilmedi ya da panikle kapandı. Sadece okunur, hiçbir şey yazmaz. Uygulama yeniden
+    /// açılınca efektler kapalı başladığı için null'dur.
+    /// </summary>
+    ActiveMode? Active { get; }
 
     QuickResult SelectProfile(string name);
 
@@ -45,9 +57,13 @@ public sealed class QuickControls(
 {
     private static readonly QuickResult BlockedResult = new(QuickOutcome.Blocked);
 
+    private ActiveMode? _active;
+
     public bool Enabled => !wizard.IsActive;
 
     public IReadOnlyList<ColorProfile> Profiles => profiles.Profiles;
+
+    public ActiveMode? Active => _active;
 
     public QuickResult SelectProfile(string name)
     {
@@ -58,6 +74,7 @@ public sealed class QuickControls(
         if (profile is null) return new QuickResult(QuickOutcome.NotFound);
 
         var result = profiles.Apply(profile);
+        _active = new ActiveMode(profile.Name, Adjusted: false); // kısmen de olsa ekrandaki mod bu; eksikleri sonuç söyler
         // Ertelenen adım ekranda henüz yok; tam başarı sayılmaz.
         return new QuickResult(result.Complete ? QuickOutcome.Done : QuickOutcome.Partial, result);
     }
@@ -67,7 +84,7 @@ public sealed class QuickControls(
         if (!(slider is >= 0.0 and <= 1.0)) throw new ArgumentOutOfRangeException(nameof(slider), slider, "Parlaklık 0–1 olmalı.");
         if (!Enabled) return BlockedResult;
 
-        return new QuickResult(brightness.Commit(slider).Applied ? QuickOutcome.Done : QuickOutcome.Failed);
+        return Manual(brightness.Commit(slider).Applied);
     }
 
     public QuickResult SetBlueLight(int kelvin)
@@ -76,7 +93,7 @@ public sealed class QuickControls(
             throw new ArgumentOutOfRangeException(nameof(kelvin), kelvin, "Kelvin aralık dışında.");
         if (!Enabled) return BlockedResult;
 
-        return new QuickResult(blueLight.SetKelvin(kelvin).Applied ? QuickOutcome.Done : QuickOutcome.Failed);
+        return Manual(blueLight.SetKelvin(kelvin).Applied);
     }
 
     public QuickResult Panic()
@@ -91,5 +108,17 @@ public sealed class QuickControls(
             // Panik yolunda hata yutulmaz: kullanıcıya "kapanmadı" denir. ColorProfiles.PanicOff her adımı ayrı dener.
             return new QuickResult(QuickOutcome.Failed, Error: ex.Message);
         }
+        finally
+        {
+            _active = null; // efektler (en azından kısmen) kapandı: ekranda tam bir mod yok
+        }
+    }
+
+    /// <summary>Elle parlaklık ya da mavi ışık: yazıldıysa etkin mod "elle değiştirildi" olur.</summary>
+    private QuickResult Manual(bool applied)
+    {
+        if (!applied) return new QuickResult(QuickOutcome.Failed);
+        if (_active is { Adjusted: false } active) _active = active with { Adjusted = true };
+        return new QuickResult(QuickOutcome.Done);
     }
 }

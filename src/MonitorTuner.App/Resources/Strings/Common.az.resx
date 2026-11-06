@@ -17,7 +17,7 @@
     <value>Monitor Ayarı</value>
   </data>
   <data name="HomeText" xml:space="preserve">
-    <value>Görüntü rejimləri aşağıdadır: birinə tıkla, dərhal tətbiq olunur. Monitor ayarları bölməsində parlaqlıq, kontrast, rəng rejimi və kəskinlik; Ayar sehrbazı bölməsində naxışlarla addım-addım ayar və gözlə kalibrləmə; Bələdçi bölməsində oturuş, Hz quraşdırılması və göz rahatlığı. Rejimlər, parlaqlıq, mavi işıq və panika qısayolu sistem panelindəki nişanda da var. Pəncərəni bağlayanda proqram sistem panelində işləməyə davam edir.</value>
+    <value>Görüntü rejimləri: film, uzun iş və gündəlik istifadə üçün bir kliklə. Monitor ayarları: parlaqlıq, kontrast, rəng rejimi və kəskinlik. Ayar sehrbazı: naxışlarla addım-addım ayar və gözlə kalibrləmə. Bələdçi: oturuş, Hz quraşdırılması və göz rahatlığı. Pəncərəni bağlayanda proqram sistem sinisində işləməyə davam edir; panik qısayolu (Ctrl+Alt+Shift+P) bütün effektləri bağlayır, kalibrləmə qalır.</value>
   </data>
   <data name="Language_Label" xml:space="preserve">
     <value>İnterfeys dili</value>

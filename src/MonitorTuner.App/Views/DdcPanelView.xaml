@@ -6,24 +6,24 @@
         <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
     </UserControl.Resources>
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-        <StackPanel Margin="16" MaxWidth="760">
-            <TextBlock Text="{loc:Tr DdcPanel.PageTitle}" FontSize="20" FontWeight="Bold" Margin="0,0,0,8" />
-            <TextBlock Text="{loc:Tr DdcPanel.Intro}" TextWrapping="Wrap" Margin="0,0,0,6" Foreground="#555555" />
-            <TextBlock Text="{loc:Tr DdcPanel.BrightnessHint}" TextWrapping="Wrap" Margin="0,0,0,12" Foreground="#555555" />
+        <StackPanel Margin="32,28,32,32" MaxWidth="820" HorizontalAlignment="Left">
+            <TextBlock Text="{loc:Tr DdcPanel.PageTitle}" Style="{DynamicResource TitleTextBlockStyle}" Margin="0,0,0,8" />
+            <TextBlock Text="{loc:Tr DdcPanel.Intro}" TextWrapping="Wrap" Margin="0,0,0,6" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+            <TextBlock Text="{loc:Tr DdcPanel.BrightnessHint}" TextWrapping="Wrap" Margin="0,0,0,12" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
 
             <Button Content="{loc:Tr DdcPanel.Refresh}" HorizontalAlignment="Left" Padding="10,4" Margin="0,0,0,10"
                     Click="Refresh_Click" IsEnabled="{Binding IsReady}" />
             <!-- T316: monitörle konuşulurken pencere donmaz; bu yazı görünür, kaydırıcılar kapalı -->
-            <TextBlock Text="{loc:Tr Common.Working}" Margin="0,0,0,10" Foreground="#555555"
+            <TextBlock Text="{loc:Tr Common.Working}" Margin="0,0,0,10" Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                        Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
             <TextBlock Text="{Binding Status}" TextWrapping="Wrap" Margin="0,0,0,10" FontWeight="SemiBold" />
 
             <!-- DDC yoksa: OSD talimatı -->
-            <Border Background="#FFF3CD" BorderBrush="#FFEEBA" BorderThickness="1" Padding="10" CornerRadius="4"
+            <Border Background="{DynamicResource SystemFillColorCautionBackgroundBrush}" BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}" BorderThickness="1" Padding="10" CornerRadius="4"
                     Visibility="{Binding ShowOsdInstructions, Converter={StaticResource BoolToVisibility}}">
                 <StackPanel>
-                    <TextBlock Text="{loc:Tr DdcPanel.Osd_Title}" FontWeight="Bold" Foreground="#856404" Margin="0,0,0,4" />
-                    <TextBlock Text="{Binding OsdText}" TextWrapping="Wrap" Foreground="#856404" />
+                    <TextBlock Text="{loc:Tr DdcPanel.Osd_Title}" FontWeight="Bold" Foreground="{DynamicResource TextFillColorPrimaryBrush}" Margin="0,0,0,4" />
+                    <TextBlock Text="{Binding OsdText}" TextWrapping="Wrap" Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
                 </StackPanel>
             </Border>
 
@@ -59,12 +59,12 @@
                                       Visibility="{Binding IsChoice, Converter={StaticResource BoolToVisibility}}" />
 
                             <TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding LockText}"
-                                       TextWrapping="Wrap" Foreground="#856404" FontSize="12" Margin="0,2,0,0"
+                                       TextWrapping="Wrap" Foreground="{DynamicResource SystemFillColorCautionBrush}" FontSize="12" Margin="0,2,0,0"
                                        Visibility="{Binding HasLock, Converter={StaticResource BoolToVisibility}}" />
 
                             <!-- T318: seçili ön ayarın ne yaptığı, keskinlikte nötr değer ipucu -->
                             <TextBlock Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Description}"
-                                       TextWrapping="Wrap" Foreground="#555555" FontSize="12" Margin="0,2,0,0"
+                                       TextWrapping="Wrap" Foreground="{DynamicResource TextFillColorSecondaryBrush}" FontSize="12" Margin="0,2,0,0"
                                        Visibility="{Binding HasDescription, Converter={StaticResource BoolToVisibility}}" />
                         </Grid>
                     </DataTemplate>

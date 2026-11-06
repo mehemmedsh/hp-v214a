@@ -24,7 +24,11 @@ HP P21b G4 + RTX 3080 için özellik listesi (2026-10-30'da daraltıldı). **Hed
 ### 1.5 Dil · T001, T502
 - Türkçe (ana dil), Azerbaycanca, İngilizce. Altyapı ilk günden.
 
-### 1.6 Sistem tepsisi ve kısayollar · T310
+### 1.6 Ana pencere · T322
+- Windows 11 görünümü (açık/koyu tema sistemden). Solda gezinme: Görüntü modları, Monitör ayarları, Ayar sihirbazı, Rehber, Ayarlar; altında monitör, bağlantı ve şu anki Hz.
+- Görüntü modları gruplu kartlar hâlinde; ekrandaki mod işaretli ve adıyla yazılı.
+
+### 1.7 Sistem tepsisi ve kısayollar · T310
 - Tepsiden renk profili, mavi ışık, parlaklık ve karartma.
 - **Panik kısayolu:** Mavi ışık, ek karartma ve canlılık tek tuşla kapanır; kalibrasyon kalır.
 

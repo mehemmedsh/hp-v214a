@@ -19,11 +19,15 @@ public class ModesViewModelTests
         public Exception? Throw { get; set; }
 
         public IReadOnlyList<ColorProfile> Profiles => List;
+        public ActiveMode? Active { get; set; }
+
+        public Action<string>? OnSelect { get; set; }
 
         public QuickResult SelectProfile(string name)
         {
             Calls.Add("profile:" + name);
             if (Throw is { } ex) throw ex;
+            OnSelect?.Invoke(name);
             return Next;
         }
 
@@ -236,6 +240,84 @@ public class ModesViewModelTests
         Assert.Equal("Yeni", vm.Modes[^1].Name);
     }
 
+    // ---- T322: gruplar, etkin mod ----
+
+    /// <summary>Kartlar gruplarıyla: başlık, simge; ipucu sadece sinema (72 Hz) ve uzun kullanımda (oda ışığı, 20-20-20).</summary>
+    [Fact]
+    public void Groups_HoldTheCards_WithHintsOnlyForCinemaAndComfort()
+    {
+        var (vm, _) = Make();
+
+        Assert.Equal(
+            [ProfileGroup.Cinema, ProfileGroup.Comfort, ProfileGroup.Daily, ProfileGroup.Special, ProfileGroup.User],
+            vm.Groups.Select(g => g.Group));
+        Assert.Equal(vm.Modes.Select(m => m.Name), vm.Groups.SelectMany(g => g.Modes).Select(m => m.Name));
+        Assert.Contains("72 Hz", vm.Groups[0].Hint);
+        Assert.Contains("20-20-20", vm.Groups[1].Hint);
+        Assert.Equal([true, true, false, false, false], vm.Groups.Select(g => g.HasHint));
+        Assert.All(vm.Groups, g => Assert.Single(g.Icon));
+    }
+
+    [Fact]
+    public void ActiveText_SaysNoModeYet_WhenNothingWasSelected()
+    {
+        var (vm, _) = Make();
+
+        Assert.StartsWith("Ekranda mod yok", vm.ActiveText);
+        Assert.DoesNotContain(vm.Modes, m => m.IsActive);
+    }
+
+    /// <summary>Ekrandaki mod kartında işaretli ve üstte adıyla yazar; elle değiştirildiyse söylenir.</summary>
+    [Fact]
+    public void ActiveMode_IsMarked_AndNamed_InTheUiLanguage()
+    {
+        var (vm, quick) = Make();
+        quick.Active = new ActiveMode("Sinema · Karanlık oda", Adjusted: false);
+        vm.Reload();
+
+        Assert.Equal(["Sinema · Karanlık oda"], vm.Modes.Where(m => m.IsActive).Select(m => m.Name));
+        Assert.Equal("Ekranda: Sinema · Karanlık oda", vm.ActiveText);
+
+        quick.Active = quick.Active with { Adjusted = true };
+        vm.Reload();
+        Assert.Contains("elle değişti", vm.ActiveText);
+
+        TestCulture.With("en-US", () =>
+        {
+            vm.Reload();
+            Assert.StartsWith("On screen: Cinema · Dark room", vm.ActiveText);
+        });
+    }
+
+    /// <summary>Seçimden sonra liste yeniden kurulur: yeni etkin mod işaretli olur.</summary>
+    [Fact]
+    public void Apply_MarksTheNewActiveMode()
+    {
+        var (vm, quick) = Make();
+        quick.OnSelect = name => quick.Active = new ActiveMode(name, false);
+
+        vm.Apply(Mode(vm, "Sinema"));
+
+        Assert.True(Mode(vm, "Sinema").IsActive);
+        Assert.Equal("Ekranda: Sinema", vm.ActiveText);
+    }
+
+    /// <summary>Pencere öne gelince etkin mod değişmediyse liste yeniden kurulmaz (ilk tıklama kaybolmasın); değiştiyse kurulur.</summary>
+    [Fact]
+    public void RefreshActive_RebuildsOnlyWhenTheActiveModeChanged()
+    {
+        var (vm, quick) = Make();
+        var before = vm.Modes[0];
+
+        vm.RefreshActive();
+        Assert.Same(before, vm.Modes[0]);
+
+        quick.Active = new ActiveMode("Film", false); // tepsiden seçildi
+        vm.RefreshActive();
+        Assert.NotSame(before, vm.Modes[0]);
+        Assert.True(Mode(vm, "Film").IsActive);
+    }
+
     [Fact]
     public void AllTexts_ExistInTurkishResources()
     {
@@ -245,7 +327,8 @@ public class ModesViewModelTests
             "Modes.BestStep3", "Modes.Done", "Modes.Partial", "Modes.Blocked", "Modes.NotFound", "Modes.Failed", "Modes.Unexpected",
             "Modes.Value_Backlight", "Modes.Value_Dimming", "Modes.Value_BlueLightOff", "Modes.Value_Kelvin", "Modes.Value_Vibrance",
             "Modes.Value_VibranceOff", "Common.HomeText", "Modes.Value_ToneCinema", "Modes.Value_ToneContrast",
-            "Modes.GroupHint_Cinema", "Modes.GroupHint_Comfort",
+            "Modes.GroupHint_Cinema", "Modes.GroupHint_Comfort", "Modes.Active", "Modes.Active_Adjusted", "Modes.Active_None",
+            "Modes.ActiveBadge",
             .. Enum.GetValues<ProfileGroup>().Select(g => "Modes.Group_" + g),
         ];
 

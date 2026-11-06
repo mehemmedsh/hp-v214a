@@ -17,7 +17,7 @@
     <value>Monitor Tuner</value>
   </data>
   <data name="HomeText" xml:space="preserve">
-    <value>Picture modes are below: click one and it is applied at once. Monitor settings tab: brightness, contrast, color preset and sharpness. Setup wizard tab: step-by-step tuning with test patterns and calibration by eye. Guide tab: seating, refresh rate setup and eye comfort. Modes, brightness, blue light and the panic shortcut are also in the system tray icon. Closing this window keeps the app running in the tray.</value>
+    <value>Picture modes: one click for movies, long work sessions and everyday use. Monitor settings: brightness, contrast, color preset and sharpness. Setup wizard: step-by-step adjustment and calibration by eye with patterns. Guide: seating, Hz setup and eye comfort. Closing the window keeps the app running in the system tray; the panic shortcut (Ctrl+Alt+Shift+P) turns off all effects, the calibration stays.</value>
   </data>
   <data name="Language_Label" xml:space="preserve">
     <value>Interface language</value>

@@ -10,8 +10,9 @@ using MonitorTuner.Services;
 namespace MonitorTuner.App;
 
 /// <summary>
-/// Ana pencere. ViewModel'ler uygulama boyunca yaşar (App verir): pencere kapanıp açılınca açık sihirbaz kaldığı adımda görünür.
-/// Parametresiz kurucu tasarım ve testler içindir; sekmeler ve dil seçimi o zaman boş kalır.
+/// Ana pencere (T322): solda gezinme (görüntü modları, monitör ayarları, ayar sihirbazı, rehber, ayarlar), sağda sayfalar. Sayfalar
+/// bir kez kurulur, gezinme sadece görünürlüğü değiştirir. ViewModel'ler uygulama boyunca yaşar (App verir): pencere kapanıp açılınca
+/// açık sihirbaz kaldığı adımda görünür. Parametresiz kurucu tasarım ve testler içindir; sayfalar ve dil seçimi o zaman boş kalır.
 /// </summary>
 public partial class MainWindow : Window
 {
@@ -20,31 +21,67 @@ public partial class MainWindow : Window
     private string? _settingsRoot;
     private bool _loadingLanguage;
     private ModesViewModel? _modes;
+    private ShellViewModel? _shell;
 
-    public MainWindow() => InitializeComponent();
+    public MainWindow()
+    {
+        InitializeComponent();
+        Nav.SelectedIndex = 0; // XAML'de değil: seçim olayı sayfalar kurulmadan gelmesin
+    }
 
-    /// <param name="modes">Ana sekmedeki görüntü modları (T319); pencere her açıldığında liste yeniden kurulur.</param>
+    /// <param name="modes">Görüntü modları (T319, T322); pencere her açıldığında ve öne geldiğinde liste ve etkin mod yenilenir.</param>
+    /// <param name="shell">Kenar çubuğundaki monitör, Hz ve sürüm bilgisi (T322).</param>
     /// <param name="settingsRoot">Dil seçiminin saklandığı ayar kökü (<see cref="LanguagePreference"/>).</param>
-    public MainWindow(SetupWizardViewModel wizard, DdcPanelViewModel ddcPanel, ModesViewModel modes, string settingsRoot) : this()
+    public MainWindow(
+        SetupWizardViewModel wizard, DdcPanelViewModel ddcPanel, ModesViewModel modes, ShellViewModel shell, string settingsRoot) : this()
     {
         WizardView.DataContext = wizard;
         DdcView.DataContext = ddcPanel;
-        DdcTab.SetBinding(IsEnabledProperty, new Binding(nameof(SetupWizardViewModel.IsIdle)) { Source = wizard });
+        NavMonitor.SetBinding(IsEnabledProperty, new Binding(nameof(SetupWizardViewModel.IsIdle)) { Source = wizard });
 
         _modes = modes;
         modes.Reload();
         ModesPanel.DataContext = modes;
         ModesPanel.SetBinding(IsEnabledProperty, new Binding(nameof(SetupWizardViewModel.IsIdle)) { Source = wizard });
 
+        _shell = shell;
+        ShellPanel.DataContext = shell;
+        SettingsPage.DataContext = shell;
+        shell.Refresh().Forget();
+
         _settingsRoot = settingsRoot;
+        DataFolderText.Text = string.Format(CultureInfo.CurrentCulture, Loc.Get("Shell.Settings_Data"), settingsRoot);
         _loadingLanguage = true;
         var items = LanguagePreference.Supported.Select(code => new LanguageItem(code, Loc.Get("Common.Language_" + code))).ToList();
         LanguageBox.ItemsSource = items;
         LanguageBox.SelectedItem = items.Single(i => i.Code == LanguagePreference.Load(settingsRoot));
         _loadingLanguage = false;
+
+        // Tepsiden mod seçilip pencereye dönülünce etkin mod ve Hz güncel görünsün; hiçbir şey yazılmaz.
+        Activated += (_, _) =>
+        {
+            _modes?.RefreshActive(); // sadece etkin mod değiştiyse kartları yeniden kurar (ilk tıklama kaybolmasın)
+            _shell?.Refresh().Forget();
+        };
     }
 
-    /// <summary>Moda tıklandı (T319): tek uygulama, arka planda; sonuç modların altında yazar.</summary>
+    /// <summary>Gezinme: seçilen sayfa görünür, diğerleri gizlenir (sayfalar ve durumları yerinde kalır).</summary>
+    private void Nav_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (Nav.SelectedItem is not ListBoxItem { Tag: string page }) return;
+        Show(ModesPage, page == "Modes");
+        Show(DdcView, page == "Monitor");
+        Show(WizardView, page == "Wizard");
+        Show(GuideView, page == "Guide");
+        Show(SettingsPage, page == "Settings");
+    }
+
+    private static void Show(UIElement? element, bool visible)
+    {
+        if (element is not null) element.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    /// <summary>Moda tıklandı (T319): tek uygulama, arka planda; sonuç ve etkin mod kartların üstünde yazar.</summary>
     private void Mode_Click(object sender, RoutedEventArgs e)
     {
         if (_modes is null || (sender as FrameworkElement)?.DataContext is not ModeItem mode) return;

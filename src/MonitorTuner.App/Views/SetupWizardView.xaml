@@ -21,9 +21,9 @@
         </DataTemplate>
     </UserControl.Resources>
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-        <StackPanel Margin="16" MaxWidth="760">
-            <TextBlock Text="{loc:Tr SetupWizard.PageTitle}" FontSize="20" FontWeight="Bold" Margin="0,0,0,8" />
-            <TextBlock Text="{loc:Tr SetupWizard.Intro}" TextWrapping="Wrap" Margin="0,0,0,12" Foreground="#555555" />
+        <StackPanel Margin="32,28,32,32" MaxWidth="820" HorizontalAlignment="Left">
+            <TextBlock Text="{loc:Tr SetupWizard.PageTitle}" Style="{DynamicResource TitleTextBlockStyle}" Margin="0,0,0,8" />
+            <TextBlock Text="{loc:Tr SetupWizard.Intro}" TextWrapping="Wrap" Margin="0,0,0,12" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
 
             <!-- Kapalıyken: sadece başlat -->
             <Button Content="{loc:Tr SetupWizard.Start}" HorizontalAlignment="Left" Padding="12,5" Margin="0,0,0,10"
@@ -31,15 +31,15 @@
                     IsEnabled="{Binding IsReady}" />
             <TextBlock Text="{Binding Status}" TextWrapping="Wrap" Margin="0,0,0,12" FontWeight="SemiBold" />
             <!-- T316: monitörle konuşulurken pencere donmaz; bu yazı görünür, düğmeler kapalı -->
-            <TextBlock Text="{loc:Tr Common.Working}" Margin="0,0,0,10" Foreground="#555555"
+            <TextBlock Text="{loc:Tr Common.Working}" Margin="0,0,0,10" Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                        Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
 
             <StackPanel Visibility="{Binding IsActive, Converter={StaticResource BoolToVisibility}}" IsEnabled="{Binding IsReady}">
-                <TextBlock Text="{Binding StepCounter}" Foreground="#555555" />
+                <TextBlock Text="{Binding StepCounter}" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
                 <TextBlock Text="{Binding StepTitle}" FontSize="16" FontWeight="Bold" Margin="0,2,0,6" />
                 <TextBlock Text="{Binding StepText}" TextWrapping="Wrap" Margin="0,0,0,10" />
 
-                <Border Background="#F4F4F4" Padding="8" CornerRadius="4" Margin="0,0,0,10"
+                <Border Background="{DynamicResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}" BorderThickness="1" Padding="8" CornerRadius="4" Margin="0,0,0,10"
                         Visibility="{Binding ShowWarmUp, Converter={StaticResource BoolToVisibility}}">
                     <TextBlock Text="{Binding WarmUpText}" TextWrapping="Wrap" />
                 </Border>
@@ -52,7 +52,7 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-                <TextBlock Text="{loc:Tr SetupWizard.PatternKeys}" Foreground="#555555" FontSize="12" Margin="0,0,0,12"
+                <TextBlock Text="{loc:Tr SetupWizard.PatternKeys}" Foreground="{DynamicResource TextFillColorSecondaryBrush}" FontSize="12" Margin="0,0,0,12"
                            Visibility="{Binding HasPatterns, Converter={StaticResource BoolToVisibility}}" />
 
                 <!-- DDC değerleri (sihirbaz üzerinden yazılır) -->
@@ -78,7 +78,7 @@
                                             Thumb.DragCompleted="Ddc_Released" KeyUp="Ddc_Released" PreviewMouseLeftButtonUp="Ddc_Released" />
                                     <TextBlock Grid.Column="2" Text="{Binding ValueText}" HorizontalAlignment="Right" VerticalAlignment="Center" />
                                     <TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding LockText}"
-                                               TextWrapping="Wrap" Foreground="#856404" FontSize="12" Margin="0,2,0,0"
+                                               TextWrapping="Wrap" Foreground="{DynamicResource SystemFillColorCautionBrush}" FontSize="12" Margin="0,2,0,0"
                                                Visibility="{Binding HasLock, Converter={StaticResource BoolToVisibility}}" />
                                 </Grid>
                             </DataTemplate>
@@ -86,9 +86,9 @@
                     </ItemsControl>
                 </GroupBox>
 
-                <Border Background="#FFF3CD" BorderBrush="#FFEEBA" BorderThickness="1" Padding="10" CornerRadius="4" Margin="0,0,0,12"
+                <Border Background="{DynamicResource SystemFillColorCautionBackgroundBrush}" BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}" BorderThickness="1" Padding="10" CornerRadius="4" Margin="0,0,0,12"
                         Visibility="{Binding ShowNoDdc, Converter={StaticResource BoolToVisibility}}">
-                    <TextBlock Text="{loc:Tr SetupWizard.NoDdc}" TextWrapping="Wrap" Foreground="#856404" />
+                    <TextBlock Text="{loc:Tr SetupWizard.NoDdc}" TextWrapping="Wrap" Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
                 </Border>
 
                 <!-- DDC yoksa beyaz eşleme GPU'da -->

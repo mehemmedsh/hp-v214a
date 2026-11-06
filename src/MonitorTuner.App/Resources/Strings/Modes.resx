@@ -139,4 +139,16 @@
   <data name="Value_ToneContrast" xml:space="preserve">
     <value>Canlı kontrast</value>
   </data>
+  <data name="Active" xml:space="preserve">
+    <value>Ekranda: {0}</value>
+  </data>
+  <data name="Active_Adjusted" xml:space="preserve">
+    <value>Ekranda: {0} (parlaklık ya da mavi ışık sonra elle değişti)</value>
+  </data>
+  <data name="Active_None" xml:space="preserve">
+    <value>Ekranda mod yok: sadece kalibrasyon. Uygulama açılınca ve panikten sonra efektler kapalıdır; bir mod seç.</value>
+  </data>
+  <data name="ActiveBadge" xml:space="preserve">
+    <value>etkin</value>
+  </data>
 </root>

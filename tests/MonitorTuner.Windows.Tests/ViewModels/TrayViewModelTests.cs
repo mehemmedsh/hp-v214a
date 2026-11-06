@@ -15,6 +15,7 @@ public class TrayViewModelTests
         public QuickResult Next { get; set; } = new(QuickOutcome.Done);
 
         public IReadOnlyList<ColorProfile> Profiles => List;
+        public ActiveMode? Active { get; set; }
 
         public QuickResult SelectProfile(string name)
         {
@@ -241,6 +242,7 @@ public class TrayViewModelTests
     {
         public bool Enabled => true;
         public IReadOnlyList<ColorProfile> Profiles => [];
+        public ActiveMode? Active { get; set; }
         public QuickResult SelectProfile(string name) => throw new InvalidOperationException("bozuk");
         public QuickResult SetBrightness(double slider) => throw new NotSupportedException();
         public QuickResult SetBlueLight(int kelvin) => throw new NotSupportedException();
@@ -303,6 +305,7 @@ public class TrayViewModelAnnounceTests
     {
         public bool Enabled => true;
         public IReadOnlyList<ColorProfile> Profiles => [];
+        public ActiveMode? Active { get; set; }
         public QuickResult SelectProfile(string name) => throw new NotSupportedException();
         public QuickResult SetBrightness(double slider) => throw new NotSupportedException();
         public QuickResult SetBlueLight(int kelvin) => throw new NotSupportedException();

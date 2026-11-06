@@ -3,74 +3,306 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:loc="clr-namespace:MonitorTuner.App.Localization"
         xmlns:views="clr-namespace:MonitorTuner.App.Views"
+        xmlns:vm="clr-namespace:MonitorTuner.App.ViewModels"
         Title="{loc:Tr Common.AppTitle}"
-        Width="820" Height="680"
-        MinWidth="640" MinHeight="480"
-        WindowStartupLocation="CenterScreen">
+        Width="1100" Height="760"
+        MinWidth="900" MinHeight="560"
+        WindowStartupLocation="CenterScreen"
+        ThemeMode="System">
+    <!--
+        T322: Windows 11 görünümü (Fluent tema, sistemin açık/koyu moduna uyar). Tema yalnız bu pencerede: ayar desenleri
+        (PatternWindow) tema ve saydam arka plan almaz. Renkler temanın anahtarlarından (DynamicResource), sabit renk yok.
+    -->
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+
+        <!-- Kart: sayfalardaki bölümler -->
+        <Style x:Key="CardBorder" TargetType="Border">
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Padding" Value="18,14" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Background" Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource CardStrokeColorDefaultBrush}" />
+        </Style>
+
+        <!-- Simge (Segoe Fluent Icons; Windows 10'da Segoe MDL2 Assets) -->
+        <Style x:Key="Glyph" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="{DynamicResource SymbolThemeFontFamily}" />
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+
+        <!-- Mod kartı: tıklanınca mod bir kez uygulanır; etkin modun kenarı vurgu renginde -->
+        <Style x:Key="ModeCard" TargetType="Button">
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="VerticalContentAlignment" Value="Top" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Card" CornerRadius="8" Padding="16,14" BorderThickness="1"
+                                Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                                BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Card" Property="Background" Value="{DynamicResource CardBackgroundFillColorSecondaryBrush}" />
+                                <Setter TargetName="Card" Property="BorderBrush" Value="{DynamicResource ControlStrongStrokeColorDefaultBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Card" Property="Background" Value="{DynamicResource SubtleFillColorTertiaryBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="Card" Property="BorderBrush" Value="{DynamicResource AccentFillColorDefaultBrush}" />
+                            </Trigger>
+                            <DataTrigger Binding="{Binding IsActive}" Value="True">
+                                <Setter TargetName="Card" Property="BorderBrush" Value="{DynamicResource AccentFillColorDefaultBrush}" />
+                                <Setter TargetName="Card" Property="BorderThickness" Value="2" />
+                                <Setter TargetName="Card" Property="Padding" Value="15,13" />
+                            </DataTrigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Card" Property="Opacity" Value="0.5" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Küçük etiket (etkin, önerilen) -->
+        <Style x:Key="Badge" TargetType="Border">
+            <Setter Property="CornerRadius" Value="10" />
+            <Setter Property="Padding" Value="8,1,8,2" />
+            <Setter Property="Margin" Value="8,0,0,0" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
     </Window.Resources>
-    <TabControl>
-        <TabItem Header="{loc:Tr Common.AppTitle}">
-            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                <StackPanel Margin="24" MaxWidth="700" HorizontalAlignment="Left">
-                    <TextBlock Text="{loc:Tr Common.AppTitle}" FontSize="20" FontWeight="Bold" Margin="0,0,0,8" />
-                    <TextBlock Text="{loc:Tr Common.HomeText}" TextWrapping="Wrap" Margin="0,0,0,16" />
 
-                    <!-- T319: en iyi görüntü için bir kezlik adımlar (araştırma: 00-DONANIM.md → Renk ön ayarları) -->
-                    <Border Background="#EEF5FB" BorderBrush="#C9DFF0" BorderThickness="1" CornerRadius="4" Padding="12" Margin="0,0,0,16">
-                        <StackPanel>
-                            <TextBlock Text="{loc:Tr Modes.BestTitle}" FontWeight="Bold" Margin="0,0,0,4" />
-                            <TextBlock Text="{loc:Tr Modes.BestStep1}" TextWrapping="Wrap" Margin="0,0,0,2" />
-                            <TextBlock Text="{loc:Tr Modes.BestStep2}" TextWrapping="Wrap" Margin="0,0,0,2" />
-                            <TextBlock Text="{loc:Tr Modes.BestStep3}" TextWrapping="Wrap" />
-                        </StackPanel>
-                    </Border>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="236" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
 
-                    <!-- T319: görüntü modları (renk profilleri, T308) tek tıkla; sihirbaz açıkken kapalı -->
-                    <StackPanel x:Name="ModesPanel" Margin="0,0,0,16">
-                        <TextBlock Text="{loc:Tr Modes.Title}" FontSize="16" FontWeight="Bold" Margin="0,0,0,4" />
-                        <TextBlock Text="{loc:Tr Modes.Intro}" TextWrapping="Wrap" Foreground="#555555" Margin="0,0,0,8" />
-                        <TextBlock Text="{loc:Tr Common.Working}" Foreground="#555555" Margin="0,0,0,6"
-                                   Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
-                        <TextBlock Text="{Binding Status}" TextWrapping="Wrap" FontWeight="SemiBold" Margin="0,0,0,8" />
-                        <ItemsControl ItemsSource="{Binding Modes}" IsEnabled="{Binding IsReady}">
+        <!-- Sol: uygulama, monitör, gezinme -->
+        <DockPanel x:Name="ShellPanel" Grid.Column="0" Margin="8,18,6,14">
+            <StackPanel DockPanel.Dock="Top" Margin="14,0,8,20">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Style="{StaticResource Glyph}" Text="{x:Static vm:Glyphs.Monitor}" FontSize="20"
+                               Foreground="{DynamicResource AccentTextFillColorPrimaryBrush}" />
+                    <TextBlock Grid.Column="1" Text="{loc:Tr Common.AppTitle}" Style="{DynamicResource SubtitleTextBlockStyle}"
+                               Margin="10,0,0,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                </Grid>
+                <TextBlock Text="{Binding MonitorLine}" Style="{DynamicResource CaptionTextBlockStyle}" TextWrapping="Wrap"
+                           Foreground="{DynamicResource TextFillColorSecondaryBrush}" Margin="0,8,0,0" />
+            </StackPanel>
+
+            <TextBlock DockPanel.Dock="Bottom" Text="{Binding Version}" Style="{DynamicResource CaptionTextBlockStyle}"
+                       Foreground="{DynamicResource TextFillColorTertiaryBrush}" Margin="14,8,0,0" />
+
+            <ListBox x:Name="Nav" BorderThickness="0" Background="Transparent" SelectionChanged="Nav_SelectionChanged"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <ListBoxItem x:Name="NavModes" Tag="Modes" Padding="12,9">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource Glyph}" Text="{x:Static vm:Glyphs.Palette}" />
+                        <TextBlock Text="{loc:Tr Shell.Nav_Modes}" Margin="12,0,0,0" VerticalAlignment="Center" />
+                    </StackPanel>
+                </ListBoxItem>
+                <!-- DDC paneli (T305) sihirbaz açıkken kapalı: sihirbazın iptali sadece kendi yazdığını geri alır -->
+                <ListBoxItem x:Name="NavMonitor" Tag="Monitor" Padding="12,9">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource Glyph}" Text="{x:Static vm:Glyphs.Monitor}" />
+                        <TextBlock Text="{loc:Tr DdcPanel.TabTitle}" Margin="12,0,0,0" VerticalAlignment="Center" />
+                    </StackPanel>
+                </ListBoxItem>
+                <ListBoxItem x:Name="NavWizard" Tag="Wizard" Padding="12,9">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource Glyph}" Text="{x:Static vm:Glyphs.Wizard}" />
+                        <TextBlock Text="{loc:Tr SetupWizard.TabTitle}" Margin="12,0,0,0" VerticalAlignment="Center" />
+                    </StackPanel>
+                </ListBoxItem>
+                <ListBoxItem x:Name="NavGuide" Tag="Guide" Padding="12,9">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource Glyph}" Text="{x:Static vm:Glyphs.Guide}" />
+                        <TextBlock Text="{loc:Tr Guide.TabTitle}" Margin="12,0,0,0" VerticalAlignment="Center" />
+                    </StackPanel>
+                </ListBoxItem>
+                <ListBoxItem x:Name="NavSettings" Tag="Settings" Padding="12,9">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource Glyph}" Text="{x:Static vm:Glyphs.Settings}" />
+                        <TextBlock Text="{loc:Tr Shell.Nav_Settings}" Margin="12,0,0,0" VerticalAlignment="Center" />
+                    </StackPanel>
+                </ListBoxItem>
+            </ListBox>
+        </DockPanel>
+
+        <!-- Sağ: sayfalar (bir kez kurulur, gezinme sadece görünürlüğü değiştirir; sihirbazın durumu kaybolmaz) -->
+        <Border Grid.Column="1" CornerRadius="8,0,0,0" BorderThickness="1,1,0,0"
+                Background="{DynamicResource LayerFillColorDefaultBrush}" BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}">
+            <Grid>
+                <!-- Görüntü modları (T319, T321, T322) -->
+                <ScrollViewer x:Name="ModesPage" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel x:Name="ModesPanel" Margin="32,28,24,24" MaxWidth="980" HorizontalAlignment="Left">
+                        <TextBlock Text="{loc:Tr Modes.Title}" Style="{DynamicResource TitleTextBlockStyle}" />
+                        <TextBlock Text="{loc:Tr Modes.Intro}" TextWrapping="Wrap" Margin="0,6,8,18"
+                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+
+                        <!-- Ekranda olan mod ve son seçimin sonucu -->
+                        <Border Style="{StaticResource CardBorder}" Margin="0,0,12,24">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Style="{StaticResource Glyph}" Text="{x:Static vm:Glyphs.Monitor}" VerticalAlignment="Top" Margin="0,2,0,0"
+                                           Foreground="{DynamicResource AccentTextFillColorPrimaryBrush}" />
+                                <StackPanel Grid.Column="1" Margin="12,0,0,0">
+                                    <TextBlock Text="{Binding ActiveText}" Style="{DynamicResource BodyStrongTextBlockStyle}" TextWrapping="Wrap" />
+                                    <TextBlock Text="{Binding Status}" TextWrapping="Wrap" Margin="0,4,0,0"
+                                               Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                                    <!-- T316: monitörle konuşulurken pencere donmaz; bu yazı görünür, kartlar kapalı -->
+                                    <TextBlock Text="{loc:Tr Common.Working}" Margin="0,4,0,0" Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                               Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <!-- Gruplar ve kartlar; sihirbaz açıkken ya da bir mod uygulanırken kapalı -->
+                        <ItemsControl ItemsSource="{Binding Groups}" IsEnabled="{Binding IsReady}" Focusable="False">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Button Click="Mode_Click" HorizontalContentAlignment="Stretch" Padding="10,6" Margin="0,0,0,6">
-                                        <StackPanel>
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text="{Binding Title}" FontWeight="Bold" />
-                                                <TextBlock Text="{loc:Tr Modes.Recommended}" Foreground="#1E6B2E" FontWeight="SemiBold" Margin="8,0,0,0"
-                                                           Visibility="{Binding Recommended, Converter={StaticResource BoolToVisibility}}" />
-                                            </StackPanel>
-                                            <TextBlock Text="{Binding Purpose}" TextWrapping="Wrap" Margin="0,2,0,0"
-                                                       Visibility="{Binding HasPurpose, Converter={StaticResource BoolToVisibility}}" />
-                                            <TextBlock Text="{Binding Values}" TextWrapping="Wrap" Foreground="#555555" FontSize="12" Margin="0,2,0,0" />
-                                        </StackPanel>
-                                    </Button>
+                                    <StackPanel Margin="0,0,0,18">
+                                        <Grid Margin="0,0,12,8">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Style="{StaticResource Glyph}" Text="{Binding Icon}" FontSize="18"
+                                                       Foreground="{DynamicResource AccentTextFillColorPrimaryBrush}" />
+                                            <TextBlock Grid.Column="1" Text="{Binding Title}" Style="{DynamicResource SubtitleTextBlockStyle}"
+                                                       Margin="10,0,0,0" VerticalAlignment="Center" />
+                                        </Grid>
+                                        <TextBlock Text="{Binding Hint}" TextWrapping="Wrap" Margin="0,0,12,10"
+                                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                                   Visibility="{Binding HasHint, Converter={StaticResource BoolToVisibility}}" />
+                                        <ItemsControl ItemsSource="{Binding Modes}" Focusable="False">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <UniformGrid Columns="2" />
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Button Style="{StaticResource ModeCard}" Click="Mode_Click" Margin="0,0,12,12"
+                                                            AutomationProperties.Name="{Binding Title}">
+                                                        <StackPanel>
+                                                            <Grid>
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="*" />
+                                                                    <ColumnDefinition Width="Auto" />
+                                                                </Grid.ColumnDefinitions>
+                                                                <TextBlock Text="{Binding Title}" Style="{DynamicResource BodyStrongTextBlockStyle}"
+                                                                           TextWrapping="Wrap" VerticalAlignment="Center" />
+                                                                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top">
+                                                                    <Border Style="{StaticResource Badge}" Background="{DynamicResource AccentFillColorDefaultBrush}"
+                                                                            Visibility="{Binding IsActive, Converter={StaticResource BoolToVisibility}}">
+                                                                        <TextBlock Text="{loc:Tr Modes.ActiveBadge}" FontSize="11"
+                                                                                   Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}" />
+                                                                    </Border>
+                                                                    <Border Style="{StaticResource Badge}" Background="{DynamicResource SystemFillColorSuccessBackgroundBrush}"
+                                                                            Visibility="{Binding Recommended, Converter={StaticResource BoolToVisibility}}">
+                                                                        <TextBlock Text="{loc:Tr Modes.Recommended}" FontSize="11"
+                                                                                   Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                                                                    </Border>
+                                                                </StackPanel>
+                                                            </Grid>
+                                                            <TextBlock Text="{Binding Purpose}" TextWrapping="Wrap" FontSize="13" Margin="0,6,0,0"
+                                                                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                                                       Visibility="{Binding HasPurpose, Converter={StaticResource BoolToVisibility}}" />
+                                                            <TextBlock Text="{Binding Values}" TextWrapping="Wrap" FontSize="12" Margin="0,8,0,0"
+                                                                       Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+                                                        </StackPanel>
+                                                    </Button>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
                     </StackPanel>
+                </ScrollViewer>
 
-                    <!-- Dil (T502): her dil kendi adıyla; yeni dil yeniden açılınca görünür -->
-                    <TextBlock Text="{loc:Tr Common.Language_Label}" Margin="0,0,0,4" />
-                    <ComboBox x:Name="LanguageBox" MinWidth="200" HorizontalAlignment="Left" DisplayMemberPath="Title"
-                              SelectionChanged="Language_Changed" />
-                    <TextBlock x:Name="LanguageNote" TextWrapping="Wrap" Margin="0,6,0,0" Foreground="#555555" />
-                </StackPanel>
-            </ScrollViewer>
-        </TabItem>
-        <!-- DDC paneli (T305) sihirbaz açıkken kapalı: sihirbazın iptali sadece kendi yazdığını geri alır -->
-        <TabItem x:Name="DdcTab" Header="{loc:Tr DdcPanel.TabTitle}">
-            <views:DdcPanelView x:Name="DdcView" />
-        </TabItem>
-        <TabItem x:Name="WizardTab" Header="{loc:Tr SetupWizard.TabTitle}">
-            <views:SetupWizardView x:Name="WizardView" />
-        </TabItem>
-        <TabItem Header="{loc:Tr Guide.TabTitle}">
-            <views:GuideView />
-        </TabItem>
-    </TabControl>
+                <views:DdcPanelView x:Name="DdcView" Visibility="Collapsed" />
+                <views:SetupWizardView x:Name="WizardView" Visibility="Collapsed" />
+                <views:GuideView x:Name="GuideView" Visibility="Collapsed" />
+
+                <!-- Ayarlar: dil (T502), en iyi görüntü için bir kezlik adımlar (T319), hakkında -->
+                <ScrollViewer x:Name="SettingsPage" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel Margin="32,28,32,32" MaxWidth="820" HorizontalAlignment="Left">
+                        <TextBlock Text="{loc:Tr Shell.Settings_Title}" Style="{DynamicResource TitleTextBlockStyle}" Margin="0,0,0,18" />
+
+                        <Border Style="{StaticResource CardBorder}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Style="{StaticResource Glyph}" Text="{x:Static vm:Glyphs.Language}" />
+                                <StackPanel Grid.Column="1" Margin="14,0,12,0" VerticalAlignment="Center">
+                                    <TextBlock Text="{loc:Tr Common.Language_Label}" Style="{DynamicResource BodyStrongTextBlockStyle}" />
+                                    <TextBlock x:Name="LanguageNote" TextWrapping="Wrap" Margin="0,2,0,0"
+                                               Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                                </StackPanel>
+                                <!-- Dil (T502): her dil kendi adıyla; yeni dil yeniden açılınca görünür -->
+                                <ComboBox x:Name="LanguageBox" Grid.Column="2" MinWidth="200" VerticalAlignment="Center"
+                                          DisplayMemberPath="Title" SelectionChanged="Language_Changed" />
+                            </Grid>
+                        </Border>
+
+                        <Border Style="{StaticResource CardBorder}" Margin="0,12,0,0">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Style="{StaticResource Glyph}" Text="{x:Static vm:Glyphs.Best}" VerticalAlignment="Top" Margin="0,2,0,0" />
+                                <StackPanel Grid.Column="1" Margin="14,0,0,0">
+                                    <TextBlock Text="{loc:Tr Modes.BestTitle}" Style="{DynamicResource BodyStrongTextBlockStyle}" Margin="0,0,0,6" />
+                                    <TextBlock Text="{loc:Tr Modes.BestStep1}" TextWrapping="Wrap" Margin="0,0,0,4" />
+                                    <TextBlock Text="{loc:Tr Modes.BestStep2}" TextWrapping="Wrap" Margin="0,0,0,4" />
+                                    <TextBlock Text="{loc:Tr Modes.BestStep3}" TextWrapping="Wrap" />
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <Border Style="{StaticResource CardBorder}" Margin="0,12,0,0">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Style="{StaticResource Glyph}" Text="{x:Static vm:Glyphs.Info}" VerticalAlignment="Top" Margin="0,2,0,0" />
+                                <StackPanel Grid.Column="1" Margin="14,0,0,0">
+                                    <TextBlock Text="{loc:Tr Shell.Settings_About}" Style="{DynamicResource BodyStrongTextBlockStyle}" Margin="0,0,0,6" />
+                                    <TextBlock Text="{loc:Tr Common.HomeText}" TextWrapping="Wrap" />
+                                    <TextBlock x:Name="DataFolderText" TextWrapping="Wrap" Margin="0,8,0,0"
+                                               Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                                    <TextBlock Text="{Binding Version}" Margin="0,4,0,0" Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
+        </Border>
+    </Grid>
 </Window>

@@ -60,3 +60,27 @@ jobs:
           path: artifacts/MonitorTuner-win-x64
           retention-days: 7
           if-no-files-found: error
+      # T322: arayüzün görüntüsü (bulut oturumu WPF'i göremez). Sadece MT_SCREENSHOTS verilince çalışan test, ana pencerenin
+      # sayfalarını açık ve koyu temada kaydeder; küçük JPEG'ler günlüğe base64 yazılır, PNG'ler ayrı artifact. Kırılırsa paket etkilenmez.
+      - name: Arayüz görüntüleri
+        if: always()
+        continue-on-error: true
+        shell: pwsh
+        env:
+          MT_SCREENSHOTS: ${{ github.workspace }}/artifacts/screens
+        run: |
+          dotnet test tests/MonitorTuner.Windows.Tests/MonitorTuner.Windows.Tests.csproj -c Release --no-build --filter "FullyQualifiedName~ScreenshotTests" -nologo -v q -tl:off
+          Get-ChildItem artifacts/screens/*.jpg | ForEach-Object {
+            $b = [Convert]::ToBase64String([IO.File]::ReadAllBytes($_.FullName))
+            Write-Host "SCREEN-BEGIN $($_.Name) $($b.Length)"
+            for ($i = 0; $i -lt $b.Length; $i += 3000) { Write-Host ("B64 " + $b.Substring($i, [Math]::Min(3000, $b.Length - $i))) }
+            Write-Host "SCREEN-END $($_.Name)"
+          }
+      - uses: actions/upload-artifact@v5
+        if: always()
+        continue-on-error: true
+        with:
+          name: arayuz-goruntuleri
+          path: artifacts/screens
+          retention-days: 7
+          if-no-files-found: ignore

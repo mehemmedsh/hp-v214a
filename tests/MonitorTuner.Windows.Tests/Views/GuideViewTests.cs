@@ -55,33 +55,23 @@ public class GuideViewTests
         });
     }
 
+    /// <summary>T322: ana pencere sayfaları bir kez kurar; rehber sayfası gezinmeyle görünür, başta görüntü modları açık.</summary>
     [Fact]
-    public void MainWindow_ContainsGuideTabOrView()
+    public void MainWindow_ContainsGuideView_AndOpensOnTheModesPage()
     {
         RunOnSta(() =>
         {
             var window = new MainWindow();
-            Assert.NotNull(window);
 
-            // MainWindow içinde rehber bileşeni ya da sekmesi yer almalı
-            var hasGuideView = false;
-            if (window.Content is TabControl tabControl)
-            {
-                foreach (var item in tabControl.Items)
-                {
-                    if (item is TabItem tabItem && (tabItem.Content is GuideView || tabItem.Header?.ToString()?.Contains("Rehber") == true))
-                    {
-                        hasGuideView = true;
-                        break;
-                    }
-                }
-            }
-            else if (window.Content is GuideView)
-            {
-                hasGuideView = true;
-            }
+            Assert.IsType<GuideView>(window.FindName("GuideView"));
+            Assert.Equal(System.Windows.Visibility.Visible, ((System.Windows.UIElement)window.FindName("ModesPage")).Visibility);
+            Assert.Equal(System.Windows.Visibility.Collapsed, ((System.Windows.UIElement)window.FindName("GuideView")).Visibility);
 
-            Assert.True(hasGuideView, "MainWindow içinde GuideView veya Rehber sekmesi bulunmalıdır.");
+            var nav = (ListBox)window.FindName("Nav");
+            nav.SelectedItem = window.FindName("NavGuide");
+
+            Assert.Equal(System.Windows.Visibility.Visible, ((System.Windows.UIElement)window.FindName("GuideView")).Visibility);
+            Assert.Equal(System.Windows.Visibility.Collapsed, ((System.Windows.UIElement)window.FindName("ModesPage")).Visibility);
         });
     }
 }
